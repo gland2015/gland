@@ -2,7 +2,7 @@
     "name": "@gland/draft-ts",
     "description": "将draft-js转化为ts文件，并改进了一些功能",
     "license": "MIT",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "private": false,
     "author": "gland2015",
     "publishConfig": {

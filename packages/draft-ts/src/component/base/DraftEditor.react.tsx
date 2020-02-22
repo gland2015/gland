@@ -309,7 +309,6 @@ class DraftEditor extends React.Component<DraftEditorProps, State> {
 
     render(): ReactNode {
         const { blockRenderMap, blockRendererFn, blockStyleFn, customStyleFn, customStyleMap, editorState, readOnly, textAlignment, textDirectionality } = this.props;
-        console.log('ffffffffffffff')
         const rootClass = cx({
             "DraftEditor/root": true,
             "DraftEditor/alignLeft": textAlignment === "left",

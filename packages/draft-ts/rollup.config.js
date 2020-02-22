@@ -1,5 +1,5 @@
-import resolve from "rollup-plugin-node-resolve";
-import commonjs from "rollup-plugin-commonjs";
+import resolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import { terser } from "rollup-plugin-terser";
 
@@ -32,8 +32,8 @@ export default {
             noEmitOnError: false,
             allowSyntheticDefaultImports: true
         }),
-        commonjs(),
-        resolve()
+        resolve(),
+        commonjs()
     ],
     external: id => {
         id = id.split("/")[0];
