@@ -18,7 +18,7 @@ import {DraftInlineStyle} from './DraftInlineStyle';
 import CharacterMetadata from  './CharacterMetadata';
 
 import findRangesImmutable from './findRangesImmutable';
-import Immutable, { List, Map, OrderedSet, Record, Repeat  } from 'immutable';
+import { List, Map, OrderedSet, Record, Repeat  } from 'immutable';
 
 const EMPTY_SET = OrderedSet<string>();
 

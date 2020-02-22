@@ -15,7 +15,7 @@ import {DraftEntityType} from './DraftEntityType';
 import DraftEntityInstance  from  './DraftEntityInstance';
 
 import {Map}  from 'immutable';
-import invariant from 'invariant';
+import invariant from 'fbjs/lib/invariant';
 
 
 let instances: Map<string, DraftEntityInstance> = Map();

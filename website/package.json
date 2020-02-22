@@ -1,0 +1,12 @@
+{
+  "name": "akxm-ui",
+  "version": "3.0.0",
+  "description": "公用组件的函数库",
+  "scripts": {
+    "start": "webpack-dev-server"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
