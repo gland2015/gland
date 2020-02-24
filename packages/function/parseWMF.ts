@@ -1,4 +1,4 @@
-import {decodeByBrowser} from './utils';
+import {decodeByBrowser} from './transform';
 
 export default parseWMF;
 

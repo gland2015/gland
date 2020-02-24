@@ -1,25 +1,21 @@
 {
-    "name": "@gland/draft-ts",
-    "description": "将draft-js转化为ts文件，并改进了一些功能",
+    "name": "@gland/function",
+    "description": "各种实用的函数",
     "license": "MIT",
-    "version": "1.0.3",
+    "version": "1.0.0",
     "private": false,
     "author": "gland2015",
     "publishConfig": {
         "access": "public"
     },
     "keywords": [
-        "draft-ts",
-        "draftjs",
-        "editor",
         "react",
-        "richtext"
+        "javascript"
     ],
-    "main": "lib/index.js",
-    "module": "lib/index.esm.js",
     "sideEffects": false,
     "scripts": {
-        "build": "rollup --config ./rollup.config.js"
+        "build": "babel ./ --out-dir ./ --extensions .jsx,.ts,.tsx",
+        "clear": "node ./__clearFile.js"
     },
     "dependencies": {},
     "devDependencies": {},

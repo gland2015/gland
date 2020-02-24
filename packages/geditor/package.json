@@ -1,8 +1,8 @@
 {
-    "name": "@gland/draft-ts",
-    "description": "将draft-js转化为ts文件，并改进了一些功能",
+    "name": "@gland/geditor",
+    "description": "使用draft-ts构建的强大的富文本编辑器",
     "license": "MIT",
-    "version": "1.0.3",
+    "version": "1.0.0",
     "private": false,
     "author": "gland2015",
     "publishConfig": {
@@ -15,12 +15,6 @@
         "react",
         "richtext"
     ],
-    "main": "lib/index.js",
-    "module": "lib/index.esm.js",
-    "sideEffects": false,
-    "scripts": {
-        "build": "rollup --config ./rollup.config.js"
-    },
     "dependencies": {},
     "devDependencies": {},
     "homepage": "https://github.com/gland2015/gland",

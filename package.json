@@ -1,10 +1,5 @@
 {
-    "scripts": {
-        "start": "webpack-dev-server --config ./lib/webpack.config.js  --targetDir ./lib/页面/组件文档页面",
-        "watch": "babel lib --out-dir lib-build  --copy-files --extensions  .js,.jsx,.ts,.tsx --ignore **/node_modules/**,**/dist/**,**/build/** --source-maps inline --watch",
-        "build": "babel lib --out-dir lib-build  --copy-files --extensions  .js,.jsx,.ts,.tsx --ignore **/node_modules/**,**/dist/**,**/build/**",
-        "admindir": "sudo chmod -R 777 ."
-    },
+    "scripts": {},
     "devDependencies": {
         "@babel/cli": "*",
         "@babel/core": "*",
@@ -24,6 +19,7 @@
         "babel-plugin-inline-react-svg": "*",
         "css-loader": "*",
         "debug": "^4.1.1",
+        "del-cli": "",
         "file-loader": "*",
         "html-webpack-plugin": "*",
         "node-sass": "*",
@@ -47,6 +43,8 @@
         "@material-ui/icons": "*",
         "@material-ui/lab": "*",
         "@stencil/core": "^1.8.3",
+        "@gland/draft-ts": "",
+        "tslib": "",
         "aes-js": "^3.1.2",
         "antd": "*",
         "antd-mobile": "^2.3.1",

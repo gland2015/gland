@@ -1,7 +1,4 @@
 import React from "react";
-// 自定义hooks
-
-export { useMemoPro, useEffectPro, makeGlobal };
 
 /**
  * @description 与useMemo类似，但第三个参数可以是一个函数，用于判断是否需要更新
@@ -9,7 +6,7 @@ export { useMemoPro, useEffectPro, makeGlobal };
  * @param arr 若有第三个参数为函数，则将之传入新值和旧值，若第三个参数无，则若数组或对象则浅层比较，其余则直接比较
  * @param shouldUpdate 函数，返回值用于判断是否需要更新，若为非undefined的其他值则转换为布尔值用于判断是否需要更新，若无则根据第二个参数判断
  */
-function useMemoPro(Fn, args, shouldUpdate) {
+export function useMemoPro(Fn, args, shouldUpdate) {
     const attr = React.useRef({
         needUpdate: false,
         preArgs: undefined,
@@ -53,7 +50,7 @@ function useMemoPro(Fn, args, shouldUpdate) {
  * @param arr 若有第三个参数为函数，则将之传入新值和旧值，若第三个参数无，则若数组或对象则浅层比较，其余则直接比较
  * @param shouldUpdate 函数，返回值用于判断是否需要更新，若为非undefined的其他值则转换为布尔值用于判断是否需要更新，若无则根据第二个参数判断
  */
-function useEffectPro(Fn, args, shouldUpdate) {
+export function useEffectPro(Fn, args, shouldUpdate) {
     const attr = React.useRef({
         sign: true,
         preArgs: undefined,
@@ -91,14 +88,4 @@ function useEffectPro(Fn, args, shouldUpdate) {
     function effectFn() {
         return Fn(args, attr.preArgs, lastUpdateArgs);
     }
-}
-
-/**
- * @description 共享对象
- * @param obj 共享的对象
- */
-function makeGlobal(obj) {
-    return function useGlobal() {
-        return obj;
-    };
 }

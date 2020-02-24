@@ -1,0 +1,8 @@
+{
+    "description": "可扩展的一个编辑器内核，只有api，没有实现ui",
+    "main": "lib/index.js",
+    "module": "lib/index.esm.js",
+    "scripts": {
+        "build": "rollup --config ./rollup.config.js"
+    }
+}

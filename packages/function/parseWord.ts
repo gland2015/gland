@@ -1,8 +1,4 @@
-
-
-export default parseWord;
-
-function parseWord(str) {
+export function parseWord(str) {
     let t = new Date().getTime()
     let body = str.match(/\<body[^\>]*\>[\s\S]+\<\/body\>/);
     if (body) body = body[0];

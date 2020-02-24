@@ -4,6 +4,6 @@
 
 主要改进：将immutable和fbjs分离为独立依赖，需另外安装，改进实体，使之对非文本节点支持更好。
 
-安装: npm install @gland/draft-ts immutable@3.8.2  fbjs
+安装: npm install @gland/draft-ts immutable@3.8.2  fbjs tslib
 
 附：不可以安装immutable@4.0.0-rc*，由于Map的api变化，会报block.getKey not function，待其版本稳定再升级上去
