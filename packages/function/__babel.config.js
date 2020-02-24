@@ -3,7 +3,6 @@ module.exports = {
         [
             "@babel/preset-env",
             {
-                modules: "umd",
                 targets: {
                     chrome: "90"
                 }
