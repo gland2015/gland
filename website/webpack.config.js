@@ -3,6 +3,11 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const jsExclude = [/node_modules/];
 const isProd = process.env.NODE_ENV === "production";
+const mainFields = ["devModule", "browser", "module", "main"];
+
+if(isProd) {
+    mainFields.shift();
+}
 
 const config = {
     mode: "development",
@@ -103,8 +108,9 @@ const config = {
     resolve: {
         extensions: [".js", ".ts", ".jsx", ".tsx", ".css", ".scss"],
         alias: {
-            "@gland": path.resolve(__dirname, '../packages'),
-        }
+            "@gland": path.resolve(__dirname, "../packages")
+        },
+        mainFields
     },
     plugins: [
         new HtmlWebpackPlugin({

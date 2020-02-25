@@ -17,6 +17,7 @@
     ],
     "main": "lib/index.js",
     "module": "lib/index.esm.js",
+    "devModule": "index.ts",
     "sideEffects": false,
     "scripts": {
         "build": "rollup --config ./rollup.config.js"
