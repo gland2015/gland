@@ -1,6 +1,6 @@
-import { IEditorTheme } from "../model/store";
+import { IEditorTheme } from "../model";
 import { utils } from "../editAPI";
-import { getClassNameByType, getClassNameByBlockKey } from "../model/keys";
+import { getClassNameByType, getClassNameByBlockKey } from "./keys";
 
 export interface currentState {
     blockType?: string;

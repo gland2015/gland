@@ -10,7 +10,8 @@
     },
     "keywords": [
         "react",
-        "javascript"
+        "javascript",
+        "function"
     ],
     "sideEffects": false,
     "scripts": {

@@ -1,7 +1,6 @@
 import React from "react";
-import { editorConfigContext, IDefaultConfigContext } from "../model";
-import { getClassName } from "../model";
-import { getStyleObj } from "../model";
+import { editorConfigContext } from "../public/context";
+import { getClassName, getStyleObj  } from '../public/keys'
 /**
  * 统一的的块，再下发文本块和非文本块
  */

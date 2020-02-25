@@ -1,5 +1,5 @@
 import React from "react";
-import { editorConfigContext } from "../model";
+import { editorConfigContext } from "../public/context";
 
 class DraftWrapperElement extends React.Component<any, any> {
     static contextType = editorConfigContext;

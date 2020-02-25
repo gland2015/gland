@@ -1,5 +1,5 @@
 import React from 'react';
-import { editorConfigContext } from '../model';
+import { editorConfigContext } from '../public/context';
 
 // notice 插入不可变实体必须
 export function DraftEntity(props) {

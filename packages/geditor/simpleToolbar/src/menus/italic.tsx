@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/styles';
 import clsx from 'clsx';
-import { applyInlineStyle, removeInlineStyle } from '../../../core/editAPI/inlineStyle';
+import { applyInlineStyle, removeInlineStyle } from '@gland/geditor/core';
 
 export const Italic = withStyles({
     icon: {

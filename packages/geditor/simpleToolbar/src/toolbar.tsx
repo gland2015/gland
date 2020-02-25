@@ -1,12 +1,10 @@
 import React from 'react';
-import { editorConfigContext } from '@gland/geditor/core/model/context';
-import { applyInlineStyle, removeInlineStyle } from '../../core/editAPI/inlineStyle';
+import { editorConfigContext } from '@gland/geditor/core';
 import Button from '@material-ui/core/Button';
-import { ThemeProvider } from '@material-ui/core/styles';
-import defaultTheme from '@material-ui/core/styles/defaultTheme';
+
 import { withStyles } from '@material-ui/styles';
 import { Bold, Italic, StrikeThrough, Underline, FontColor, BackColor, FontSize, Emoticon, Link, Image, File } from './menus';
-import { insertEntity } from '../../core/editAPI/entity';
+import { insertEntity } from '@gland/geditor/core';
 
 class Toolbar extends React.Component<any, any> {
     static contextType = editorConfigContext;

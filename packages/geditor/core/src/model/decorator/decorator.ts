@@ -1,5 +1,5 @@
 import { CompositeDecorator } from "@gland/draft-ts";
-import { identifier } from "../constants";
+import { identifier } from "../../public/constants";
 import { DraftEntity } from "../../component";
 
 export const editorDecorator = {

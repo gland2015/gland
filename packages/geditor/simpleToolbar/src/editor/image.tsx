@@ -1,6 +1,5 @@
 import React from 'react';
 import { OrderedSet } from 'immutable';
-import { isPromiseInstance } from '../../../core/model/helper';
 
 // notice 目前是非文本光标位置不正常
 export function Image(props) {

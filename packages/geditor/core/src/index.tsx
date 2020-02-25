@@ -266,6 +266,6 @@ function initEditorState(value, decorators) {
 
 export { Editor };
 
-export * from "./component";
 export * from "./editAPI";
-export * from "./model";
+export * from './public/context'
+export * from './public/constants'

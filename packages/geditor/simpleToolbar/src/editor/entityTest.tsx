@@ -1,6 +1,5 @@
 import React from 'react';
 import { OrderedSet } from 'immutable';
-import { isPromiseInstance } from '../../../core/model/helper';
 
 // notice 在行空白处尾部点击，最后是不可编辑的，无论多长少不可编辑元素，会将焦点移到第二个不可编辑元素前；这是谷歌的一个bug行为
 export function EntityTest(props) {

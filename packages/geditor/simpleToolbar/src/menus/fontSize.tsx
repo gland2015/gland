@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/styles';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
-import { applyInlineStyle, removeInlineStyle } from '../../../core/editAPI/inlineStyle';
+import { applyInlineStyle, removeInlineStyle } from '@gland/geditor/core';
 import Grow from '@material-ui/core/Grow';
 
 const fontSizes = ['1.0', '0.8', '1.2', '1.5', '2.0', '2.5', '3.0', '4.0'];

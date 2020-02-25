@@ -1,4 +1,4 @@
-import { getClassNameByInlineName  } from '../keys'
+import { getClassNameByInlineName  } from '../../public/keys'
 // styles: ['color:red;font:12px;', '.classname']
 function customStyleFn(styles, block) {
     const result = {
@@ -23,22 +23,5 @@ function customStyleFn(styles, block) {
     });
     return result;
 }
-
-export  function getStyleObj(obj, identifier, changeNew = true) {
-    let result = {};
-    let hasChange;
-    if (obj['animation'] && obj['animation'].match(/\$[^ ]+/)) {
-        hasChange = true;
-        result['animation'] = obj['animation'].replace(/\$[^ ]+/, '$' + identifier);
-    }
-    if (!hasChange) {
-        return obj;
-    }
-    if (changeNew) {
-        return Object.assign({}, obj, result);
-    }
-    return Object.assign(obj, result);
-}
-
 
 export { customStyleFn };

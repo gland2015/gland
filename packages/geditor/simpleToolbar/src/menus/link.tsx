@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/styles';
 import clsx from 'clsx';
-import { applyEntity } from '../../../core/editAPI/entity';
+import { applyEntity } from '@gland/geditor/core';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';

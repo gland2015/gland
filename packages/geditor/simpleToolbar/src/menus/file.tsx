@@ -1,8 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/styles';
 import clsx from 'clsx';
-import { insertEntity } from '../../../core/editAPI/entity';
-import { blobToDataURL } from '../../../core/model/helper';
+import { insertEntity } from '@gland/geditor/core';
 
 export const File = withStyles({
     icon: {

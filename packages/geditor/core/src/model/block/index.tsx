@@ -7,7 +7,8 @@ import { DraftWrapperElement } from '../../component';
 export const blockRenderMap:any = Map({
     unstyled: {
         element: DraftBlockElement,
-        wrapper: <DraftWrapperElement />
+        wrapper: <DraftWrapperElement />,
+        
     }
 });
 

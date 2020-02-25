@@ -1,7 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { OrderedSet } from 'immutable';
-import { isPromiseInstance } from '../../../core/model/helper';
 
 const useStyles = makeStyles({
     icon: (props: any) => {

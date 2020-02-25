@@ -1,6 +1,6 @@
 import { OrderedSet, Map } from "immutable";
 import { SelectionState, Modifier, EditorState, convertFromRaw, ContentState } from "@gland/draft-ts";
-import { identifier } from "../model";
+import { identifier } from "../public/constants";
 import { getFixedWrapperFirstKey, getTextBlockData } from "../model";
 import { getDecorator } from "../model";
 

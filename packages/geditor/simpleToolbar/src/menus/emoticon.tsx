@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/styles';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
-import { insertEntity } from '../../../core/editAPI/entity';
+import { insertEntity } from '@gland/geditor/core';
 import Grow from '@material-ui/core/Grow';
 
 const emotions = ['http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/40/pcmoren_tian_org.png', 'http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/50/pcmoren_huaixiao_org.png'];

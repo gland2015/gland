@@ -1,6 +1,5 @@
 import { withStyles } from '@material-ui/core/styles';
-import { getClassNameByBlockKey, getClassNameByType, getClassNameByInlineName } from '../model';
-import { getStyleObj } from '../model';
+import { getClassNameByBlockKey, getClassNameByType, getClassNameByInlineName, getStyleObj } from '../public/keys';
 
 // 样式表都在此更改
 const StyleSheetComponent = withStyles((theme: any) => {

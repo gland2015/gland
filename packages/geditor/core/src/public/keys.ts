@@ -1,4 +1,4 @@
-import { editorName } from '../constants';
+import { editorName } from './constants';
 
 export function getClassNameByInlineName(name, identifier) {
     return 'inline' + '_' + name + '_' + editorName + identifier;
@@ -14,4 +14,20 @@ export function getClassNameByBlockKey(blockKey: string, identifier) {
 
 export function getClassName(type: string, blockKey: string, identifier) {
     return getClassNameByType(type, identifier) + ' ' + getClassNameByBlockKey(blockKey, identifier);
+}
+
+export  function getStyleObj(obj, identifier, changeNew = true) {
+    let result = {};
+    let hasChange;
+    if (obj['animation'] && obj['animation'].match(/\$[^ ]+/)) {
+        hasChange = true;
+        result['animation'] = obj['animation'].replace(/\$[^ ]+/, '$' + identifier);
+    }
+    if (!hasChange) {
+        return obj;
+    }
+    if (changeNew) {
+        return Object.assign({}, obj, result);
+    }
+    return Object.assign(obj, result);
 }

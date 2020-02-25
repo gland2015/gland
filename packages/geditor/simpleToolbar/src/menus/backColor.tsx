@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/styles';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 import clsx from 'clsx';
-import { applyInlineStyle, removeInlineStyle } from '../../../core/editAPI/inlineStyle';
+import { applyInlineStyle, removeInlineStyle } from '@gland/geditor/core';
 import Grow from '@material-ui/core/Grow';
 
 const colors = [
