@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const exclude = ["__babel.config.js", "__clearFile.js"];
+const exclude = ["__rollup.config.js", "__clearFile.js"];
 
 fs.readdir(__dirname, function(err, files) {
     files.forEach(function(filename) {
