@@ -1,4 +1,4 @@
-export function parseWord(str) {
+export function parseOfficeOpenXml(str) {
     let t = new Date().getTime()
     let body = str.match(/\<body[^\>]*\>[\s\S]+\<\/body\>/);
     if (body) body = body[0];

@@ -1,5 +1,4 @@
 // 导出一颗树，传入数组，元素对象，parentId和_id之类字段形成树结构
-export default Tree;
 
 const reservedFields = [
   "_idKey",
@@ -10,7 +9,7 @@ const reservedFields = [
   "children"
 ];
 
-function Tree(initData, option: any = {}) {
+export function Tree(initData, option: any = {}) {
   option = Object.assign(
     {},
     {

@@ -1,4 +1,3 @@
-export * from './blockText'
 export * from './draftBlockElement'
 export * from './draftEntity'
 export * from './draftWrapperElement'

@@ -1,29 +1,27 @@
 import XLSX from "xlsx";
 
-export default readFile_xsl;
-
 /**
  * @description 异步函数，将input file按钮元素里的exlsl表格文件读取为对象数据
- * @param domEle input dom元素
+ * @param inputEle input dom元素
  */
-async function readFile_xsl(domEle) {
+export async function readFileXslByInput(inputEle) {
     //导入
-    if (!domEle.files) {
+    if (!inputEle.files) {
         return "";
     }
     const result = [];
 
     let i = 0;
-    while (domEle.files[i]) {
-        let file = domEle.files[i];
-        const data = await readFile(file);
+    while (inputEle.files[i]) {
+        let file = inputEle.files[i];
+        const data = await readFileXml(file);
         result.push(data);
         i++;
     }
     return result;
 }
 
-async function readFile(file) {
+export async function readFileXml(file: Blob) {
     return new Promise(function(resolve, reject) {
         var reader = new FileReader();
         reader.onload = function(e) {

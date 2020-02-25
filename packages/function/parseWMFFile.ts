@@ -1,12 +1,16 @@
-import {decodeByBrowser} from './transform';
+import {decodeByBrowser} from './dataTransform';
 
-export default parseWMF;
+export { parseWMFFile };
 
 interface decode {
     (chars, charset: string): Promise<string>;
 }
-
-function parseWMF(blob: Blob, decode: decode | any = myDecode): Promise<string> {
+/**
+ * 解析wmf图元文件为png的dataurl
+ * @param blob 
+ * @param decode 
+ */
+function parseWMFFile(blob: Blob, decode: decode | any = myDecode): Promise<string> {
     return new Promise(async function(resolve, reject) {
         let canvas = document.createElement("canvas");
         let reader: any = new FileReader();

@@ -1,8 +1,3 @@
-
-
-export { hexToBase64, hexToArrayBuffer, decodeByBrowser, dataURLtoBlob, blobToDataURL, blobToArrayBuffer };
-export { stringToByte, byteToString, stringToBase64, base64ToString, stringToArrayBuffer };
-
 type IMediatype = 'text/plain' | 'text/html' | 'application/rtf' | 'image/gif' | 'audio/basic' | 'video/x-msvideo' | 'image/svg+xml' | 'image/wmf' | any;
 
 
@@ -10,7 +5,7 @@ type IMediatype = 'text/plain' | 'text/html' | 'application/rtf' | 'image/gif' |
  * @description base64转blob，同步返回blob对象
  * @param dataurl
  */
-function dataURLtoBlob(dataurl) {
+export function dataURLtoBlob(dataurl) {
     let arr = dataurl.split(","),
         mime = arr[0].match(/:(.*?);/)[1],
         bstr = atob(arr[1]),
@@ -26,7 +21,7 @@ function dataURLtoBlob(dataurl) {
  * @description 将blob转为base64
  * @param blob
  */
-function blobToDataURL(blob: Blob): Promise<any> {
+export function blobToDataURL(blob: Blob): Promise<any> {
     return new Promise(function (resolve, reject) {
         const reader = new FileReader();
         reader.onload = function (e) {
@@ -40,7 +35,7 @@ function blobToDataURL(blob: Blob): Promise<any> {
  * 将blob转为ArrayBuffer
  * @param blob
  */
-function blobToArrayBuffer(blob: Blob): Promise<any> {
+export function blobToArrayBuffer(blob: Blob): Promise<any> {
     return new Promise(function (resolve, reject) {
         const reader = new FileReader();
         reader.onload = function (e) {
@@ -54,7 +49,7 @@ function blobToArrayBuffer(blob: Blob): Promise<any> {
  * @description 将16进制编码转为base64编码
  * @param str
  */
-function hexToBase64(str: string) {
+export function hexToBase64(str: string) {
     let bString = "";
     for (let i = 0; i < str.length; i += 2) {
         bString += String.fromCharCode(parseInt(str.substr(i, 2), 16));
@@ -67,7 +62,7 @@ function hexToBase64(str: string) {
  * @param str hex
  * @param mediatype base64编码的mime类型，如image/wmf
  */
-function hexToArrayBuffer(str: string, mediatype: IMediatype): Promise<any> {
+export function hexToArrayBuffer(str: string, mediatype: IMediatype): Promise<any> {
     const base64 = hexToBase64(str);
     const dataUrl = "data:" + mediatype + ";base64," + base64;
     const blob = dataURLtoBlob(dataUrl);
@@ -79,7 +74,7 @@ function hexToArrayBuffer(str: string, mediatype: IMediatype): Promise<any> {
  * @param str 被编码的字符串，格式一般为%加字符的字节的16进制编码
  * @param charset 编码的类型，默认gbk
  */
-function decodeByBrowser(str: string, charset: string = "GBK"): Promise<string> {
+export function decodeByBrowser(str: string, charset: string = "GBK"): Promise<string> {
     return new Promise(function (resolve, reject) {
         let script = document.createElement("script");
         const fnName = "__ONNATIVEDECODECHANGE__" + Math.random();
@@ -100,7 +95,7 @@ function decodeByBrowser(str: string, charset: string = "GBK"): Promise<string> 
  * 
  * @param str 
  */
-function stringToByte(str: string) {
+export function stringToByte(str: string) {
     let bytes = new Array();
     let len, c;
     len = str.length;
@@ -129,7 +124,7 @@ function stringToByte(str: string) {
  * 
  * @param arr 
  */
-function byteToString(arr: Array<any>) {
+export function byteToString(arr: Array<any>) {
     let str = '';
     for (let i = 0; i < arr.length; i++) {
         let one = arr[i].toString(2),
@@ -150,16 +145,16 @@ function byteToString(arr: Array<any>) {
 }
 
 
-function stringToBase64(str: string) {
+export function stringToBase64(str: string) {
     str = encodeURIComponent(str);
     return btoa(str);
 }
 
-function base64ToString(base64String: string) {
+export function base64ToString(base64String: string) {
     return decodeURIComponent(atob(base64String));
 }
 
-async function stringToArrayBuffer(string: string): Promise<ArrayBuffer> {
+export async function stringToArrayBuffer(string: string): Promise<ArrayBuffer> {
     let dataUrl = 'data:text/plain;base64,' + stringToBase64(string);
     let blob = dataURLtoBlob(dataUrl);
     return blobToArrayBuffer(blob);

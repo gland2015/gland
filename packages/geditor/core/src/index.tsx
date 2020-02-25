@@ -4,7 +4,9 @@ import { Editor as DraftEditor, EditorState, convertToRaw, genKey } from "@gland
 
 import { StyleSheetComponent } from "./component";
 import { makeCollapsed, insertText, utils, defaultKeyHandler } from "./editAPI";
-import { getCurrentState, classStyles, customStyleFn, blockRenderMap, store, editorConfigContext } from "./model";
+import { classStyles, customStyleFn, blockRenderMap, store } from "./model";
+import { editorConfigContext } from './public/context'
+import { getCurrentState} from './public/getCurrentState'
 
 class Editor extends React.Component<
     {
