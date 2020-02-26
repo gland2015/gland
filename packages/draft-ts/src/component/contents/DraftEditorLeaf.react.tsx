@@ -9,17 +9,17 @@
  * @emails oncall+draft_js
  */
 
-'use strict';
+"use strict";
 
-import { BlockNodeRecord } from '../../model/immutable/BlockNodeRecord';
-import { DraftInlineStyle } from '../../model/immutable/DraftInlineStyle';
-import SelectionState from '../../model/immutable/SelectionState';
+import { BlockNodeRecord } from "../../model/immutable/BlockNodeRecord";
+import { DraftInlineStyle } from "../../model/immutable/DraftInlineStyle";
+import SelectionState from "../../model/immutable/SelectionState";
 
-import DraftEditorTextNode from './DraftEditorTextNode.react';
-import React, { ReactNode } from 'react';
-import invariant from 'fbjs/lib/invariant';
-import isHTMLBRElement from '../utils/isHTMLBRElement';
-import { setDraftEditorSelection } from '../selection/setDraftEditorSelection';
+import DraftEditorTextNode from "./DraftEditorTextNode.react";
+import React, { ReactNode } from "react";
+import invariant from "fbjs/lib/invariant";
+import isHTMLBRElement from "../utils/isHTMLBRElement";
+import { setDraftEditorSelection } from "../selection/setDraftEditorSelection";
 
 type Props = {
     // The block that contains this leaf.
@@ -79,7 +79,7 @@ class DraftEditorLeaf extends React.Component<Props> {
 
     _setSelection(): void {
         const { selection, isLast } = this.props;
-        const isCustom = this.leaf.dataset['type'] === 'custom';
+        const isCustom = this.leaf.dataset["type"] === "custom";
         // gland 重要更改，防止非contenteditable元素获取焦点
         if (!isLast && isCustom) {
             return;
@@ -93,7 +93,7 @@ class DraftEditorLeaf extends React.Component<Props> {
         const blockKey = block.getKey();
         let end = start + text.length;
         // gland
-        if (isCustom|| typeof text === 'object') {
+        if (isCustom || typeof text === "object") {
             end = start + 1;
         }
         if (!selection.hasEdgeWithin(blockKey, start, end)) {
@@ -104,7 +104,7 @@ class DraftEditorLeaf extends React.Component<Props> {
             setIndepentSelection(selection, this.leaf, blockKey);
             return;
         }
-        if(typeof text === 'object') {
+        if (typeof text === "object") {
             setDraftEditorSelection(selection, this.leaf.firstChild, blockKey, start, end);
             return;
         }
@@ -112,9 +112,9 @@ class DraftEditorLeaf extends React.Component<Props> {
         // is not a text node, it is a <br /> spacer. In this case, use the
         // <span> itself as the selection target.
         const node = this.leaf;
-        invariant(node, 'Missing node');
+        invariant(node, "Missing node");
         const child = node.firstChild;
-        invariant(child, 'Missing child');
+        invariant(child, "Missing child");
         let targetNode;
 
         if (child.nodeType === Node.TEXT_NODE) {
@@ -123,7 +123,7 @@ class DraftEditorLeaf extends React.Component<Props> {
             targetNode = node;
         } else {
             targetNode = child.firstChild;
-            invariant(targetNode, 'Missing targetNode');
+            invariant(targetNode, "Missing targetNode");
         }
         //console.log("selection set", this.leaf.dataset["type"], selection.toJS(), targetNode, blockKey, start, end);
         setDraftEditorSelection(selection, targetNode, blockKey, start, end);
@@ -132,7 +132,7 @@ class DraftEditorLeaf extends React.Component<Props> {
     shouldComponentUpdate(nextProps: Props): boolean {
         // gland notice styleSet lead update
         const leafNode = this.leaf;
-        invariant(leafNode, 'Missing leafNode');
+        invariant(leafNode, "Missing leafNode");
         const shouldUpdate = this.props.text !== nextProps.text || nextProps.styleSet !== this.props.styleSet || nextProps.forceSelection;
         return shouldUpdate;
     }
@@ -154,9 +154,9 @@ class DraftEditorLeaf extends React.Component<Props> {
         // characters, which leaves the cursor in the wrong place after a
         // shift+enter. The extra character repairs this.
         if (isLast) {
-            if (typeof text === 'string') {
-                if (text.endsWith('\n')) {
-                    text += '\n';
+            if (typeof text === "string") {
+                if (text.endsWith("\n")) {
+                    text += "\n";
                 }
             }
         }
@@ -168,7 +168,7 @@ class DraftEditorLeaf extends React.Component<Props> {
 
             if (style !== undefined && map.textDecoration !== style.textDecoration) {
                 // .trim() is necessary for IE9/10/11 and Edge
-                mergedStyles.textDecoration = [map.textDecoration, style.textDecoration].join(' ').trim();
+                mergedStyles.textDecoration = [map.textDecoration, style.textDecoration].join(" ").trim();
             }
 
             return Object.assign(map, style, mergedStyles);
@@ -183,16 +183,16 @@ class DraftEditorLeaf extends React.Component<Props> {
         // gland  \r &#13; 可使光标垂直对齐正常和处在行尾时聚焦
         if (custom) {
             return (
-                <span data-offset-key={offsetKey} ref={ref => (this.leaf = ref)} style={styleObj} data-type='custom' contentEditable={false}>
-                    <span data-text='object'>{custom}</span>
-                    <span data-text='r'>{'\r'}</span>
+                <span data-offset-key={offsetKey} ref={ref => (this.leaf = ref)} style={styleObj} data-type="custom" contentEditable={false}>
+                    <span data-text="object">{custom}</span>
+                    <span data-text="true">{'\r'}</span>
                 </span>
             );
         }
-        if (typeof text === 'object') {
+        if (typeof text === "object") {
             return (
                 <span data-offset-key={offsetKey} ref={ref => (this.leaf = ref)} style={styleObj}>
-                    <span data-text='object'>{text}</span>
+                    <span data-text="object">{text}</span>
                 </span>
             );
         }

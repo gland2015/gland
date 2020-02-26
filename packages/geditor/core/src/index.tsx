@@ -3,10 +3,10 @@ import { ThemeProvider } from "@material-ui/styles";
 import { Editor as DraftEditor, EditorState, convertToRaw, genKey } from "@gland/draft-ts";
 
 import { StyleSheetComponent } from "./component";
-import { makeCollapsed, insertText, utils, defaultKeyHandler } from "./editAPI";
+import { makeCollapsed, insertText, utils, defaultKeyHandler, isImutableEntityAtBlockLast } from "./editAPI";
 import { classStyles, customStyleFn, blockRenderMap, store } from "./model";
-import { editorConfigContext } from './public/context'
-import { getCurrentState} from './public/getCurrentState'
+import { editorConfigContext } from "./public/context";
+import { getCurrentState } from "./public/getCurrentState";
 
 class Editor extends React.Component<
     {
@@ -75,7 +75,7 @@ class Editor extends React.Component<
     }
 
     updateEditorState = (editorState, toUpdateKeys = null) => {
-        //console.log('update', toUpdateKeys)
+        //console.log('update', toUpdateKeys, !!this.editorStateBeforeComposition)
         // 输入法事件
         if (this.editorStateBeforeComposition) return;
         this.editorContext.toUpdateKeys = toUpdateKeys;
@@ -109,6 +109,7 @@ class Editor extends React.Component<
                                 keyBindingFn={this.keyBindingFn}
                                 handlePastedText={handlePastedText}
                                 blockRenderMap={blockRenderMap}
+                                handleBeforeInput={_ => "handled"}
                                 customStyleFn={this.customStyleFn}
                                 handleKeyCommand={handleKeyCommand}
                                 readOnly={readOnly}
@@ -123,12 +124,15 @@ class Editor extends React.Component<
     handleCompositionStart = (event: React.CompositionEvent) => {
         event.preventDefault();
         event.stopPropagation();
-        this.editorStateBeforeComposition = this.state.editorState;
-        const { editorState, toUpdateKeys } = makeCollapsed(this.editorStateBeforeComposition);
-        if (toUpdateKeys.length > 0) {
-            this.editorStateBeforeComposition = editorState;
-            this.updateEditorState(editorState, toUpdateKeys);
+        const editorStateBeforeComposition = this.state.editorState;
+        let result = makeCollapsed(editorStateBeforeComposition);
+        if (isImutableEntityAtBlockLast(result.editorState)) {
+            result = insertText(result.editorState, "\r");
         }
+
+        this.updateEditorState(result.editorState, result.toUpdateKeys);
+        this.editorStateBeforeComposition = editorStateBeforeComposition;
+        //}
     };
 
     handleCompositionEnd = (event: React.CompositionEvent) => {
@@ -136,15 +140,13 @@ class Editor extends React.Component<
         const text = event.data;
         let editorState = this.editorStateBeforeComposition;
         this.editorStateBeforeComposition = null;
-        if (!text) return;
-        // notice 这是包含了已有的样式的，无是null
-        const style = editorState.getInlineStyleOverride() || undefined;
-        let result = insertText(editorState, text, style);
-        editorState = result.editorState;
-        let toUpdateKeys = result.toUpdateKeys;
-        if (!style) {
-            toUpdateKeys = [];
+        if (text) {
+            // notice 这是包含了已有的样式的，无是null
+            const style = editorState.getInlineStyleOverride() || undefined;
+            let result = insertText(editorState, text, style);
+            editorState = result.editorState;
         }
+        let toUpdateKeys = [editorState.getSelection().anchorKey];
         this.updateEditorState(editorState, toUpdateKeys);
     };
 
@@ -267,5 +269,5 @@ function initEditorState(value, decorators) {
 export { Editor };
 
 export * from "./editAPI";
-export * from './public/context'
-export * from './public/constants'
+export * from "./public/context";
+export * from "./public/constants";

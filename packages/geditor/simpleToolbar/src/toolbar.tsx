@@ -19,8 +19,9 @@ class Toolbar extends React.Component<any, any> {
         let content = editorState.getCurrentContent();
         let block = content.getFirstBlock();
         let text = block.getText();
-        console.log('log theSelection', selection.toJS());
-        console.log('log winSelection', window.getSelection());
+         console.log('log theSelection', selection.toJS()); 
+         console.log('log winSelection', window.getSelection());
+        console.log('log text', text)
     };
 
     entityTest = (event: React.MouseEvent) => {

@@ -80,8 +80,10 @@ function editOnInput(editor: DraftEditor, e:any): void {
 
   if (
     anchorNode.nodeType === Node.TEXT_NODE &&
+    anchorNode.parentNode.nodeName === 'SPAN' &&
     (anchorNode.previousSibling !== null || anchorNode.nextSibling !== null)
   ) {
+    // 查找空白文本节点
     // When typing at the beginning of a visual line, Chrome splits the text
     // nodes into two. Why? No one knows. This commit is suspicious:
     // https://chromium.googlesource.com/chromium/src/+/a3b600981286b135632371477f902214c55a1724
@@ -98,7 +100,6 @@ function editOnInput(editor: DraftEditor, e:any): void {
       }
     }
   }
-
   let domText = anchorNode.textContent;
   const editorState = editor._latestEditorState;
   const offsetKey = nullthrows(findAncestorOffsetKey(anchorNode));
