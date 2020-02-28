@@ -29,13 +29,13 @@ export function makeCollapsed(editorState) {
  * @param text
  * @param style  样式数组
  */
-export function insertText(editorState, text: string, style?: Array<string>) {
+export function insertText(editorState, text: string, style?: Array<string>, offsetDeviation = 0) {
     editorState = makeCollapsed(editorState).editorState;
     let textStyle;
     if (style) {
         textStyle = OrderedSet(style);
     } else {
-        textStyle = editorState.getCurrentInlineStyle()
+        textStyle = editorState.getInlineStyleOverride() || editorState.getCurrentInlineStyle()
     }
     let content = editorState.getCurrentContent();
     const selection = editorState.getSelection();
@@ -43,7 +43,7 @@ export function insertText(editorState, text: string, style?: Array<string>) {
     editorState = EditorState.push(editorState, content, "insert-characters");
 
     const key = selection.anchorKey;
-    const offset = selection.anchorOffset + text.length;
+    const offset = selection.anchorOffset + text.length + offsetDeviation;
     const newSelection = selection.merge({
         anchorOffset: offset,
         anchorKey: key,

@@ -60,6 +60,7 @@ function editOnSelect(editor: DraftEditor, event): void {
         updatedSelectionState,
       );
     }
+ 
     editor.update(editorState);
   }
 }

@@ -113,6 +113,7 @@ function setDraftEditorSelection(
   nodeStart: number,
   nodeEnd: number,
 ): void {
+
   // It's possible that the editor has been removed from the DOM but
   // our selection code doesn't know it yet. Forcing selection in
   // this case may lead to errors, so just bail now.
@@ -168,6 +169,7 @@ function setDraftEditorSelection(
   if (!isBackward) {
     // If the anchor is within this node, set the range start.
     if (hasAnchor) {
+
       selection.removeAllRanges();
       addPointToSelection(
         selection,

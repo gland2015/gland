@@ -36,6 +36,12 @@ const defaultRecord: {
 const SelectionStateRecord = Record(defaultRecord);
 
 class SelectionState extends SelectionStateRecord {
+  anchorKey: string;
+  anchorOffset: number;
+  focusKey: string;
+  focusOffset: number;
+  isBackward: boolean;
+  hasFocus: boolean;
   serialize(): string {
     return (
       'Anchor: ' +

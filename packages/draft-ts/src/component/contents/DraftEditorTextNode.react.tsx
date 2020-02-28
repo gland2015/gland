@@ -9,23 +9,23 @@
  * @emails oncall+draft_js
  */
 
-'use strict';
+"use strict";
 
-import React, {ReactNode} from 'react'
-import UserAgent from 'fbjs/lib/UserAgent'
+import React, { ReactNode } from "react";
+import UserAgent from "fbjs/lib/UserAgent";
 
-import invariant from 'fbjs/lib/invariant';
-import isElement from '../utils/isElement';
+import invariant from "fbjs/lib/invariant";
+import isElement from "../utils/isElement";
 
 // In IE, spans with <br> tags render as two newlines. By rendering a span
 // with only a newline character, we can be sure to render a single line.
-const useNewlineChar = UserAgent.isBrowser('IE <= 11');
+const useNewlineChar = UserAgent.isBrowser("IE <= 11");
 
 /**
  * Check whether the node should be considered a newline.
  */
 function isNewline(node: Element): boolean {
-  return useNewlineChar ? node.textContent === '\n' : node.tagName === 'BR';
+    return useNewlineChar ? node.textContent === "\n" : node.tagName === "BR";
 }
 
 /**
@@ -40,25 +40,25 @@ function isNewline(node: Element): boolean {
  * http://jsfiddle.net/7pg143f7/ for the fixed case.
  */
 const NEWLINE_A = ref =>
-  useNewlineChar ? (
-    <span key="A" data-text="true" ref={ref}>
-      {'\n'}
-    </span>
-  ) : (
-    <br key="A" data-text="true" ref={ref} />
-  );
+    useNewlineChar ? (
+        <span key="A" data-text="true" ref={ref}>
+            {"\n"}
+        </span>
+    ) : (
+        <br key="A" data-text="true" ref={ref} />
+    );
 
 const NEWLINE_B = ref =>
-  useNewlineChar ? (
-    <span key="B" data-text="true" ref={ref}>
-      {'\n'}
-    </span>
-  ) : (
-    <br key="B" data-text="true" ref={ref} />
-  );
+    useNewlineChar ? (
+        <span key="B" data-text="true" ref={ref}>
+            {"\n"}
+        </span>
+    ) : (
+        <br key="B" data-text="true" ref={ref} />
+    );
 
 type Props = {
-  children: string,
+    children: string;
 };
 
 /**
@@ -69,52 +69,48 @@ type Props = {
  * editor state.
  */
 class DraftEditorTextNode extends React.Component<Props> {
-  _forceFlag: boolean;
-  _node: (HTMLSpanElement | HTMLBRElement);
-
-  constructor(props: Props) {
-    super(props);
-    // By flipping this flag, we also keep flipping keys which forces
-    // React to remount this node every time it rerenders.
-    this._forceFlag = false;
-  }
-
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const node = this._node;
-    const shouldBeNewline = nextProps.children === '';
-
-    invariant(isElement(node), 'node is not an Element');
-    const elementNode: Element = (node as any);
-    if (shouldBeNewline) {
-      return !isNewline(elementNode);
-    }
-    return elementNode.textContent !== nextProps.children;
-  }
-
-  componentDidMount(): void {
-    this._forceFlag = !this._forceFlag;
-  }
-
-  componentDidUpdate(): void {
-    this._forceFlag = !this._forceFlag;
-  }
-
-  render(): ReactNode {
-    if (this.props.children === '') {
-      return this._forceFlag
-        ? NEWLINE_A(ref => (this._node = ref))
-        : NEWLINE_B(ref => (this._node = ref));
+    _forceFlag: boolean;
+    _node: HTMLSpanElement | HTMLBRElement;
+    isLast;
+    constructor(props: Props) {
+        super(props);
+        // By flipping this flag, we also keep flipping keys which forces
+        // React to remount this node every time it rerenders.
+        this._forceFlag = false;
     }
 
-    return (
-      <span
-        key={this._forceFlag ? 'A' : 'B'}
-        data-text="true"
-        ref={ref => (this._node = ref)}>
-        {this.props.children}
-      </span>
-    );
-  }
+    shouldComponentUpdate(nextProps: Props): boolean {
+        const node = this._node;
+        const shouldBeNewline = nextProps.children === "";
+
+        invariant(isElement(node), "node is not an Element");
+        const elementNode: Element = node as any;
+        if (shouldBeNewline) {
+            return !isNewline(elementNode);
+        }
+        return elementNode.textContent !== nextProps.children;
+    }
+
+    componentDidMount(): void {
+        this._forceFlag = !this._forceFlag;
+    }
+
+    componentDidUpdate(): void {
+        this._forceFlag = !this._forceFlag;
+    }
+
+    render(): ReactNode {
+        let text = this.props.children;
+        if (text === "") {
+            return this._forceFlag ? NEWLINE_A(ref => (this._node = ref)) : NEWLINE_B(ref => (this._node = ref));
+        }
+
+        return (
+            <span key={this._forceFlag ? "A" : "B"} data-text="true" ref={ref => (this._node = ref)}>
+                {text}
+            </span>
+        );
+    }
 }
 
-export default  DraftEditorTextNode;
+export default DraftEditorTextNode;

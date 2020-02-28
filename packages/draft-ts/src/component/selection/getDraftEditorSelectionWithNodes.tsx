@@ -194,6 +194,7 @@ function getPointForNonTextNode(editorRoot: HTMLElement, startNode: Node, childO
     if (startNode && (startNode as any).dataset.text === "object") {
         textLength = 1;
     }
+    
     return {
         key: leafKey,
         offset: textLength

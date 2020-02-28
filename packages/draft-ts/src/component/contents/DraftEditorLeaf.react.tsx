@@ -101,7 +101,13 @@ class DraftEditorLeaf extends React.Component<Props> {
         }
         // gland
         if (isCustom) {
-            setIndepentSelection(selection, this.leaf, blockKey);
+            if(selection.focusOffset === selection.anchorOffset) {
+                if(selection.anchorOffset === start) {
+                    setIndepentSelection(selection, this.leaf, -1);
+                } else {
+                    setIndepentSelection(selection, this.leaf, 0);
+                }
+            }
             return;
         }
         if (typeof text === "object") {
@@ -125,7 +131,7 @@ class DraftEditorLeaf extends React.Component<Props> {
             targetNode = child.firstChild;
             invariant(targetNode, "Missing targetNode");
         }
-        //console.log("selection set", this.leaf.dataset["type"], selection.toJS(), targetNode, blockKey, start, end);
+        console.log("selection set", this.leaf.dataset["type"], selection.toJS(), targetNode, blockKey, start, end);
         setDraftEditorSelection(selection, targetNode, blockKey, start, end);
     }
 
@@ -153,6 +159,8 @@ class DraftEditorLeaf extends React.Component<Props> {
         // an extra line feed character. Browsers collapse trailing newline
         // characters, which leaves the cursor in the wrong place after a
         // shift+enter. The extra character repairs this.
+
+        // gland 改变表述
         if (isLast) {
             if (typeof text === "string") {
                 if (text.endsWith("\n")) {
@@ -185,7 +193,7 @@ class DraftEditorLeaf extends React.Component<Props> {
             return (
                 <span data-offset-key={offsetKey} ref={ref => (this.leaf = ref)} style={styleObj} data-type="custom" contentEditable={false}>
                     <span data-text="object">{custom}</span>
-                    <span data-text="true">{'\r'}</span>
+                    <span data-text="true">{"\r"}</span>
                 </span>
             );
         }
@@ -223,12 +231,12 @@ function setCursorPosition(ele, offset) {
     selection.addRange(range);
 }
 
-function setIndepentSelection(selectionState, leaf, blockKey) {
+function setIndepentSelection(selectionState, leaf, k) {
     let selection = window.getSelection();
     let range = selection.getRangeAt(0);
 
     let ele = leaf.parentElement;
-    let offset = ele.childNodes.length;
+    let offset = ele.childNodes.length + k;
     if (selectionState.isCollapsed()) {
         range.setStart(ele, offset);
         range.setEnd(ele, offset);

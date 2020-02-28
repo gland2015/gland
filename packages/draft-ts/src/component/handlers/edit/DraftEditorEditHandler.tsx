@@ -30,9 +30,10 @@ import onSelect from './editOnSelect';
 
 const isChrome = UserAgent.isBrowser('Chrome');
 
+// gland 火狐有时也需要，在插入链接之后，可能不会提交onSelect事件
 const selectionHandler: (e: DraftEditor, event?) => void = isChrome
-  ? onSelect
-  : e => {};
+  ? onSelect:onSelect
+ // : e => {};
 
 const DraftEditorEditHandler = {
   onBeforeInput,

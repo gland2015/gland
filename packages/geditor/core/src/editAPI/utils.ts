@@ -394,7 +394,6 @@ export function insertEntity(contentState, selection, name?: string, data?) {
         });
     }
     const style = contentState.getBlockForKey(selection.anchorKey).getInlineStyleAt(selection.anchorOffset - 1);
-    console.log('style', style)
     // notice 插入实体都是不可变的
     const contentStateWithEntity = contentState.createEntity(identifier, "IMMUTABLE", {
         name,

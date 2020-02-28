@@ -1,10 +1,11 @@
-import React from 'react';
-import { editorConfigContext } from '@gland/geditor/core';
-import Button from '@material-ui/core/Button';
+import React from "react";
+import { EditorState } from '@gland/draft-ts'
+import { editorConfigContext } from "@gland/geditor/core";
+import Button from "@material-ui/core/Button";
 
-import { withStyles } from '@material-ui/styles';
-import { Bold, Italic, StrikeThrough, Underline, FontColor, BackColor, FontSize, Emoticon, Link, Image, File } from './menus';
-import { insertEntity } from '@gland/geditor/core';
+import { withStyles } from "@material-ui/styles";
+import { Bold, Italic, StrikeThrough, Underline, FontColor, BackColor, FontSize, Emoticon, Link, Image, File } from "./menus";
+import { insertEntity,  } from "@gland/geditor/core";
 
 class Toolbar extends React.Component<any, any> {
     static contextType = editorConfigContext;
@@ -19,16 +20,22 @@ class Toolbar extends React.Component<any, any> {
         let content = editorState.getCurrentContent();
         let block = content.getFirstBlock();
         let text = block.getText();
-         console.log('log theSelection', selection.toJS()); 
-         console.log('log winSelection', window.getSelection());
-        console.log('log text', text)
+        console.log("log theSelection", selection.toJS());
+        console.log("log winSelection", window.getSelection());
+        console.log("log text", text, text.length);
+        //console.log("entity", block.getEntityAt(4));
     };
 
     entityTest = (event: React.MouseEvent) => {
         event.preventDefault();
         this.context.editor.focus();
-        const result = insertEntity(this.context.editor.state.editorState, 'EntityTest', {});
-        this.context.editor.updateEditorState(result.editorState, result.toUpdateKeys);
+        let editorState = this.context.editor.state.editorState
+        let selection = editorState.getSelection().merge({
+            anchorOffset: 3,
+            focusOffset: 3
+        })
+        editorState = EditorState.forceSelection(editorState, selection);
+        this.context.editor.updateEditorState(editorState, [selection.anchorKey]);
     };
 
     render() {
@@ -68,23 +75,23 @@ class Toolbar extends React.Component<any, any> {
 
 const Toolbar1 = withStyles({
     root: {
-        display: 'flex',
-        padding: '0 5px',
-        borderBottom: '1px solid #ccc',
-        color: '#999',
-        fontFamily: 'FontAwesome'
+        display: "flex",
+        padding: "0 5px",
+        borderBottom: "1px solid #ccc",
+        color: "#999",
+        fontFamily: "FontAwesome"
     },
     button: {
-        '&:hover': {
-            color: '#333'
+        "&:hover": {
+            color: "#333"
         },
-        textAlign: 'center',
-        padding: '5px 10px',
-        cursor: 'pointer',
+        textAlign: "center",
+        padding: "5px 10px",
+        cursor: "pointer",
         lineHeight: 1
     },
     buttonHighlight: {
-        color: '#1e88e5'
+        color: "#1e88e5"
     }
 })(Toolbar);
 

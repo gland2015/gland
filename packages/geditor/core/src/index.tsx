@@ -3,7 +3,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import { Editor as DraftEditor, EditorState, convertToRaw, genKey } from "@gland/draft-ts";
 
 import { StyleSheetComponent } from "./component";
-import { makeCollapsed, insertText, utils, defaultKeyHandler, isImutableEntityAtBlockLast } from "./editAPI";
+import { makeCollapsed, insertText, utils, defaultKeyHandler, isEntityLast } from "./editAPI";
 import { classStyles, customStyleFn, blockRenderMap, store } from "./model";
 import { editorConfigContext } from "./public/context";
 import { getCurrentState } from "./public/getCurrentState";
@@ -41,6 +41,7 @@ class Editor extends React.Component<
         this.editorContext.editor = this;
         this.editorContext.mode = props.mode;
     }
+
     readonly identifier;
     editorContext;
     editorTheme;
@@ -49,7 +50,7 @@ class Editor extends React.Component<
     config;
     editorRef = null;
     remoteDataProvider = null;
-    editorStateBeforeComposition;
+    handleComposition;
 
     shouldComponentUpdate(nextProps, nextState) {
         if (Object.is(this.props, nextProps)) return true;
@@ -76,8 +77,14 @@ class Editor extends React.Component<
 
     updateEditorState = (editorState, toUpdateKeys = null) => {
         //console.log('update', toUpdateKeys, !!this.editorStateBeforeComposition)
+        // console.log(
+        //     "teeeeee",
+        //     editorState.getSelection().toJS(),
+        //     toUpdateKeys
+        // );
         // 输入法事件
-        if (this.editorStateBeforeComposition) return;
+        if (this.handleComposition) return;
+
         this.editorContext.toUpdateKeys = toUpdateKeys;
         this.setState({ editorState });
     };
@@ -109,7 +116,7 @@ class Editor extends React.Component<
                                 keyBindingFn={this.keyBindingFn}
                                 handlePastedText={handlePastedText}
                                 blockRenderMap={blockRenderMap}
-                                handleBeforeInput={_ => "handled"}
+                                handleBeforeInput={this.handleBeforeInput}
                                 customStyleFn={this.customStyleFn}
                                 handleKeyCommand={handleKeyCommand}
                                 readOnly={readOnly}
@@ -121,38 +128,55 @@ class Editor extends React.Component<
         );
     }
 
+    handleBeforeInput = (text, editorState, time) => {
+        if(this.handleComposition) {
+            this.handleComposition(text)
+        } else {
+            // notice 这是包含了已有的样式的，无是null
+            let result = insertText(editorState, text);
+
+            this.updateEditorState(result.editorState, result.toUpdateKeys);
+        }
+        return "handled" as any;
+    };
+
     handleCompositionStart = (event: React.CompositionEvent) => {
         event.preventDefault();
         event.stopPropagation();
-        const editorStateBeforeComposition = this.state.editorState;
-        let result = makeCollapsed(editorStateBeforeComposition);
-        if (isImutableEntityAtBlockLast(result.editorState)) {
+        let result = makeCollapsed(this.state.editorState);
+        const editorStateAtStart = result.editorState;
+        // gland 因为输入法输入无法阻止，要防止输入错位，只有重定位
+        if (isEntityLast(result.editorState)) {
             result = insertText(result.editorState, "\r");
         }
-
-        this.updateEditorState(result.editorState, result.toUpdateKeys);
-        this.editorStateBeforeComposition = editorStateBeforeComposition;
-        //}
+        if (result.editorState !== this.state.editorState) {
+            this.updateEditorState(result.editorState, result.toUpdateKeys);
+        }
+        this.handleComposition = _ => {
+            this.handleComposition = text => {
+                this.handleComposition = null;
+                let editorState = editorStateAtStart;
+                if (text) {
+                    let result = insertText(editorState, text);
+                    editorState = result.editorState;
+                }
+                let toUpdateKeys = [editorState.getSelection().anchorKey];
+                this.updateEditorState(editorState, toUpdateKeys);
+            };
+        };
     };
 
     handleCompositionEnd = (event: React.CompositionEvent) => {
         event.stopPropagation();
-        const text = event.data;
-        let editorState = this.editorStateBeforeComposition;
-        this.editorStateBeforeComposition = null;
-        if (text) {
-            // notice 这是包含了已有的样式的，无是null
-            const style = editorState.getInlineStyleOverride() || undefined;
-            let result = insertText(editorState, text, style);
-            editorState = result.editorState;
+        const text = event.data
+        if(this.handleComposition) {
+            this.handleComposition(text)
         }
-        let toUpdateKeys = [editorState.getSelection().anchorKey];
-        this.updateEditorState(editorState, toUpdateKeys);
     };
 
     keyBindingFn = event => {
         const keyCode = event.keyCode;
-        // 输入法事件
+        // 输入法状态下的事件
         if (keyCode === 229) return "disabled";
         const key = event.key;
         const shiftKey = event.shiftKey;
