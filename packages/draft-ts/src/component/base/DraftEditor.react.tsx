@@ -267,7 +267,7 @@ class DraftEditor extends React.Component<DraftEditorProps, State> {
         // inside the handler are flushed before React yields to the browser.
         return e => {
             e.persist()
-            console.log('eventname '+ eventName )
+            // console.log('eventname '+ eventName )
             if (!this.props.readOnly) {
                 const method = this._handler && this._handler[eventName];
                 if (method) {

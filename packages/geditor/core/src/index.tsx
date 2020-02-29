@@ -3,7 +3,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import { Editor as DraftEditor, EditorState, convertToRaw, genKey } from "@gland/draft-ts";
 
 import { StyleSheetComponent } from "./component";
-import { makeCollapsed, insertText, utils, defaultKeyHandler, isEntityLast } from "./editAPI";
+import { makeCollapsed, insertText, utils, defaultKeyHandler, haveSpecEntity } from "./editAPI";
 import { classStyles, customStyleFn, blockRenderMap, store } from "./model";
 import { editorConfigContext } from "./public/context";
 import { getCurrentState } from "./public/getCurrentState";
@@ -146,7 +146,8 @@ class Editor extends React.Component<
         let result = makeCollapsed(this.state.editorState);
         const editorStateAtStart = result.editorState;
         // gland 因为输入法输入无法阻止，要防止输入错位，只有重定位
-        if (isEntityLast(result.editorState)) {
+        const needInsert = haveSpecEntity(result.editorState);
+        if (needInsert) {
             result = insertText(result.editorState, "\r");
         }
         if (result.editorState !== this.state.editorState) {

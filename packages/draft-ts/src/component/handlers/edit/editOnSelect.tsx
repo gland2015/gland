@@ -45,8 +45,8 @@ function editOnSelect(editor: DraftEditor, event): void {
   );
   const updatedSelectionState = documentSelection.selectionState;
 
-    //event.persist()
-    //console.log('selectionState', editorState.getSelection().toJS(), event)
+    event.persist()
+  //  console.log('selectionState', editorState.getSelection().toJS(), event)
 
   if (updatedSelectionState !== editorState.getSelection()) {
     if (documentSelection.needsRecovery) {

@@ -99,10 +99,11 @@ class DraftEditorLeaf extends React.Component<Props> {
         if (!selection.hasEdgeWithin(blockKey, start, end)) {
             return;
         }
+
         // gland
         if (isCustom) {
-            if(selection.focusOffset === selection.anchorOffset) {
-                if(selection.anchorOffset === start) {
+            if (selection.focusOffset === selection.anchorOffset) {
+                if (selection.anchorOffset === start) {
                     setIndepentSelection(selection, this.leaf, -1);
                 } else {
                     setIndepentSelection(selection, this.leaf, 0);
@@ -128,10 +129,15 @@ class DraftEditorLeaf extends React.Component<Props> {
         } else if (isHTMLBRElement(child)) {
             targetNode = node;
         } else {
-            targetNode = child.firstChild;
-            invariant(targetNode, "Missing targetNode");
+            if (child.firstChild) {
+                targetNode = child.firstChild;
+            } else {
+                // console.log("my  set", node, { child }, selection.toJS(), blockKey, start, end);
+                setCursorPosition(child, 0);
+                return;
+            }
         }
-        console.log("selection set", this.leaf.dataset["type"], selection.toJS(), targetNode, blockKey, start, end);
+        // console.log("selection set", this.leaf, selection.toJS(), targetNode, blockKey, start, end);
         setDraftEditorSelection(selection, targetNode, blockKey, start, end);
     }
 
@@ -197,6 +203,7 @@ class DraftEditorLeaf extends React.Component<Props> {
                 </span>
             );
         }
+
         if (typeof text === "object") {
             return (
                 <span data-offset-key={offsetKey} ref={ref => (this.leaf = ref)} style={styleObj}>
@@ -207,7 +214,7 @@ class DraftEditorLeaf extends React.Component<Props> {
 
         return (
             <span data-offset-key={offsetKey} ref={ref => (this.leaf = ref)} style={styleObj}>
-                <DraftEditorTextNode>{text}</DraftEditorTextNode>
+                <DraftEditorTextNode isLast={isLast}>{text}</DraftEditorTextNode>
             </span>
         );
     }
@@ -232,16 +239,10 @@ function setCursorPosition(ele, offset) {
 }
 
 function setIndepentSelection(selectionState, leaf, k) {
-    let selection = window.getSelection();
-    let range = selection.getRangeAt(0);
-
     let ele = leaf.parentElement;
     let offset = ele.childNodes.length + k;
     if (selectionState.isCollapsed()) {
-        range.setStart(ele, offset);
-        range.setEnd(ele, offset);
-        selection.removeAllRanges();
-        selection.addRange(range);
+        setCursorPosition(ele, offset);
         return;
     }
     // let anchorKey = selectionState.getAnchorKey();

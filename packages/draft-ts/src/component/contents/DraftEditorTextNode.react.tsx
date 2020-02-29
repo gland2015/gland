@@ -59,6 +59,7 @@ const NEWLINE_B = ref =>
 
 type Props = {
     children: string;
+    isLast?: boolean;
 };
 
 /**
@@ -104,6 +105,10 @@ class DraftEditorTextNode extends React.Component<Props> {
         if (text === "") {
             return this._forceFlag ? NEWLINE_A(ref => (this._node = ref)) : NEWLINE_B(ref => (this._node = ref));
         }
+        // 在链接结尾会出问题
+        // if (this.props.isLast && text === "\r") {
+        //     text = "";
+        // }
 
         return (
             <span key={this._forceFlag ? "A" : "B"} data-text="true" ref={ref => (this._node = ref)}>
