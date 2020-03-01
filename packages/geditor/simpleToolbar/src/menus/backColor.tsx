@@ -1,64 +1,68 @@
-import React from 'react';
-import { withStyles } from '@material-ui/styles';
-import Popover from '@material-ui/core/Popover';
-import Typography from '@material-ui/core/Typography';
-import clsx from 'clsx';
-import { applyInlineStyle, removeInlineStyle } from '@gland/geditor/core';
-import Grow from '@material-ui/core/Grow';
+import React from "react";
+import { withStyles } from "@material-ui/styles";
+import Popover from "@material-ui/core/Popover";
+import Typography from "@material-ui/core/Typography";
+import clsx from "clsx";
+import { applyInlineStyle, removeInlineStyle } from "@gland/geditor/core";
+import Grow from "@material-ui/core/Grow";
+// @ts-ignore
+import BgColorIcon from "../asset/font.svg";
 
 const colors = [
-    '#ffffff',
-    '#2ecc71',
-    '#3498db',
-    '#9b59b6',
-    '#34495e',
-    '#16a085',
-    '#27ae60',
-    '#2980b9',
-    '#8e44ad',
-    '#2c3e50',
-    '#f1c40f',
-    '#e67e22',
-    '#e74c3c',
-    '#ecf0f1',
-    '#95a5a6',
-    '#f39c12',
-    '#d35400',
-    '#c0392b',
-    '#bdc3c7',
-    '#7f8c8d'
+    "#ffffff",
+    "#2ecc71",
+    "#3498db",
+    "#9b59b6",
+    "#34495e",
+    "#16a085",
+    "#27ae60",
+    "#2980b9",
+    "#8e44ad",
+    "#2c3e50",
+    "#f1c40f",
+    "#e67e22",
+    "#e74c3c",
+    "#ecf0f1",
+    "#95a5a6",
+    "#f39c12",
+    "#d35400",
+    "#c0392b",
+    "#bdc3c7",
+    "#7f8c8d"
 ];
 
 //
 export const BackColor = withStyles({
     root: {
-        position: 'relative'
+        position: "relative"
     },
     menu: {
-        position: 'absolute',
-        top: '100%',
-        left: '-150%',
-        textAlign: 'center',
-        boxShadom: '1px 1px 5px gray',
-        backgroundColor: 'white'
+        position: "absolute",
+        top: "100%",
+        left: "-150%",
+        textAlign: "center",
+        boxShadom: "1px 1px 5px gray",
+        backgroundColor: "white"
     },
     colorItem: {
         width: 20,
         height: 20,
-        display: 'inline-block',
-        margin: '1px 3px'
+        display: "inline-block",
+        margin: "1px 3px"
     },
     colorContainer: {
         padding: 0,
         width: 150,
-        borderTop: '1px solid rgbs(222,222,222, 0.5)',
-        fontSize: '12px',
+        borderTop: "1px solid rgbs(222,222,222, 0.5)",
+        fontSize: "12px",
         lineHeight: 1,
-        color: '#aaa'
+        color: "#aaa"
     },
     icon: {
-        '&:before': {
-            content: `"\\f031"`
+        "& svg": {
+            width: "1em",
+            fill: "white",
+            padding: '0 3px'
         }
     },
     popover: {},
@@ -68,7 +72,7 @@ export const BackColor = withStyles({
 })(function(props: any) {
     const { currentState, button, buttonHighlight, classes } = props;
     const { inlineStyle } = currentState;
-    let backgroundColor = inlineStyle.backgroundColor || '#999';
+    let backgroundColor = inlineStyle.backgroundColor || "#999";
     const [isOpen, setIsOpen] = React.useState(false);
     const handleOpen = event => {
         setIsOpen(true);
@@ -78,8 +82,8 @@ export const BackColor = withStyles({
     };
 
     return (
-        <div className={clsx(button, classes.root)} onMouseDown={handleMouseDown} onMouseEnter={handleOpen} onMouseLeave={handleClose}>
-            <span className={props.classes.icon} style={{ backgroundColor, color: 'white' }}></span>
+        <div className={clsx(button, classes.root, props.classes.icon)} onMouseDown={handleMouseDown} onMouseEnter={handleOpen} onMouseLeave={handleClose}>
+            <BgColorIcon  style={{backgroundColor}} />
             <Grow in={isOpen}>
                 <div className={classes.menu}>
                     <div>背景颜色</div>
@@ -106,9 +110,9 @@ export const BackColor = withStyles({
     function handleApplyColor(color) {
         let result;
         if (color === colors[0]) {
-            result = removeInlineStyle(props.editorState, 'backgroundColor');
+            result = removeInlineStyle(props.editorState, "backgroundColor");
         } else {
-            result = applyInlineStyle(props.editorState, 'backgroundColor:' + color);
+            result = applyInlineStyle(props.editorState, "backgroundColor:" + color);
         }
         props.updateEditorState(result.editorState, result.toUpdateKeys);
     }

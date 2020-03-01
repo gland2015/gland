@@ -2,8 +2,9 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import { terser } from "rollup-plugin-terser";
+import svgr from '@svgr/rollup';
 
-const external = ["react", "react-dom", "immutable", "fbjs", "tslib", "@material-ui", "@gland"];
+const external = ["react", "react-dom", "immutable", "fbjs", "tslib", "@material-ui", "@gland", 'clsx'];
 
 export default {
     input: "./index.ts",
@@ -33,7 +34,8 @@ export default {
             allowSyntheticDefaultImports: true
         }),
         resolve(),
-        commonjs()
+        commonjs(),
+        svgr()
     ],
     external: id => {
         id = id.split("/")[0];

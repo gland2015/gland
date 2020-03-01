@@ -1,42 +1,44 @@
-import React from 'react';
-import { withStyles } from '@material-ui/styles';
-import Popover from '@material-ui/core/Popover';
-import Typography from '@material-ui/core/Typography';
-import clsx from 'clsx';
-import { applyInlineStyle, removeInlineStyle } from '@gland/geditor/core';
-import Grow from '@material-ui/core/Grow';
+import React from "react";
+import { withStyles } from "@material-ui/styles";
+import Popover from "@material-ui/core/Popover";
+import Typography from "@material-ui/core/Typography";
+import clsx from "clsx";
+import { applyInlineStyle, removeInlineStyle } from "@gland/geditor/core";
+import Grow from "@material-ui/core/Grow";
+// @ts-ignore
+import FontSizeIcon from "../asset/text-height.svg";
 
-const fontSizes = ['1.0', '0.8', '1.2', '1.5', '2.0', '2.5', '3.0', '4.0'];
+const fontSizes = ["1.0", "0.8", "1.2", "1.5", "2.0", "2.5", "3.0", "4.0"];
 
 //
 export const FontSize = withStyles({
     root: {
-        position: 'relative'
+        position: "relative"
     },
     menu: {
-        position: 'absolute',
-        top: '100%',
-        left: '-150%',
-        textAlign: 'center',
-        boxShadom: '1px 1px 5px gray',
-        backgroundColor: 'white'
+        position: "absolute",
+        top: "100%",
+        left: "-150%",
+        textAlign: "center",
+        boxShadom: "1px 1px 5px gray",
+        backgroundColor: "white"
     },
     Item: {
-        padding: '2px 5px',
+        padding: "2px 5px",
         lineHeight: 1.5,
-        display: 'inline-block'
+        display: "inline-block"
     },
     itemContainer: {
         padding: 0,
         width: 200,
-        borderTop: '1px solid rgbs(222,222,222, 0.5)',
-        fontSize: '25px',
+        borderTop: "1px solid rgbs(222,222,222, 0.5)",
+        fontSize: "25px",
         lineHeight: 1,
-        color: '#aaa'
+        color: "#aaa"
     },
     icon: {
-        '&:before': {
-            content: `"\\f034"`
+        "& svg": {
+            width: "1.2em"
         }
     },
     popover: {},
@@ -55,8 +57,8 @@ export const FontSize = withStyles({
     };
 
     return (
-        <div className={clsx(button, classes.root)} onMouseDown={handleMouseDown} onMouseEnter={handleOpen} onMouseLeave={handleClose}>
-            <span className={props.classes.icon}></span>
+        <div className={clsx(button, classes.root, props.classes.icon)} onMouseDown={handleMouseDown} onMouseEnter={handleOpen} onMouseLeave={handleClose}>
+            <FontSizeIcon />
             <Grow in={isOpen}>
                 <div className={classes.menu}>
                     <div>字号</div>
@@ -84,9 +86,9 @@ export const FontSize = withStyles({
     function handleApplyFontSize(fontSize) {
         let result;
         if (fontSize === fontSizes[0]) {
-            result = removeInlineStyle(props.editorState, 'fontSize');
+            result = removeInlineStyle(props.editorState, "fontSize");
         } else {
-            result = applyInlineStyle(props.editorState, 'fontSize:' + fontSize + 'em');
+            result = applyInlineStyle(props.editorState, "fontSize:" + fontSize + "em");
         }
         props.updateEditorState(result.editorState, result.toUpdateKeys);
     }

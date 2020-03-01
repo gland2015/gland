@@ -1,12 +1,14 @@
-import React from 'react';
-import { withStyles } from '@material-ui/styles';
-import clsx from 'clsx';
-import { insertEntity } from '@gland/geditor/core';
+import React from "react";
+import { withStyles } from "@material-ui/styles";
+import clsx from "clsx";
+import { insertEntity } from "@gland/geditor/core";
+// @ts-ignore
+import FolderOpenIcon from "../asset/folder-open.svg";
 
 export const File = withStyles({
     icon: {
-        '&:before': {
-            content: `"\\f07c"`
+        "& svg": {
+            width: "1.4em"
         }
     }
 })(function(props: any) {
@@ -17,9 +19,9 @@ export const File = withStyles({
     }).current;
 
     return (
-        <div className={clsx(button)} onMouseDown={handleSelectFile}>
-            <span className={classes.icon}></span>
-            <input ref={r => (attr.fileInput = r)} type='file' style={{ display: 'none' }} onChange={handleFileChange} />
+        <div className={clsx(button, classes.icon)} onMouseDown={handleSelectFile}>
+            <FolderOpenIcon />
+            <input ref={r => (attr.fileInput = r)} type="file" style={{ display: "none" }} onChange={handleFileChange} />
         </div>
     );
 
@@ -32,15 +34,14 @@ export const File = withStyles({
         const file = event.target.files[0];
 
         props.editor.remoteDataProvider.addContentAsset(file).then(storeData => {
-            console.log('store data', storeData)
             handleConfirm(storeData);
             attr.fileInput.value = null;
         });
     }
 
     function handleConfirm(data) {
-        props.editor.focus()
-        const result = insertEntity(props.editorState, 'File', data);
+        props.editor.focus();
+        const result = insertEntity(props.editorState, "File", data);
         props.updateEditorState(result.editorState, result.toUpdateKeys);
     }
 });

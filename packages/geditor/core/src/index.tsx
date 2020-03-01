@@ -129,8 +129,8 @@ class Editor extends React.Component<
     }
 
     handleBeforeInput = (text, editorState, time) => {
-        if(this.handleComposition) {
-            this.handleComposition(text)
+        if (this.handleComposition) {
+            this.handleComposition(text);
         } else {
             // notice 这是包含了已有的样式的，无是null
             let result = insertText(editorState, text);
@@ -169,9 +169,9 @@ class Editor extends React.Component<
 
     handleCompositionEnd = (event: React.CompositionEvent) => {
         event.stopPropagation();
-        const text = event.data
-        if(this.handleComposition) {
-            this.handleComposition(text)
+        const text = event.data;
+        if (this.handleComposition) {
+            this.handleComposition(text);
         }
     };
 
@@ -296,3 +296,4 @@ export { Editor };
 export * from "./editAPI";
 export * from "./public/context";
 export * from "./public/constants";
+export * from "./model/store/defaultRemoteDataProvider";

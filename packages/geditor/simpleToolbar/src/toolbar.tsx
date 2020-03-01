@@ -1,11 +1,11 @@
 import React from "react";
-import { EditorState } from '@gland/draft-ts'
+import { EditorState } from "@gland/draft-ts";
 import { editorConfigContext } from "@gland/geditor/core";
 import Button from "@material-ui/core/Button";
 
 import { withStyles } from "@material-ui/styles";
 import { Bold, Italic, StrikeThrough, Underline, FontColor, BackColor, FontSize, Emoticon, Link, Image, File } from "./menus";
-import { insertEntity,  } from "@gland/geditor/core";
+import { insertEntity } from "@gland/geditor/core";
 
 class Toolbar extends React.Component<any, any> {
     static contextType = editorConfigContext;
@@ -29,11 +29,11 @@ class Toolbar extends React.Component<any, any> {
     entityTest = (event: React.MouseEvent) => {
         event.preventDefault();
         this.context.editor.focus();
-        let editorState = this.context.editor.state.editorState
+        let editorState = this.context.editor.state.editorState;
         let selection = editorState.getSelection().merge({
             anchorOffset: 3,
             focusOffset: 3
-        })
+        });
         editorState = EditorState.forceSelection(editorState, selection);
         this.context.editor.updateEditorState(editorState, [selection.anchorKey]);
     };
@@ -66,8 +66,12 @@ class Toolbar extends React.Component<any, any> {
                 <Link {...buttonProps} />
                 <Image {...buttonProps} />
                 <File {...buttonProps} />
-                <Button onMouseDown={this.handleLog}>log</Button>
-                <Button onMouseDown={this.entityTest}>test</Button>
+                {window['__DEV__'] ? (
+                    <>
+                        <Button onMouseDown={this.handleLog}>log</Button>
+                        <Button onMouseDown={this.entityTest}>test</Button>
+                    </>
+                ) : null}
             </div>
         );
     }
@@ -78,20 +82,21 @@ const Toolbar1 = withStyles({
         display: "flex",
         padding: "0 5px",
         borderBottom: "1px solid #ccc",
-        color: "#999",
+        fill: "#999",
         fontFamily: "FontAwesome"
     },
     button: {
         "&:hover": {
-            color: "#333"
+            fill: "#333"
         },
         textAlign: "center",
         padding: "5px 10px",
         cursor: "pointer",
-        lineHeight: 1
+        lineHeight: 1,
+        display: "inline-flex"
     },
     buttonHighlight: {
-        color: "#1e88e5"
+        fill: "#1e88e5"
     }
 })(Toolbar);
 

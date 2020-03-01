@@ -5,12 +5,12 @@ const jsExclude = [/node_modules/];
 const isProd = process.env.NODE_ENV === "production";
 const mainFields = ["devModule", "browser", "module", "main"];
 
-if(isProd) {
+if (isProd) {
     mainFields.shift();
 }
 
 const config = {
-    mode: "development",
+    mode: isProd ? "production" : "development",
     devtool: isProd ? false : "eval-source-map",
     devServer: {
         port: "7070",

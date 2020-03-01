@@ -1,0 +1,4 @@
+*.map
+*.js
+!__clearFile.js
+!__rollup.config.js

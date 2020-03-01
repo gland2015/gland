@@ -3,7 +3,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import { terser } from "rollup-plugin-terser";
 
-const external = ["react", "immutable", "fbjs", "react-dom", "tslib"];
+const external = ["react", "immutable", "fbjs", "react-dom", "tslib", 'clsx'];
 
 export default {
     input: "./index.ts",

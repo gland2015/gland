@@ -1,18 +1,18 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { OrderedSet } from 'immutable';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { OrderedSet } from "immutable";
 
 const useStyles = makeStyles({
     icon: (props: any) => {
         const { type } = props;
         let icon = fileIconMap[type];
         if (!icon) {
-            icon = fileIconMap['file'];
+            icon = fileIconMap["file"];
         }
 
         return {
-            fontFamily: 'FontAwesome',
-            '&:before': {
+            fontFamily: "FontAwesome",
+            "&:before": {
                 content: icon
             }
         };
@@ -20,20 +20,15 @@ const useStyles = makeStyles({
 });
 
 const fileIconMap = {
-    'application/pdf': `"\\f1c1"`,
-    'image/jpeg': `"\\f1c5"`,
+    "application/pdf": `"\\f1c1"`,
+    "image/jpeg": `"\\f1c5"`,
     file: `"\\f15b"`
 };
 
 export function File(props) {
     const { data, offsetKey, children, context } = props;
     const { size, filename, type, lastModified } = data;
-    const ele = React.cloneElement(children[0], {
-        text: ' ',
-        styleSet: OrderedSet(['display:inline-block;width:1px']) //
-    });
     const classes = useStyles({ type });
-
     const { isRemote } = data;
     const [state, setState] = React.useState();
     let url;
@@ -42,19 +37,17 @@ export function File(props) {
     } else {
         url = data.url;
     }
-
-    return (
-        <>
-            <span data-offset-key={offsetKey} contentEditable={false}>
-                <span className={classes.icon}>
-                    <a href={url}  target='_blank' >
-                        {filename}文件一个,大小：{size}
-                    </a>
-                </span>
+    const ele = React.cloneElement(children[0], {
+        custom: (
+            <span className={classes.icon}>
+                <a href={url} target="_blank" download>
+                    {filename}文件一个,大小：{size}
+                </a>
             </span>
-            {ele}
-        </>
-    );
+        )
+    });
+
+    return ele;
 }
 
 //                 className: classes.icon

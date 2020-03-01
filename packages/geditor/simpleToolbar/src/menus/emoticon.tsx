@@ -1,42 +1,44 @@
-import React from 'react';
-import { withStyles } from '@material-ui/styles';
-import Popover from '@material-ui/core/Popover';
-import Typography from '@material-ui/core/Typography';
-import clsx from 'clsx';
-import { insertEntity } from '@gland/geditor/core';
-import Grow from '@material-ui/core/Grow';
+import React from "react";
+import { withStyles } from "@material-ui/styles";
+import Popover from "@material-ui/core/Popover";
+import Typography from "@material-ui/core/Typography";
+import clsx from "clsx";
+import { insertEntity } from "@gland/geditor/core";
+import Grow from "@material-ui/core/Grow";
+// @ts-ignore
+import SmileIcon from "../asset/smile.svg";
 
-const emotions = ['http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/40/pcmoren_tian_org.png', 'http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/50/pcmoren_huaixiao_org.png'];
+const emotions = ["http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/40/pcmoren_tian_org.png", "http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/50/pcmoren_huaixiao_org.png"];
 
 //
 export const Emoticon = withStyles({
     root: {
-        position: 'relative'
+        position: "relative"
     },
     menu: {
-        position: 'absolute',
-        top: '100%',
-        left: '-150%',
-        textAlign: 'center',
-        boxShadom: '1px 1px 5px gray',
-        backgroundColor: 'white'
+        position: "absolute",
+        top: "100%",
+        left: "-150%",
+        textAlign: "center",
+        boxShadom: "1px 1px 5px gray",
+        backgroundColor: "white"
     },
     Item: {
-        padding: '2px 5px',
+        padding: "2px 5px",
         lineHeight: 1.5,
-        display: 'inline-block'
+        display: "inline-block"
     },
     itemContainer: {
         padding: 0,
         width: 200,
-        borderTop: '1px solid rgbs(222,222,222, 0.5)',
-        fontSize: '25px',
+        borderTop: "1px solid rgbs(222,222,222, 0.5)",
+        fontSize: "25px",
         lineHeight: 1,
-        color: '#aaa'
+        color: "#aaa"
     },
     icon: {
-        '&:before': {
-            content: `"\\f118"`
+        "& svg": {
+            width: "1.2em"
         }
     },
     popover: {},
@@ -46,7 +48,7 @@ export const Emoticon = withStyles({
 })(function(props: any) {
     const { currentState, button, buttonHighlight, classes } = props;
     const { inlineStyle } = currentState;
-    let backgroundColor = inlineStyle.backgroundColor || '#999';
+    let backgroundColor = inlineStyle.backgroundColor || "#999";
     const [isOpen, setIsOpen] = React.useState(false);
     const handleOpen = event => {
         setIsOpen(true);
@@ -56,8 +58,8 @@ export const Emoticon = withStyles({
     };
 
     return (
-        <div className={clsx(button, classes.root)} onMouseDown={handleMouseDown} onMouseEnter={handleOpen} onMouseLeave={handleClose}>
-            <span className={props.classes.icon}></span>
+        <div className={clsx(button, classes.root, props.classes.icon)} onMouseDown={handleMouseDown} onMouseEnter={handleOpen} onMouseLeave={handleClose}>
+            <SmileIcon />
             <Grow in={isOpen}>
                 <div className={classes.menu}>
                     <div>表情包</div>
@@ -82,7 +84,7 @@ export const Emoticon = withStyles({
     );
 
     function handleInsertEmoticon(url) {
-        let result = insertEntity(props.editorState, 'Emoticon', { url });
+        let result = insertEntity(props.editorState, "Emoticon", { url });
         props.updateEditorState(result.editorState, result.toUpdateKeys);
     }
 

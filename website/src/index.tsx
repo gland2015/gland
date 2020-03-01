@@ -2,11 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './styles.scss'
 
-import { Editor  } from '@gland/geditor/core'
+import { Editor, RemoteDataProvider  } from '@gland/geditor/core'
 import { Toolbar, entityComponent } from '@gland/geditor/simpleToolbar';
 
 const config = {
-    entityComponent
+    entityComponent,
+    RemoteDataProvider
 }
 
 function App() {
