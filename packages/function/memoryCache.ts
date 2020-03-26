@@ -1,6 +1,6 @@
 import { isAsyncFn, isPromiseInstance } from "./typeJudge";
 
-const data = {};
+const memoryData = {};
 
 export const EMPTY = Symbol();
 
@@ -10,34 +10,20 @@ export const EMPTY = Symbol();
  * @param obj 数据或获取数据的函数
  * @param time 有效期多少秒
  */
-export function set(name, obj, time = 3600) {
-    let value = obj;
-    if (typeof obj === "function") {
-        value = obj();
-    }
-    data[name] = {
-        expireIn: Date.now() + time * 1000,
+export function set(_id, value, expiresIn = 300) {
+    let expireAt = new Date(Date.now() + expiresIn * 1000);
+    memoryData[_id] = {
         value,
-        obj,
-        time
-    };
+        expireAt
+    }
 }
 
-export function get(name) {
-    if (!data.hasOwnProperty(name)) {
-        return EMPTY;
+export function get(_id) {
+    const obj = memoryData[_id];
+    if (!obj) return;
+    if (Date.now() > obj.expireAt) {
+        delete memoryData[_id]
+        return;
     }
-    if (Date.now() > data[name].expireIn) {
-        if (typeof data[name].obj === "function") {
-            const value = data[name].obj();
-            data[name].expireIn = Date.now() + data[name].time * 1000;
-            data[name].value = value;
-            return value;
-        } else {
-            delete data[name];
-            return EMPTY;
-        }
-    }
-    return data[name].value;
-    // if()
+    return obj.value
 }
