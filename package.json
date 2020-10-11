@@ -22,7 +22,7 @@
         "del-cli": "",
         "file-loader": "*",
         "html-webpack-plugin": "*",
-        "node-sass": "*",
+        "node-sass": "^4.14.1",
         "raw-loader": "*",
         "react-svg-loader": "^3.0.3",
         "rollup-plugin-terser": "",
