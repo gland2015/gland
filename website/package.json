@@ -1,12 +1,11 @@
 {
-  "name": "akxm-ui",
+  "name": "gland-website",
   "version": "3.0.0",
   "description": "公用组件的函数库",
   "scripts": {
-    "start": "webpack-dev-server"
+    "start": "cross-env NODE_ENV=development node --inspect  ../node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./webpack.config.js",
+    "build": "cross-env NODE_ENV=production publicPath=https://gland-hotel.oss-cn-hangzhou.aliyuncs.com/site/ webpack --config ./webpack.config.js"
   },
-  "dependencies": {
-  },
-  "devDependencies": {
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }
