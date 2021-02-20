@@ -20,6 +20,7 @@ import React, { ReactNode } from "react";
 import invariant from "fbjs/lib/invariant";
 import isHTMLBRElement from "../utils/isHTMLBRElement";
 import { setDraftEditorSelection } from "../selection/setDraftEditorSelection";
+import clsx from "clsx";
 
 type Props = {
     // The block that contains this leaf.
@@ -188,16 +189,35 @@ class DraftEditorLeaf extends React.Component<Props> {
             return Object.assign(map, style, mergedStyles);
         }, {});
 
+        let className = null;
         if (customStyleFn) {
             const newStyles = customStyleFn(styleSet, block);
+
+            if (newStyles.classNames?.length) {
+                className = clsx(
+                    newStyles["classNames"].map(function (name) {
+                        return name.replace(/^\./, "");
+                    })
+                );
+            }
+
             styleObj = Object.assign(styleObj, newStyles);
+
+            delete styleObj["classNames"];
         }
         //                     {isLast ? <span data-text="r" ref={ref=>(this.lastleafR = ref)}  data-offset-key={offsetKey} >{"\r"}</span> : null}
 
         // gland  \r &#13; 可使光标垂直对齐正常和处在行尾时聚焦
         if (custom) {
             return (
-                <span data-offset-key={offsetKey} ref={ref => (this.leaf = ref)} style={styleObj} data-type="custom" contentEditable={false}>
+                <span
+                    data-offset-key={offsetKey}
+                    ref={(ref) => (this.leaf = ref)}
+                    style={styleObj}
+                    data-type="custom"
+                    contentEditable={false}
+                    className={className}
+                >
                     <span data-text="object">{custom}</span>
                     <span data-text="true">{"\r"}</span>
                 </span>
@@ -206,14 +226,14 @@ class DraftEditorLeaf extends React.Component<Props> {
 
         if (typeof text === "object") {
             return (
-                <span data-offset-key={offsetKey} ref={ref => (this.leaf = ref)} style={styleObj}>
+                <span data-offset-key={offsetKey} ref={(ref) => (this.leaf = ref)} style={styleObj} className={className}>
                     <span data-text="object">{text}</span>
                 </span>
             );
         }
 
         return (
-            <span data-offset-key={offsetKey} ref={ref => (this.leaf = ref)} style={styleObj}>
+            <span data-offset-key={offsetKey} ref={(ref) => (this.leaf = ref)} style={styleObj} className={className}>
                 <DraftEditorTextNode isLast={isLast}>{text}</DraftEditorTextNode>
             </span>
         );

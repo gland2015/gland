@@ -4,21 +4,29 @@ import "./styles.scss";
 
 // import E from "./example/pagination";
 
-import { Test } from './example/react-spring/drag'
+// import { Test } from './example/react-spring/drag'
 
 // import { Test } from './example/react-spring/test'
 
-function App() {
-    let [a, setA] = React.useState(3)
+// import { Test } from './example/fluent-button/basic'
 
-    console.log('dddaaaaddadddddaa', a)
+import GEditor from "./example/geditor";
+
+function App() {
+    let [a, setA] = React.useState(3);
+
+    console.log("dddaaaaddadddddaa", a);
 
     return (
         <div>
-            <button onClick={() => {
-                setA(++a)
-            }} >adddd</button>
-            <Test />
+            <button
+                onClick={() => {
+                    setA(++a);
+                }}
+            >
+                adddd
+            </button>
+            <GEditor />
         </div>
     );
 }

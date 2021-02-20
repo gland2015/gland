@@ -9,25 +9,24 @@
  * @emails oncall+draft_js
  */
 
-'use strict';
+"use strict";
 
-import {Record} from 'immutable';
-
+import { Record } from "immutable";
 
 const defaultRecord: {
-  anchorKey: string,
-  anchorOffset: number,
-  focusKey: string,
-  focusOffset: number,
-  isBackward: boolean,
-  hasFocus: boolean,
+    anchorKey: string;
+    anchorOffset: number;
+    focusKey: string;
+    focusOffset: number;
+    isBackward: boolean;
+    hasFocus: boolean;
 } = {
-  anchorKey: '',
-  anchorOffset: 0,
-  focusKey: '',
-  focusOffset: 0,
-  isBackward: false,
-  hasFocus: false,
+    anchorKey: "",
+    anchorOffset: 0,
+    focusKey: "",
+    focusOffset: 0,
+    isBackward: false,
+    hasFocus: false,
 };
 
 /* $FlowFixMe This comment suppresses an error found when automatically adding
@@ -36,121 +35,114 @@ const defaultRecord: {
 const SelectionStateRecord = Record(defaultRecord);
 
 class SelectionState extends SelectionStateRecord {
-  anchorKey: string;
-  anchorOffset: number;
-  focusKey: string;
-  focusOffset: number;
-  isBackward: boolean;
-  hasFocus: boolean;
-  serialize(): string {
-    return (
-      'Anchor: ' +
-      this.getAnchorKey() +
-      ':' +
-      this.getAnchorOffset() +
-      ', ' +
-      'Focus: ' +
-      this.getFocusKey() +
-      ':' +
-      this.getFocusOffset() +
-      ', ' +
-      'Is Backward: ' +
-      String(this.getIsBackward()) +
-      ', ' +
-      'Has Focus: ' +
-      String(this.getHasFocus())
-    );
-  }
+    declare anchorKey: string;
+    declare anchorOffset: number;
+    declare focusKey: string;
+    declare focusOffset: number;
+    declare isBackward: boolean;
+    declare hasFocus: boolean;
 
-  getAnchorKey(): string {
-    return this.get('anchorKey');
-  }
-
-  getAnchorOffset(): number {
-    return this.get('anchorOffset');
-  }
-
-  getFocusKey(): string {
-    return this.get('focusKey');
-  }
-
-  getFocusOffset(): number {
-    return this.get('focusOffset');
-  }
-
-  getIsBackward(): boolean {
-    return this.get('isBackward');
-  }
-
-  getHasFocus(): boolean {
-    return this.get('hasFocus');
-  }
-
-  /**
-   * Return whether the specified range overlaps with an edge of the
-   * SelectionState.
-   */
-  hasEdgeWithin(blockKey: string, start: number, end: number): boolean {
-    const anchorKey = this.getAnchorKey();
-    const focusKey = this.getFocusKey();
-
-    if (anchorKey === focusKey && anchorKey === blockKey) {
-      const selectionStart = this.getStartOffset();
-      const selectionEnd = this.getEndOffset();
-
-      return (
-        (start <= selectionStart && selectionStart <= end) || // selectionStart is between start and end, or
-        (start <= selectionEnd && selectionEnd <= end) // selectionEnd is between start and end
-      );
+    serialize(): string {
+        return (
+            "Anchor: " +
+            this.getAnchorKey() +
+            ":" +
+            this.getAnchorOffset() +
+            ", " +
+            "Focus: " +
+            this.getFocusKey() +
+            ":" +
+            this.getFocusOffset() +
+            ", " +
+            "Is Backward: " +
+            String(this.getIsBackward()) +
+            ", " +
+            "Has Focus: " +
+            String(this.getHasFocus())
+        );
     }
 
-    if (blockKey !== anchorKey && blockKey !== focusKey) {
-      return false;
+    getAnchorKey(): string {
+        return this.get("anchorKey");
     }
 
-    const offsetToCheck =
-      blockKey === anchorKey ? this.getAnchorOffset() : this.getFocusOffset();
+    getAnchorOffset(): number {
+        return this.get("anchorOffset");
+    }
 
-    return start <= offsetToCheck && end >= offsetToCheck;
-  }
+    getFocusKey(): string {
+        return this.get("focusKey");
+    }
 
-  isCollapsed(): boolean {
-    return (
-      this.getAnchorKey() === this.getFocusKey() &&
-      this.getAnchorOffset() === this.getFocusOffset()
-    );
-  }
+    getFocusOffset(): number {
+        return this.get("focusOffset");
+    }
 
-  getStartKey(): string {
-    return this.getIsBackward() ? this.getFocusKey() : this.getAnchorKey();
-  }
+    getIsBackward(): boolean {
+        return this.get("isBackward");
+    }
 
-  getStartOffset(): number {
-    return this.getIsBackward()
-      ? this.getFocusOffset()
-      : this.getAnchorOffset();
-  }
+    getHasFocus(): boolean {
+        return this.get("hasFocus");
+    }
 
-  getEndKey(): string {
-    return this.getIsBackward() ? this.getAnchorKey() : this.getFocusKey();
-  }
+    /**
+     * Return whether the specified range overlaps with an edge of the
+     * SelectionState.
+     */
+    hasEdgeWithin(blockKey: string, start: number, end: number): boolean {
+        const anchorKey = this.getAnchorKey();
+        const focusKey = this.getFocusKey();
 
-  getEndOffset(): number {
-    return this.getIsBackward()
-      ? this.getAnchorOffset()
-      : this.getFocusOffset();
-  }
+        if (anchorKey === focusKey && anchorKey === blockKey) {
+            const selectionStart = this.getStartOffset();
+            const selectionEnd = this.getEndOffset();
 
-  static createEmpty(key: string): SelectionState {
-    return new SelectionState({
-      anchorKey: key,
-      anchorOffset: 0,
-      focusKey: key,
-      focusOffset: 0,
-      isBackward: false,
-      hasFocus: false,
-    });
-  }
+            return (
+                (start <= selectionStart && selectionStart <= end) || // selectionStart is between start and end, or
+                (start <= selectionEnd && selectionEnd <= end) // selectionEnd is between start and end
+            );
+        }
+
+        if (blockKey !== anchorKey && blockKey !== focusKey) {
+            return false;
+        }
+
+        const offsetToCheck = blockKey === anchorKey ? this.getAnchorOffset() : this.getFocusOffset();
+
+        return start <= offsetToCheck && end >= offsetToCheck;
+    }
+
+    isCollapsed(): boolean {
+        return this.getAnchorKey() === this.getFocusKey() && this.getAnchorOffset() === this.getFocusOffset();
+    }
+
+    getStartKey(): string {
+        return this.getIsBackward() ? this.getFocusKey() : this.getAnchorKey();
+    }
+
+    getStartOffset(): number {
+        return this.getIsBackward() ? this.getFocusOffset() : this.getAnchorOffset();
+    }
+
+    getEndKey(): string {
+        return this.getIsBackward() ? this.getAnchorKey() : this.getFocusKey();
+    }
+
+    getEndOffset(): number {
+        return this.getIsBackward() ? this.getAnchorOffset() : this.getFocusOffset();
+    }
+
+    static createEmpty(key: string): SelectionState {
+        return new SelectionState({
+            anchorKey: key,
+            anchorOffset: 0,
+            focusKey: key,
+            focusOffset: 0,
+            isBackward: false,
+            hasFocus: false,
+        });
+    }
 }
 
-export default  SelectionState;
+export default SelectionState;

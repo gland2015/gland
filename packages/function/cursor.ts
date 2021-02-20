@@ -1,4 +1,3 @@
-
 /**
  * @description set cursor position
  * @param ele
@@ -6,7 +5,7 @@
  */
 export function setCursorPosition(ele, offset) {
     ele.focus();
-    if (ele.nodeName === 'INPUT') {
+    if (ele.nodeName === "INPUT") {
         return ele.setSelectionRange(offset, offset);
     }
     let textNode = ele.childNodes[0];
