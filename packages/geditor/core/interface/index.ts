@@ -1,2 +1,3 @@
 export * from "./EditorProps";
-export * from "./blockData";
+export * from "./BlockData";
+export * from "./currentState";

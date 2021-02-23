@@ -1,9 +1,12 @@
-import React from 'react';
-import { editorConfigContext } from '../public/context';
+import React from "react";
+import { EditorContext } from "../public/context";
 
 export function DraftEntity(props) {
-    const context = React.useContext(editorConfigContext);
-    const { name, data } = props.contentState.getEntity(props.entityKey).getData();
-    const Component = context.entityComponent[name];
-    return <Component {...props} context={context} data={data} />;
+    const context = React.useContext(EditorContext);
+    const { contentState, entityKey } = props;
+
+    const { name, data } = contentState.getEntity(entityKey).getData();
+
+    const Comp = context.entityComponent[name];
+    return <Comp {...props} context={context} data={data} />;
 }

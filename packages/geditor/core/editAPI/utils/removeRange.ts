@@ -12,20 +12,31 @@ import {
     mergeBlock,
 } from "./basic";
 import { clearText } from "./senior";
-import { getTextData } from "../../model";
 
 export function removeRange(content: ContentState, sel: SelectionState) {
-    if (sel.isCollapsed()) return content;
+    if (sel.isCollapsed()) {
+        return {
+            content,
+            toUpdateKeys: [],
+        };
+    }
+
     sel = getForwardSel(sel);
     if (sel.anchorKey === sel.focusKey) {
-        return Modifier.removeRange(content, sel, "backward");
+        return {
+            content: Modifier.removeRange(content, sel, "backward"),
+            toUpdateKeys: [sel.anchorKey],
+        };
     }
 
     const anchorKey = sel.anchorKey;
     const focusKey = sel.focusKey;
 
     if (isPureTextBlock(content, anchorKey) && isPureTextBlock(content, focusKey)) {
-        return Modifier.removeRange(content, sel, "backward");
+        return {
+            content: Modifier.removeRange(content, sel, "backward"),
+            toUpdateKeys: [sel.anchorKey],
+        };
     }
 
     let anchorBlock = content.getBlockForKey(sel.anchorKey);
@@ -45,6 +56,7 @@ export function removeRange(content: ContentState, sel: SelectionState) {
 
     let nextKey = content.getKeyAfter(sel.anchorKey);
     const endKey = focusKey;
+    let toUpdateKeys = [anchorKey, focusKey];
     while (nextKey && nextKey !== endKey) {
         const curKey = nextKey;
         nextKey = content.getKeyAfter(curKey);
@@ -72,6 +84,7 @@ export function removeRange(content: ContentState, sel: SelectionState) {
             content = deleteBlock(content, curKey);
         } else {
             content = clearText(content, curKey);
+            toUpdateKeys.push(curKey);
         }
     }
 
@@ -89,5 +102,5 @@ export function removeRange(content: ContentState, sel: SelectionState) {
         }
     }
 
-    return content;
+    return { content, toUpdateKeys };
 }

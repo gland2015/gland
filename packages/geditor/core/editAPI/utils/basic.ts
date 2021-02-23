@@ -32,6 +32,18 @@ export function getForwardSel(sel: SelectionState): SelectionState {
     }
 }
 
+export function getBlockLastSel(block: ContentBlock) {
+    let offset = block.getText().length;
+    let key = block.getKey();
+
+    return basicSelState.merge({
+        anchorKey: key,
+        anchorOffset: offset,
+        focusKey: key,
+        focusOffset: offset,
+    }) as SelectionState;
+}
+
 export function findRangeBlockKeys(content: ContentState, sel: SelectionState) {
     if (sel.isCollapsed()) return [sel.anchorKey];
     sel = getForwardSel(sel);
@@ -141,6 +153,15 @@ export function deleteBlock(contentState, key: string | Array<string>) {
     return contentState.set("blockMap", blockMap);
 }
 
+export function deleteSubBlock(content: ContentState, key) {
+    let blockMap = content.getBlockMap();
+    blockMap = blockMap.filter(function (block, bKey) {
+        if (bKey === key) return false;
+        return block.getData().get("pkey") !== key;
+    }) as any;
+    return content.set("blockMap", blockMap) as any;
+}
+
 export function splitBlock(contentState: ContentState, key, blockData?, offset?: number) {
     if (!blockData) {
         blockData = contentState.getBlockForKey(key).getData();
@@ -174,7 +195,7 @@ export function insertBlock(contentState, key, blockData?, offset?, num = 1, blo
     contentState = splitBlock(contentState, key, blockDataLast, offset);
     let nextBlock = contentState.getBlockAfter(key);
     let nextKey = nextBlock.getKey();
-    if (nextBlock.getText().length || !contentState.getBlockAfter(nextKey) || !nextBlock.getData().get("isTextBlock")) {
+    if (nextBlock.getText().length || !contentState.getBlockAfter(nextKey) || !nextBlock.getData().get("isText")) {
         // 如果有文本或者无文本但是最后一个块，则再分一次
         contentState = splitBlock(contentState, key, blockDataLast);
         contentState = setBlockData(contentState, nextKey, firstBlock.getData());
@@ -206,4 +227,38 @@ export function isTextBlock(content: ContentState, key: string) {
 export function isPureTextBlock(content: ContentState, key: string) {
     const data = getBlockData(content, key);
     return !data.get("isText") || data.get("pKey") || data.get("head") ? false : true;
+}
+
+export function getBlockDetail(content: ContentState, key: string) {
+    const blockData = getBlockData(content, key);
+
+    let pKey = blockData.get("pKey");
+    let head = blockData.get("head");
+    let isHead;
+    let isSubFirst;
+
+    if (head) {
+        isHead = true;
+    } else if (pKey) {
+        isHead = false;
+        let pData = getBlockData(content, pKey);
+        head = pData.get("head");
+
+        let beforeKey = content.getKeyBefore(key);
+        if (beforeKey === pKey) {
+            isSubFirst = true;
+        }
+    }
+
+    return {
+        key,
+        pKey,
+        name: blockData.get("name"),
+        blockData,
+        isText: blockData.get("isText"),
+        isSubBlock: Boolean(head),
+        isSubFirst,
+        isHead,
+        head,
+    };
 }

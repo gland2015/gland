@@ -1,5 +1,8 @@
+import React from "react";
 import { Map } from "immutable";
 import { TextBlockData, NonTextBlockData } from "../../interface";
+
+import { DraftBlock, DraftWrapper } from "../../component";
 
 export function getTextData(name?: string) {
     return Map({
@@ -14,6 +17,13 @@ export function getNonTextData(name?: String) {
         name: name || "",
     } as NonTextBlockData);
 }
+
+export const blockRenderMap: any = Map({
+    unstyled: {
+        element: DraftBlock,
+        wrapper: <DraftWrapper />,
+    },
+});
 
 // wrapper
 // depth: 0
