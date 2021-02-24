@@ -28,7 +28,7 @@ export function insertEntity(eState, name: string, data) {
     selection = selection.merge({
         anchorOffset: selection.anchorOffset + 1,
         focusOffset: selection.anchorOffset + 1,
-    });
+    }) as any;
     editorState = EditorState.forceSelection(editorState, selection);
     toUpdateKeys.push(selection.anchorKey);
     return { editorState, toUpdateKeys };

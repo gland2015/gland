@@ -2,15 +2,16 @@ import { EventEmitter } from "events";
 import { EditorState } from "@gland/draft-ts";
 
 export interface EditorConfig {
-    decorators;
+    decorators: Array<any>;
     handleKey;
-    RemoteDataProvider;
+    RemoteDataProvider: any;
 
-    noFollowBlock: Array<string>;
-    nonTextComponent;
-    wrapperComponent;
-    entityComponent;
-    classNames;
+    noFollowBlocks: Array<string>;
+    nonTexts: { [key: string]: any };
+    wrappers: { [key: string]: any };
+    subBlocks: { [key: string]: any };
+    entitys: { [key: string]: any };
+    classNames: { [key: string]: string };
 }
 
 export interface EditorProps {
@@ -36,9 +37,11 @@ export interface IEditorContext {
     event: EventEmitter;
     data: any;
 
-    noFollowBlock: Array<string>;
-    nonTextComponent: any;
-    wrapperComponent: any;
-    entityComponent: { [key: string]: any };
+    noFollowBlocks: Array<string>;
+    nonTexts: { [key: string]: any };
+    wrappers: { [key: string]: any };
+    subBlocks: { [key: string]: any };
+    entitys: { [key: string]: any };
     classNames: { [key: string]: string };
 }
+

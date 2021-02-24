@@ -1,5 +1,5 @@
 import React from "react";
-import { EditorContext } from "../public/context";
+import { EditorContext, TargetKeyContext } from "../public/context";
 import { IEditorContext } from "../interface";
 
 function DraftBlock(props) {
@@ -11,8 +11,7 @@ function DraftBlock(props) {
     let isEqual = false;
     const { toUpdateKeys, readOnly } = ctx;
     if (!readOnly && toUpdateKeys) {
-        const key = block.getKey();
-        isEqual = toUpdateKeys.indexOf(key) === -1 ? true : false;
+        isEqual = toUpdateKeys.indexOf(block.getKey()) === -1 ? true : false;
     }
 
     return (
@@ -58,13 +57,33 @@ const BlockContent = React.memo(
             );
         } else {
             const name = blockData.get("name");
-            const Comp = context.nonTextComponent[name];
-            return <Comp data={blockData.get("data")} block={block} context={context} />;
+            const Comp = context.nonTexts[name];
+            const blockKey = block.getKey();
+
+            return (
+                <NonTextBlock
+                    blockKey={blockKey}
+                    customBlock={<Comp isSelected={false} context={context} data={blockData.get("data")} block={block} blockKey={blockKey} />}
+                />
+            );
         }
     },
     function (prevProps, nextProps) {
         return nextProps.isEqual;
     }
 );
+
+function NonTextBlock(props) {
+    const targetKey = React.useContext(TargetKeyContext);
+    const isSelected = targetKey === props.blockKey;
+
+    if (isSelected) {
+        return React.cloneElement(props.customBlock, {
+            isSelected: true,
+        });
+    } else {
+        return props.customBlock;
+    }
+}
 
 export { DraftBlock };

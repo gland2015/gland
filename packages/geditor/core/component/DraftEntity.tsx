@@ -7,6 +7,6 @@ export function DraftEntity(props) {
 
     const { name, data } = contentState.getEntity(entityKey).getData();
 
-    const Comp = context.entityComponent[name];
+    const Comp = context.entitys[name];
     return <Comp {...props} context={context} data={data} />;
 }

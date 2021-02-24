@@ -1,10 +1,7 @@
 import { OrderedSet } from "immutable";
 import { EditorState, Modifier, SelectionState } from "@gland/draft-ts";
 import * as utils from "./utils";
-/**
- * 折叠editorState
- * @param editorState
- */
+
 export function makeCollapsed(editorState: EditorState) {
     let selection = editorState.getSelection();
     if (selection.isCollapsed()) {
@@ -22,12 +19,6 @@ export function makeCollapsed(editorState: EditorState) {
     return { editorState, toUpdateKeys: removeResult.toUpdateKeys };
 }
 
-/**
- * 在当前文本块某位置插入文本，样式默认继承
- * @param editorState
- * @param text
- * @param style  样式数组
- */
 export function insertText(editorState: EditorState, text: string, style?: Array<string>, offsetDeviation = 0) {
     editorState = makeCollapsed(editorState).editorState;
     let textStyle;
@@ -53,11 +44,6 @@ export function insertText(editorState: EditorState, text: string, style?: Array
     return { editorState, toUpdateKeys: [selection.anchorKey] };
 }
 
-/**
- * 默认退格操作
- * @param editorState
- * @param length
- */
 export function backspace(editorState: EditorState) {
     let selection = editorState.getSelection();
     if (!selection.isCollapsed()) {
@@ -113,7 +99,6 @@ export function backspace(editorState: EditorState) {
         editorState = EditorState.forceSelection(editorState, selection);
         return { editorState, toUpdateKeys: [selection.anchorKey] };
     } else {
-        // notice: 这里假设了immutable实体占用的文字长度是1，确实也该如此
         selection = selection.merge({ anchorOffset: offset - 1 }) as any;
         content = Modifier.removeRange(content, selection, "backward");
         selection = selection.merge({ focusOffset: offset - 1 }) as any;
@@ -123,9 +108,6 @@ export function backspace(editorState: EditorState) {
     }
 }
 
-/**
- * 默认换行操作
- */
 export function lineFeed(editorState: EditorState, list?: Array<string>) {
     const collResult = makeCollapsed(editorState);
 
@@ -147,33 +129,38 @@ export function lineFeed(editorState: EditorState, list?: Array<string>) {
     }
 
     let textlen = currentBlock.getText().length;
-    if (textlen === 0 && !curDetail.isHead) {
-        if (curDetail.isSubBlock) {
-            if (!curDetail.isSubFirst) {
-                let afterKey = content.getKeyAfter(selection.anchorKey);
-                let afterData = utils.getBlockData(content, afterKey);
-                if (afterData.get("pKey") !== curDetail.pKey) {
-                    let blockData = curDetail.blockData.remove("pKey");
-                    content = utils.setBlockData(content, selection.anchorKey, blockData);
-                    editorState = EditorState.push(editorState, content, "insert-characters");
-                    return { editorState, toUpdateKeys: [...collResult.toUpdateKeys, selection.anchorKey] };
-                }
-            }
-        } else {
-            let wrapper = curDetail.blockData.get("wrapper");
-            if (wrapper) {
-                let blockData;
-
-                if (wrapper.depth > 0) {
-                    blockData = curDetail.blockData.set("wrapper", { ...wrapper, depth: wrapper.depth - 1 });
-                } else {
-                    blockData = curDetail.blockData.remove("wrapper");
-                }
-
+    if (textlen === 0) {
+        // todo table
+        if (curDetail.isSubBlock && !curDetail.isSubFirst && !curDetail.head) {
+            let afterKey = content.getKeyAfter(selection.anchorKey);
+            let afterData = utils.getBlockData(content, afterKey);
+            if (afterData.get("pKey") !== curDetail.pKey) {
+                let blockData = curDetail.blockData.remove("pKey");
                 content = utils.setBlockData(content, selection.anchorKey, blockData);
                 editorState = EditorState.push(editorState, content, "insert-characters");
                 return { editorState, toUpdateKeys: [...collResult.toUpdateKeys, selection.anchorKey] };
             }
+        }
+
+        let wrapper = curDetail.blockData.get("wrapper");
+        if (wrapper) {
+            let blockData;
+
+            if (wrapper.depth > 0) {
+                blockData = curDetail.blockData.set("wrapper", { ...wrapper, depth: wrapper.depth - 1 });
+            } else {
+                blockData = curDetail.blockData.remove("wrapper");
+            }
+
+            content = utils.setBlockData(content, selection.anchorKey, blockData);
+            const newSelection: any = utils.basicSelState.merge({
+                anchorKey: selection.anchorKey,
+                focusKey: selection.anchorKey,
+            });
+            editorState = EditorState.push(editorState, content, "change-block-data");
+            editorState = EditorState.forceSelection(editorState, newSelection);
+
+            return { editorState, toUpdateKeys: [...collResult.toUpdateKeys, selection.anchorKey] };
         }
     }
 

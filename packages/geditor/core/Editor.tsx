@@ -4,7 +4,7 @@ import { Editor as DraftEditor, EditorState, convertToRaw, genKey } from "@gland
 
 import { EditorProps } from "./interface";
 import { customStyleFn, blockRenderMap } from "./model";
-import { EditorContext } from "./public/context";
+import { EditorContext, TargetKeyContext } from "./public/context";
 import { getEditorState, insertText, makeCollapsed, haveSpecEntity, defaultKeyHandler, getCurrentState } from "./editAPI";
 
 function reducer(state, action) {
@@ -28,23 +28,28 @@ function initer(props: EditorProps) {
 export const Editor = React.memo(
     React.forwardRef(function (props: EditorProps, ref) {
         const { Toolbar, value, config, readOnly, onChange, className, style, data } = props;
-        const { decorators, handleKey, noFollowBlock, RemoteDataProvider, nonTextComponent, wrapperComponent, entityComponent, classNames } = config;
+        const { decorators, handleKey, noFollowBlocks, RemoteDataProvider, nonTexts, wrappers, subBlocks, entitys, classNames } = config;
 
         const [state, dispatch] = React.useReducer(reducer, props, initer);
         const editorState: EditorState = state.editorState;
         const contentState = editorState.getCurrentContent();
+        const selection = editorState.getSelection();
+        const targetKey = selection.isCollapsed() ? selection.anchorKey : null;
 
         React.useEffect(() => {
-            dispatch({
-                type: "Change",
-                payload: {
-                    editorState: getEditorState(value, config.decorators),
-                },
-            });
+            if (attr.hasInit) {
+                dispatch({
+                    type: "Change",
+                    payload: {
+                        editorState: getEditorState(value, config.decorators),
+                    },
+                });
+            }
         }, [value]);
 
         const attr = React.useMemo(() => {
             return {
+                hasInit: false,
                 draftEditor: null,
                 remote: null,
                 context: {
@@ -55,11 +60,12 @@ export const Editor = React.memo(
                     readOnly: false,
                     event: new EventEmitter(),
                     data: null,
-                    nonTextComponent: null,
-                    wrapperComponent: null,
-                    entityComponent: null,
+                    nonTexts: null,
+                    wrappers: null,
+                    entitys: null,
+                    subBlocks: null,
                     classNames: null,
-                    noFollowBlock: null,
+                    noFollowBlocks: null,
                 },
                 handleComposition: null,
             };
@@ -70,11 +76,12 @@ export const Editor = React.memo(
             updateEditorState,
             readOnly,
             data,
-            nonTextComponent,
-            wrapperComponent,
-            entityComponent,
+            nonTexts,
+            wrappers,
+            subBlocks,
+            entitys,
             classNames,
-            noFollowBlock,
+            noFollowBlocks,
         });
 
         React.useEffect(() => {
@@ -94,41 +101,53 @@ export const Editor = React.memo(
             return getCurrentState(editorState);
         }, [editorState]);
 
+        React.useEffect(() => {
+            attr.hasInit = true;
+        }, []);
+
+        // console.log("sssssss", editorState.getSelection().toJS(), window.getSelection());
+
         return (
             <EditorContext.Provider value={attr.context}>
-                {Toolbar && <Toolbar currentState={currentState} />}
-                <div className={className} style={style}>
-                    <div
-                        onMouseDown={handleMousedown}
-                        onCutCapture={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                        }}
-                        onCompositionStartCapture={handleCompositionStart}
-                        onCompositionEndCapture={handleCompositionEnd}
-                    >
-                        {RemoteDataProvider && <RemoteDataProvider ref={(r) => (attr.remote = r)} />}
-                        <DraftEditor
-                            ref={(r) => (attr.draftEditor = r)}
-                            readOnly={readOnly}
-                            editorState={state.editorState}
-                            onChange={updateEditorState}
-                            blockRenderMap={blockRenderMap}
-                            customStyleFn={customStyleFn}
-                            keyBindingFn={keyBindingFn}
-                            handlePastedText={handlePastedText}
-                            handleBeforeInput={handleBeforeInput}
-                            handleKeyCommand={handleKeyCommand}
-                        />
+                <TargetKeyContext.Provider value={targetKey}>
+                    {Toolbar && <Toolbar currentState={currentState} context={attr.context} />}
+                    <div className={className} style={style}>
+                        <div
+                            onMouseDown={readOnly ? null : handleMousedown}
+                            onCutCapture={
+                                readOnly
+                                    ? null
+                                    : (e) => {
+                                          e.preventDefault();
+                                          e.stopPropagation();
+                                      }
+                            }
+                            onCompositionStartCapture={handleCompositionStart}
+                            onCompositionEndCapture={handleCompositionEnd}
+                        >
+                            {RemoteDataProvider && <RemoteDataProvider ref={(r) => (attr.remote = r)} context={attr.context} />}
+                            <DraftEditor
+                                ref={(r) => (attr.draftEditor = r)}
+                                readOnly={readOnly}
+                                editorState={state.editorState}
+                                onChange={updateEditorState}
+                                blockRenderMap={blockRenderMap}
+                                customStyleFn={customStyleFn}
+                                keyBindingFn={keyBindingFn}
+                                handlePastedText={handlePastedText}
+                                handleBeforeInput={handleBeforeInput}
+                                handleKeyCommand={handleKeyCommand}
+                            />
+                        </div>
+                        <div
+                            style={{ flexGrow: 1, minHeight: 50 }}
+                            onMouseDown={(e) => {
+                                e.preventDefault();
+                                attr.draftEditor.focus();
+                            }}
+                        ></div>
                     </div>
-                    <div
-                        style={{ flexGrow: 1, minHeight: 50 }}
-                        onMouseDown={(e) => {
-                            e.preventDefault();
-                            attr.draftEditor.focus();
-                        }}
-                    ></div>
-                </div>
+                </TargetKeyContext.Provider>
             </EditorContext.Provider>
         );
 

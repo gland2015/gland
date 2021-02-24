@@ -43,10 +43,12 @@ export function getCurrentState(editorState) {
     // notice 样式皆以选择的前点为准
     const block = contentState.getBlockForKey(selection.anchorKey);
     const blockData = block.getData();
+    let wrapperName = blockData.get("wrapper");
+    wrapperName = wrapperName ? wrapperName.name : null;
 
     const name = blockData.get("name");
     if (!blockData.get("isText")) {
-        return { blockComponentName: name };
+        return { blockComponentName: name, wrapperName };
     }
 
     const isCollapsed = selection.isCollapsed();
@@ -92,6 +94,7 @@ export function getCurrentState(editorState) {
     }
 
     return {
+        wrapperName,
         blockType: name,
         blockStyle,
         inlineStyle,

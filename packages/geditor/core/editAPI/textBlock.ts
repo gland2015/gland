@@ -1,11 +1,7 @@
 import * as utils from "./utils";
 import { EditorState } from "@gland/draft-ts";
-/**
- * 遍历当前选中区域的文本块数据
- * @param editorState
- * @param Fn 应返回块数据
- */
-export function reduceTextBlockData(editorState, Fn: (conent, blockData, currenType, key) => any) {
+
+export function reduceTextBlockData(editorState: EditorState, Fn: (conent, blockData, currenType, key) => any) {
     let selection = editorState.getSelection();
     let content = editorState.getCurrentContent();
     const toUpdateKeys = [];
@@ -27,11 +23,6 @@ export function reduceTextBlockData(editorState, Fn: (conent, blockData, currenT
     }
 }
 
-/**
- * 切换块类型
- * @param editorState
- * @param type
- */
 export function applyBlockType(editorState, type: string) {
     return reduceTextBlockData(editorState, Fn);
     function Fn(theContent, blockData, currenType, key) {
@@ -42,11 +33,6 @@ export function applyBlockType(editorState, type: string) {
     }
 }
 
-/**
- * 应用块样式
- * @param editorState
- * @param style
- */
 export function applyBlockStyle(editorState, style: object) {
     return reduceTextBlockData(editorState, Fn);
     function Fn(theContent, blockData, currenType, key) {
@@ -56,11 +42,6 @@ export function applyBlockStyle(editorState, style: object) {
     }
 }
 
-/**
- * 移除块样式
- * @param editorState
- * @param styles
- */
 export function removeBlockStyle(editorState, styles: Array<string>) {
     return reduceTextBlockData(editorState, Fn);
 
