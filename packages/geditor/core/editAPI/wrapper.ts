@@ -5,7 +5,6 @@ export function applyBlockWrapper(editorState: EditorState, name: string) {
     let selection = editorState.getSelection();
     let content = editorState.getCurrentContent();
     const toUpdateKeys = [];
-    const headMap = new Map();
     const headKeys = [];
 
     content = utils.reduceCurrentBlocks(myFn, content, selection);
@@ -15,44 +14,47 @@ export function applyBlockWrapper(editorState: EditorState, name: string) {
     return { editorState, toUpdateKeys };
 
     function myFn(conent, blockData, key) {
+        const pKey = blockData.get("pKey");
+        const pData = pKey ? utils.getBlockData(content, pKey) : null;
+
         if (!name) {
-            toUpdateKeys.push(key);
-            blockData = blockData.remove("wrapper");
-            return utils.setBlockData(conent, key, blockData);
+            if (pData && !pData.get("head").grow) {
+                blockData = pData.remove("wrapper");
+                toUpdateKeys.push(pKey);
+                return utils.setBlockData(conent, pKey, blockData);
+            } else {
+                toUpdateKeys.push(key);
+                blockData = blockData.remove("wrapper");
+                return utils.setBlockData(conent, key, blockData);
+            }
         }
 
-        let pKey = blockData.get("pKey");
+        const head = blockData.get("head");
+        if (head?.grow) {
+            headKeys.push(key);
+        }
 
         if (pKey && headKeys.indexOf(pKey) !== -1) {
             return content;
         }
 
-        let curHead = blockData.get("head");
-        if (curHead) {
-            headKeys.push(key);
+        if (pData && !pData.get("head").grow) {
+            const wrapper = pData.get("wrapper");
+            blockData = pData.set("wrapper", {
+                name,
+                depth: wrapper?.depth || 0,
+            });
+            toUpdateKeys.push(pKey);
+            return utils.setBlockData(conent, pKey, blockData);
+        } else {
+            const wrapper = blockData.get("wrapper");
+            blockData = blockData.set("wrapper", {
+                name,
+                depth: wrapper?.depth || 0,
+            });
+            toUpdateKeys.push(key);
+            return utils.setBlockData(conent, key, blockData);
         }
-
-        let tarHead = null;
-        if (pKey) {
-            tarHead = headMap.get(pKey);
-            if (!tarHead) {
-                tarHead = utils.getBlockData(content, pKey).get("head");
-                headMap.set(pKey, tarHead);
-            }
-
-            if (!tarHead.grow) {
-                return content;
-            }
-        }
-
-        const wrapper = blockData.get("wrapper");
-        blockData = blockData.set("wrapper", {
-            name,
-            depth: wrapper?.depth || 0,
-        });
-
-        toUpdateKeys.push(key);
-        return utils.setBlockData(conent, key, blockData);
     }
 }
 

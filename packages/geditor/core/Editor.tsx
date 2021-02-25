@@ -34,7 +34,7 @@ export const Editor = React.memo(
         const editorState: EditorState = state.editorState;
         const contentState = editorState.getCurrentContent();
         const selection = editorState.getSelection();
-        const targetKey = selection.isCollapsed() ? selection.anchorKey : null;
+        const targetKey = selection.isBackward ? selection.focusKey : selection.anchorKey;
 
         React.useEffect(() => {
             if (attr.hasInit) {
@@ -104,8 +104,6 @@ export const Editor = React.memo(
         React.useEffect(() => {
             attr.hasInit = true;
         }, []);
-
-        // console.log("sssssss", editorState.getSelection().toJS(), window.getSelection());
 
         return (
             <EditorContext.Provider value={attr.context}>

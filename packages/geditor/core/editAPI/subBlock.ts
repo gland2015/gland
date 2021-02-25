@@ -2,18 +2,12 @@ import { EditorState, Modifier, SelectionState } from "@gland/draft-ts";
 import * as utils from "./utils";
 import { getTextData } from "../model";
 
-export function insertSubBlock(editorState: EditorState, name: string, grow: boolean, childNum: number) {
+export function insertSubBlock(editorState: EditorState, head: { name: string; grow: boolean; data: any }, childNum: number) {
     let selection = editorState.getSelection();
     selection = utils.getForwardSel(selection);
     let curDetail = utils.getBlockDetail(editorState.getCurrentContent(), selection.anchorKey);
 
-    if (curDetail.isSubBlock) {
-        if (curDetail.isHead || !curDetail.head.grow) {
-            return { editorState, toUpdateKeys: [] };
-        }
-    }
-
-    if (!curDetail.isText) {
+    if (!curDetail.canInsertSubBlock) {
         return { editorState, toUpdateKeys: [] };
     }
 
@@ -26,23 +20,19 @@ export function insertSubBlock(editorState: EditorState, name: string, grow: boo
         focusOffset: selection.anchorOffset,
     }) as any;
 
-    let startKey = selection.anchorKey;
+    const startKey = selection.anchorKey;
 
-    content = Modifier.splitBlock(content, selection);
+    content = utils.splitBlock(content, startKey, undefined, selection.anchorOffset);
 
     let nextBlock = content.getBlockAfter(startKey);
     let nextKey = nextBlock.getKey();
 
-    if (nextBlock.getText() || !content.getBlockAfter(nextKey)) {
-        let tempSelection = utils.basicSelState.merge({
-            focusKey: nextKey,
-            anchorKey: nextKey,
-        }) as any;
-        content = Modifier.splitBlock(content, tempSelection);
+    if (!utils.isCanCustomBlock(content, nextKey)) {
+        content = utils.splitBlock(content, nextKey, undefined, 0);
         nextBlock = content.getBlockForKey(nextKey);
     }
 
-    let headBlockData = nextBlock.getData().set("head", { name, grow });
+    let headBlockData = nextBlock.getData().set("head", head);
     content = utils.setBlockData(content, nextKey, headBlockData);
 
     let childData = getTextData("div").set("pKey", nextKey);
@@ -50,6 +40,19 @@ export function insertSubBlock(editorState: EditorState, name: string, grow: boo
     while (childNum > 0) {
         content = utils.splitBlock(content, nextKey, childData);
         childNum--;
+    }
+
+    if (head.grow) {
+        selection = utils.basicSelState.merge({
+            anchorKey: nextKey,
+            focusKey: nextKey,
+        }) as any;
+    } else {
+        let theKey = content.getKeyAfter(nextKey);
+        selection = utils.basicSelState.merge({
+            anchorKey: theKey,
+            focusKey: theKey,
+        }) as any;
     }
 
     editorState = EditorState.push(editorState, content, "delete-character");

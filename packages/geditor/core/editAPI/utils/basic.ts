@@ -2,6 +2,7 @@ import { Map } from "immutable";
 import { SelectionState, ContentBlock, ContentState, EditorState, Modifier, convertFromRaw } from "@gland/draft-ts";
 
 import { getTextData } from "../../model";
+import { utils } from "xlsx/types";
 
 export const basicSelState = SelectionState.createEmpty("").merge({
     isBackward: false,
@@ -157,7 +158,7 @@ export function deleteSubBlock(content: ContentState, key) {
     let blockMap = content.getBlockMap();
     blockMap = blockMap.filter(function (block, bKey) {
         if (bKey === key) return false;
-        return block.getData().get("pkey") !== key;
+        return block.getData().get("pKey") !== key;
     }) as any;
     return content.set("blockMap", blockMap) as any;
 }
@@ -185,7 +186,7 @@ export function intertOneBlock(content: ContentState, key: string, blockData?) {
 }
 
 // todo
-export function insertBlock(contentState, key, blockData?, offset?, num = 1, blockDataLast?) {
+export function insertBlock(contentState: ContentState, key, blockData?, offset?, num = 1, blockDataLast?) {
     if (num > 1) {
         if (!blockDataLast) blockDataLast = blockData;
     } else {
@@ -193,13 +194,14 @@ export function insertBlock(contentState, key, blockData?, offset?, num = 1, blo
     }
     const firstBlock = contentState.getBlockForKey(key);
     contentState = splitBlock(contentState, key, blockDataLast, offset);
-    let nextBlock = contentState.getBlockAfter(key);
-    let nextKey = nextBlock.getKey();
-    if (nextBlock.getText().length || !contentState.getBlockAfter(nextKey) || !nextBlock.getData().get("isText")) {
-        // 如果有文本或者无文本但是最后一个块，则再分一次
+
+    const nextKey = contentState.getKeyAfter(key);
+
+    if (!isCanCustomBlock(contentState, nextKey)) {
         contentState = splitBlock(contentState, key, blockDataLast);
         contentState = setBlockData(contentState, nextKey, firstBlock.getData());
     }
+
     while (num > 1) {
         contentState = splitBlock(contentState, key, blockData);
         num--;
@@ -231,34 +233,81 @@ export function isPureTextBlock(content: ContentState, key: string) {
 
 export function getBlockDetail(content: ContentState, key: string) {
     const blockData = getBlockData(content, key);
-
-    let pKey = blockData.get("pKey");
-    let head = blockData.get("head");
-    let isHead;
-    let isSubFirst;
-
-    if (head) {
-        isHead = true;
-    } else if (pKey) {
-        isHead = false;
-        let pData = getBlockData(content, pKey);
-        head = pData.get("head");
-
-        let beforeKey = content.getKeyBefore(key);
-        if (beforeKey === pKey) {
-            isSubFirst = true;
-        }
-    }
+    const pKey = blockData.get("pKey");
+    const pData = pKey ? getBlockData(content, pKey) : null;
+    const pHead = pData ? pData.get("head") : null;
+    const head = blockData.get("head");
+    const isSubFirst = pKey ? content.getKeyBefore(key) === pKey : false;
+    const isSubBlock = Boolean(pKey || head);
+    const name = blockData.get("name");
+    const isText = blockData.get("isText");
+    const isFixed = Boolean((head && !head.grow) || (pHead && !pHead.grow));
 
     return {
         key,
         pKey,
-        name: blockData.get("name"),
-        blockData,
-        isText: blockData.get("isText"),
-        isSubBlock: Boolean(head),
-        isSubFirst,
-        isHead,
+        pData,
+        pHead,
         head,
+        isFixed,
+        isSubBlock,
+        name,
+        isText,
+        blockData,
+        isSubFirst,
+        get canInsertSubBlock() {
+            let can = isText && !head && !isFixed;
+            if (can) {
+                let pKeys = getParentKeys(content, key);
+                can = pKeys.length < 5;
+            }
+            return can;
+        },
+        get canBackspaceAt0() {
+            return !head && !isSubFirst && !isFixed;
+        },
     };
+}
+
+export function getParentKeys(content: ContentState, key) {
+    const pKeys = [];
+    while (key) {
+        let data = getBlockData(content, key);
+        let pKey = data.get("pKey");
+
+        if (!pKey) {
+            break;
+        }
+        if (pKeys.indexOf(pKey) !== -1) {
+            break;
+        }
+        pKeys.push(pKey);
+        key = pKey;
+    }
+
+    return pKeys;
+}
+
+export function isCanCustomBlock(content: ContentState, key) {
+    const block = content.getBlockForKey(key);
+    if (block.getText()) {
+        return false;
+    }
+    const nextBlock = content.getBlockAfter(key);
+    if (!nextBlock) {
+        return false;
+    }
+    const bData = block.getData();
+    const nextData = nextBlock.getData();
+
+    if (!nextData.get("isText")) {
+        return false;
+    }
+    if (nextData.get("pKey") !== bData.get("pKey")) {
+        return false;
+    }
+    if (nextData.get("head")) {
+        return false;
+    }
+    return true;
 }

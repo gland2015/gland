@@ -12,6 +12,15 @@ export function addText(content: ContentState, selection: SelectionState, text: 
         }) as SelectionState;
     }
     const block = content.getBlockForKey(selection.anchorKey);
+    const blockData = block.getData();
+    const head = blockData.get("head");
+    if (head && !head.grow) {
+        return content;
+    }
+    if (!blockData.get("isText")) {
+        return content;
+    }
+
     if (entityKey === undefined && selection.anchorOffset) {
         const theEntityKey = block.getEntityAt(selection.anchorOffset);
         if (theEntityKey) {

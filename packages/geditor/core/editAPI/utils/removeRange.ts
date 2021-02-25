@@ -10,6 +10,7 @@ import {
     isPureTextBlock,
     getBlockData,
     mergeBlock,
+    getParentKeys,
 } from "./basic";
 import { clearText } from "./senior";
 
@@ -39,8 +40,9 @@ export function removeRange(content: ContentState, sel: SelectionState) {
         };
     }
 
-    let anchorBlock = content.getBlockForKey(sel.anchorKey);
-    let focusBlock = content.getBlockForKey(sel.focusKey);
+    const anchorBlock = content.getBlockForKey(sel.anchorKey);
+    const focusBlock = content.getBlockForKey(sel.focusKey);
+    const fPKeys = getParentKeys(content, sel.focusKey);
 
     let tempSel = sel.merge({
         focusKey: sel.anchorKey,
@@ -61,18 +63,27 @@ export function removeRange(content: ContentState, sel: SelectionState) {
         const curKey = nextKey;
         nextKey = content.getKeyAfter(curKey);
 
-        const data = getBlockData(content, nextKey);
+        const data = getBlockData(content, curKey);
         const pKey = data.get("pKey");
         const head = data.get("head");
 
         let del = true;
         if (head) {
-            del = focusBlock.getData().get("pKey") === curKey ? false : true;
+            del = fPKeys.indexOf(curKey) === -1 ? true : false;
         } else if (pKey) {
             const pBlock = content.getBlockForKey(pKey);
             if (pBlock) {
                 const pHead = pBlock.getData().get("head");
-                del = pHead.grow ? true : false;
+                if (pHead.grow) {
+                    let beforeKey = content.getKeyBefore(curKey);
+                    if (beforeKey === pKey) {
+                        del = false;
+                    } else {
+                        del = true;
+                    }
+                } else {
+                    del = false;
+                }
             } else {
                 del = true;
             }

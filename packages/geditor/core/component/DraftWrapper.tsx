@@ -4,7 +4,7 @@ import { EditorContext } from "../public/context";
 function DraftWrapper(props) {
     const ctx = React.useContext(EditorContext);
 
-    return <div>{packBlocks(props.children, ctx.wrappers, ctx.subBlocks)}</div>;
+    return <div>{packBlocks(props.children, ctx)}</div>;
 }
 
 export { DraftWrapper };
@@ -15,7 +15,9 @@ type Target = {
 };
 type IStack = Array<Target>;
 
-function packBlocks(childrens: Array<any>, wrappers, subBlocks) {
+function packBlocks(childrens: Array<any>, context) {
+    const { wrappers, subBlocks } = context;
+
     const result = [];
     const stack: IStack = [];
 
@@ -48,7 +50,9 @@ function packBlocks(childrens: Array<any>, wrappers, subBlocks) {
                 if (wrapper_name) {
                     const list = [];
                     let Comp_wrap = wrappers[data_wrap.name];
-                    target.list.push(<Comp_wrap key={key} childs={list} depth={data_wrap.depth} diff={data_wrap.depth} />);
+                    target.list.push(
+                        <Comp_wrap key={key} childs={list} depth={data_wrap.depth} diff={data_wrap.depth} context={context} subwrapper={true} />
+                    );
                     stack.push({
                         attr: { wrapper_name, wrapper_depth, subblock: target.attr.subblock },
                         list,
@@ -68,6 +72,7 @@ function packBlocks(childrens: Array<any>, wrappers, subBlocks) {
                             depth={data_wrap.depth}
                             diff={wrapper_depth - 1 - target.attr.wrapper_depth}
                             subwrapper={true}
+                            context={context}
                         />
                     );
                     stack.push({
@@ -85,7 +90,7 @@ function packBlocks(childrens: Array<any>, wrappers, subBlocks) {
                 const Comp_sub = subBlocks[data_head.name];
                 const list = [];
 
-                target.list.push(<Comp_sub key={key} childs={list} head={item} />);
+                target.list.push(<Comp_sub key={key} childs={list} head={item} context={context} data={data_head.data} subblock={true} />);
                 stack.push({
                     attr: {
                         wrapper_name: null,
@@ -106,7 +111,7 @@ function packBlocks(childrens: Array<any>, wrappers, subBlocks) {
             const Comp_wrap = wrappers[data_wrap.name];
             const list = [];
 
-            result.push(<Comp_wrap key={key} childs={list} depth={data_wrap.depth} diff={data_wrap.depth} />);
+            result.push(<Comp_wrap key={key} childs={list} depth={data_wrap.depth} diff={data_wrap.depth} context={context} />);
 
             target = {
                 attr: { wrapper_name, wrapper_depth, subblock: null },
@@ -119,7 +124,7 @@ function packBlocks(childrens: Array<any>, wrappers, subBlocks) {
             const Comp_sub = subBlocks[data_head.name];
             const list = [];
 
-            const ele = <Comp_sub key={key} childs={list} head={item} />;
+            const ele = <Comp_sub key={key} childs={list} head={item} context={context} data={data_head.data} subblock={true} />;
 
             if (target) {
                 target.list.push(ele);

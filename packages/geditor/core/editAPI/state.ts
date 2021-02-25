@@ -36,15 +36,28 @@ export function setStateBlockData(editorState, key: string, blockData) {
  * @param editorState
  * @param editorTheme
  */
-export function getCurrentState(editorState) {
+export function getCurrentState(editorState: EditorState) {
     const contentState = editorState.getCurrentContent();
     let selection = editorState.getSelection();
     selection = getForwardSel(selection);
     // notice 样式皆以选择的前点为准
     const block = contentState.getBlockForKey(selection.anchorKey);
     const blockData = block.getData();
-    let wrapperName = blockData.get("wrapper");
-    wrapperName = wrapperName ? wrapperName.name : null;
+
+    const pKey = blockData.get("pKey");
+    let pData = null;
+    if (pKey) {
+        pData = contentState.getBlockForKey(pKey).getData();
+    }
+
+    let wrapperName;
+    if (pData && !pData.get("head").grow) {
+        const wrapper = pData.get("wrapper");
+        wrapperName = wrapper ? wrapper.name : null;
+    } else {
+        const wrapper = blockData.get("wrapper");
+        wrapperName = wrapper ? wrapper.name : null;
+    }
 
     const name = blockData.get("name");
     if (!blockData.get("isText")) {
@@ -58,20 +71,6 @@ export function getCurrentState(editorState) {
     const inlineClassName = [];
 
     let entityData;
-    // todo
-    let rangleEntityData;
-
-    let blockStyleProtoArr = [];
-    let blockStyleProto = {};
-
-    if (blockStyleProtoArr.length) {
-        blockStyleProtoArr.forEach(function (obj) {
-            obj = Object.assign({}, obj);
-            Object.setPrototypeOf(obj, blockStyleProto);
-            blockStyleProto = obj;
-        });
-        Object.setPrototypeOf(blockStyle, blockStyleProto);
-    }
 
     const inlineStyleName = editorState.getCurrentInlineStyle().toArray();
     inlineStyleName.forEach(function (name) {
@@ -79,7 +78,7 @@ export function getCurrentState(editorState) {
             inlineClassName.push(name);
         } else {
             const arr = name.split(";");
-            arr.forEach(function (style) {
+            arr.forEach(function (style: any) {
                 if (style) {
                     style = style.split(":");
                     inlineStyle[style[0]] = style[1];
@@ -90,7 +89,7 @@ export function getCurrentState(editorState) {
 
     let entityKey = block.getEntityAt(selection.anchorOffset);
     if (entityKey) {
-        entityData = contentState.getEntity(entityKey).data;
+        entityData = (contentState.getEntity(entityKey) as any).data;
     }
 
     return {
@@ -101,6 +100,5 @@ export function getCurrentState(editorState) {
         inlineClassName,
         isCollapsed,
         entityData,
-        rangleEntityData,
     };
 }
