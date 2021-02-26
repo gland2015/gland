@@ -181,10 +181,6 @@ export function splitBlock(contentState: ContentState, key, blockData?, offset?:
     return setBlockData(contentState, key, blockData);
 }
 
-export function intertOneBlock(content: ContentState, key: string, blockData?) {
-    return splitBlock(content, key, blockData);
-}
-
 // todo
 export function insertBlock(contentState: ContentState, key, blockData?, offset?, num = 1, blockDataLast?) {
     if (num > 1) {
@@ -266,6 +262,12 @@ export function getBlockDetail(content: ContentState, key: string) {
         get canBackspaceAt0() {
             return !head && !isSubFirst && !isFixed;
         },
+        get isNormal() {
+            if (!isText && (isFixed || head)) {
+                return false;
+            }
+            return true;
+        },
     };
 }
 
@@ -310,4 +312,119 @@ export function isCanCustomBlock(content: ContentState, key) {
         return false;
     }
     return true;
+}
+
+/**
+ * insert a safe line
+ * @param content
+ * @param key
+ * @param offset
+ */
+export function newSafeTextLine(content: ContentState, key: string, offset?: number) {
+    let block = content.getBlockForKey(key);
+    let detail = getBlockDetail(content, key);
+
+    if (typeof offset !== "number") {
+        offset = block.getText().length;
+    }
+
+    let newData = detail.blockData;
+    let splitKey = key;
+    let fromKey = key;
+
+    if (detail.isFixed) {
+        const isSelf = detail.head && !detail.head.grow;
+        if (!isSelf) {
+            newData = detail.pData;
+            fromKey = detail.pKey;
+        }
+        splitKey = findSubBlockLastKey(content, fromKey);
+        offset = content.getBlockForKey(splitKey).getText().length;
+    }
+
+    let newHead = newData.get("head");
+    if (newHead) {
+        newData = newData.remove("head");
+        if (newHead.grow) {
+            newData = newData.set("pKey", fromKey).remove("wrapper");
+        }
+    }
+
+    if (!newData.get("isText")) {
+        newData = newData.set("isText", true).set("name", "div").remove("data");
+    }
+
+    content = splitBlock(content, splitKey, newData, offset);
+
+    return {
+        content,
+        newKey: content.getKeyAfter(splitKey),
+        isSafeBefore: !detail.isFixed && detail.isText,
+    };
+}
+
+export function findSubBlockLastKey(content: ContentState, key: string) {
+    let blockMap = content.getBlockMap();
+    let tarKey: string;
+
+    blockMap.reverse().every(function (item, curKey) {
+        let data = item.getData();
+        if (data.get("pKey") === key || curKey === key) {
+            tarKey = curKey;
+            return false;
+        }
+
+        return true;
+    });
+
+    return tarKey;
+}
+
+export function newSafeCustomLine(content: ContentState, key, offset) {
+    const restKeys = [];
+    let tr = newSafeTextLine(content, key, offset);
+
+    content = tr.content;
+    let newKey = tr.newKey;
+    if (!tr.isSafeBefore) {
+        restKeys.push(tr.newKey);
+        content = splitBlock(tr.content, tr.newKey, undefined, 0);
+        newKey = content.getKeyAfter(tr.newKey);
+    }
+
+    let newBlock = content.getBlockForKey(newKey);
+    let newData = newBlock.getData();
+
+    let nextBlock = content.getBlockAfter(newKey);
+    let nextData = nextBlock ? nextBlock.getData() : null;
+
+    if (!nextBlock || newBlock.getText() || !nextData.get("isText") || nextData.get("head") || nextData.get("pKey") !== newData.get("pKey")) {
+        content = splitBlock(tr.content, newKey, undefined, 0);
+        let restKey = content.getKeyAfter(newKey);
+        restKeys.push(restKey);
+    }
+
+    return {
+        content,
+        newKey,
+        restKeys,
+    };
+}
+
+export function toggleListNameByKeys(content: ContentState, list: Array<string>, keys: Array<string>, name = "div") {
+    if (!name) {
+        name = "div";
+    }
+    keys.forEach(function (key) {
+        let data = getBlockData(content, key);
+        if (!data.get("isText")) return;
+        let oldName = data.get("name");
+
+        if (list.indexOf(oldName) !== -1) {
+            data = data.set("name", name);
+            content = setBlockData(content, key, data);
+        }
+    });
+
+    return content;
 }

@@ -1,6 +1,5 @@
 import { OrderedSet } from "immutable";
 import { EditorState, Modifier, SelectionState } from "@gland/draft-ts";
-import { getTextData } from "../model";
 import * as utils from "./utils";
 
 export function makeCollapsed(editorState: EditorState) {
@@ -32,11 +31,12 @@ export function insertText(editorState: EditorState, text: string, style?: Array
     }
     let content = editorState.getCurrentContent();
     const selection = editorState.getSelection();
-    content = utils.addText(content, selection, text, textStyle);
-    editorState = EditorState.push(editorState, content, "insert-characters");
+    let newContent = utils.addText(content, selection, text, textStyle);
+    editorState = EditorState.push(editorState, newContent, "insert-characters");
 
+    const tl = newContent === content ? 0 : text.length;
     const key = selection.anchorKey;
-    const offset = selection.anchorOffset + text.length + offsetDeviation;
+    const offset = selection.anchorOffset + tl + offsetDeviation;
     const newSelection = selection.merge({
         anchorOffset: offset,
         anchorKey: key,
@@ -122,27 +122,12 @@ export function lineFeed(editorState: EditorState, list?: Array<string>) {
     const curDetail = utils.getBlockDetail(content, selection.anchorKey);
 
     if (!curDetail.isText) {
-        if (curDetail.isFixed) {
-            return collResult;
-        }
-
-        let newData = getTextData("div");
-        let pKey = curDetail.head ? curDetail.key : curDetail.pKey;
-        let wrapper = curDetail.head ? null : curDetail.blockData.get("wrapper");
-
-        if (pKey) {
-            newData = newData.set("pKey", pKey);
-        }
-        if (wrapper) {
-            newData = newData.set("wrapper", wrapper);
-        }
-
-        content = utils.splitBlock(content, curDetail.key, newData);
-        const newKey = content.getKeyAfter(curDetail.key);
+        const newR = utils.newSafeTextLine(content, selection.anchorKey);
         const newSel = utils.basicSelState.merge({
-            anchorKey: newKey,
-            focusKey: newKey,
+            anchorKey: newR.newKey,
+            focusKey: newR.newKey,
         }) as any;
+
         editorState = EditorState.push(editorState, content, "insert-characters");
         editorState = EditorState.forceSelection(editorState, newSel);
         return { editorState, toUpdateKeys: [...collResult.toUpdateKeys, selection.anchorKey] };
@@ -153,7 +138,7 @@ export function lineFeed(editorState: EditorState, list?: Array<string>) {
         return { editorState, toUpdateKeys: [...collResult.toUpdateKeys, selection.anchorKey] };
     }
 
-    let textlen = currentBlock.getText().length;
+    const textlen = currentBlock.getText().length;
     if (textlen === 0 && !curDetail.head) {
         let wrapper = curDetail.blockData.get("wrapper");
         if (wrapper) {
@@ -210,20 +195,14 @@ export function lineFeed(editorState: EditorState, list?: Array<string>) {
         }
     }
 
-    let newBlockData = curDetail.blockData;
-    if (curDetail.head) {
-        newBlockData = newBlockData.remove("head").remove("wrapper").set("pKey", curDetail.key);
-    }
-    if ((list || []).indexOf(curDetail.name) !== -1) {
-        newBlockData = newBlockData.set("name", "div");
-    }
+    const newR = utils.newSafeTextLine(content, selection.anchorKey, selection.anchorOffset);
 
-    content = utils.splitBlock(content, selection.anchorKey, newBlockData, selection.anchorOffset);
+    content = newR.content;
+    content = utils.toggleListNameByKeys(content, list || [], [newR.newKey]);
 
-    const newKey = content.getKeyAfter(selection.anchorKey);
     const newSelection: any = utils.basicSelState.merge({
-        anchorKey: newKey,
-        focusKey: newKey,
+        anchorKey: newR.newKey,
+        focusKey: newR.newKey,
     });
     editorState = EditorState.push(editorState, content, "insert-characters");
     editorState = EditorState.forceSelection(editorState, newSelection);
@@ -236,31 +215,16 @@ export function insertNewLine(editorState: EditorState, list?: Array<string>) {
     let selection = editorState.getSelection();
     selection = utils.getForwardSel(selection);
 
-    const targetKey = selection.focusKey;
-    const curDetail = utils.getBlockDetail(content, targetKey);
+    const newR = utils.newSafeTextLine(content, selection.focusKey);
+    content = newR.content;
+    content = utils.toggleListNameByKeys(content, list || [], [newR.newKey]);
 
-    if (!curDetail.isText || curDetail.isFixed) {
-        return { editorState, toUpdateKeys: [] };
-    }
-
-    content = utils.insertBlock(content, targetKey);
-    let newKey = content.getKeyAfter(targetKey);
-
-    let newBlockData = curDetail.blockData;
-    if (curDetail.head) {
-        newBlockData = newBlockData.remove("head").remove("wrapper").set("pKey", curDetail.key);
-    }
-
-    if ((list || []).indexOf(curDetail.name) !== -1) {
-        newBlockData = newBlockData.set("name", "div");
-    }
-
-    content = utils.setBlockData(content, newKey, newBlockData);
+    const newKey = newR.newKey;
     let newSelection: any = utils.basicSelState.merge({
         focusKey: newKey,
         anchorKey: newKey,
     });
     editorState = EditorState.push(editorState, content, "insert-fragment");
     editorState = EditorState.forceSelection(editorState, newSelection);
-    return { editorState, toUpdateKeys: [targetKey] };
+    return { editorState, toUpdateKeys: [selection.focusKey] };
 }

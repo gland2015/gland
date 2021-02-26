@@ -36,7 +36,7 @@ export function applyBlockType(editorState, type: string) {
 export function applyBlockStyle(editorState, style: object) {
     return reduceTextBlockData(editorState, Fn);
     function Fn(theContent, blockData, currenType, key) {
-        const styleObj = Object.assign({}, blockData.get("style"), style);
+        const styleObj = Object.assign({}, blockData.get("style") || {}, style);
         blockData = blockData.set("style", styleObj);
         return blockData;
     }
@@ -46,7 +46,7 @@ export function removeBlockStyle(editorState, styles: Array<string>) {
     return reduceTextBlockData(editorState, Fn);
 
     function Fn(theContent, blockData, currenType, key) {
-        let styleObj = Object.assign({}, blockData.get("style"));
+        let styleObj = Object.assign({}, blockData.get("style") || {});
         for (let i = 0; i < styles.length; i++) {
             delete styleObj[styles[i]];
         }

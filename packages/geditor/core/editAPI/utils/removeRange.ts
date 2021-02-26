@@ -1,17 +1,6 @@
 import { Map } from "immutable";
 import { SelectionState, ContentBlock, ContentState, EditorState, Modifier, convertFromRaw } from "@gland/draft-ts";
-import {
-    basicSelState,
-    getForwardSel,
-    deleteBlock,
-    isTextBlock,
-    intertOneBlock,
-    insertBlock,
-    isPureTextBlock,
-    getBlockData,
-    mergeBlock,
-    getParentKeys,
-} from "./basic";
+import { getForwardSel, deleteBlock, isPureTextBlock, getBlockData, mergeBlock, getParentKeys } from "./basic";
 import { clearText } from "./senior";
 
 export function removeRange(content: ContentState, sel: SelectionState) {

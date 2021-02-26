@@ -65,7 +65,7 @@ export function getCurrentState(editorState: EditorState) {
     }
 
     const isCollapsed = selection.isCollapsed();
-    const blockStyle = blockData.get("style");
+    const blockStyle = blockData.get("style") || {};
 
     const inlineStyle = {};
     const inlineClassName = [];

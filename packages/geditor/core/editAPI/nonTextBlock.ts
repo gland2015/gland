@@ -1,47 +1,43 @@
 import { EditorState, Modifier } from "@gland/draft-ts";
 import { getNonTextData } from "../model";
+import { makeCollapsed } from "./content";
 import * as utils from "./utils";
 
-export function InsertNonTextBlock(editorState, ComponentName, data) {
+export function InsertNonTextBlock(editorState: EditorState, ComponentName: string, data: any) {
+    const collR = makeCollapsed(editorState);
+    editorState = collR.editorState;
+    const selection = editorState.getSelection();
     let content = editorState.getCurrentContent();
-    let selection = editorState.getSelection();
-    selection = utils.getForwardSel(selection);
 
-    let block = content.getBlockForKey(selection.focusKey);
-    let can = true;
+    const safeR = utils.newSafeCustomLine(content, selection.focusKey, selection.focusOffset);
+    content = safeR.content;
 
-    const oldBlockData = block.getData();
-    if (!oldBlockData.get("isText") || oldBlockData.get("head")) {
-        can = false;
-    } else {
-        const pKey = oldBlockData.get("pKey");
-        if (pKey) {
-            let pData = utils.getBlockData(content, pKey);
-            if (!pData.get("head").grow) {
-                can = false;
-            }
-        }
-    }
-
-    if (!can) {
-        return { editorState, toUpdateKeys: [] };
-    }
+    const newKey = safeR.newKey;
+    const newBlock = content.getBlockForKey(newKey);
+    const newData = newBlock.getData();
+    const wrapper = newData.get("wrapper");
+    const pKey = newData.get("pkey");
 
     let newBlockData = getNonTextData(ComponentName);
     newBlockData = newBlockData.set("data", data);
+    if (wrapper) {
+        newBlockData = newBlockData.set("wrapper", wrapper);
+    }
+    if (pKey) {
+        newBlockData = newBlockData.set("pKey", pKey);
+    }
 
-    content = utils.insertBlock(content, selection.focusKey, newBlockData, selection.focusOffset);
+    content = utils.setBlockData(content, newKey, newBlockData);
 
-    let newKey = content.getKeyAfter(selection.focusKey);
-    newKey = content.getKeyAfter(newKey);
+    const afterKey = content.getKeyAfter(newKey);
 
     let newSelection: any = utils.basicSelState.merge({
-        focusKey: newKey,
-        anchorKey: newKey,
+        focusKey: afterKey,
+        anchorKey: afterKey,
     });
     editorState = EditorState.push(editorState, content, "insert-fragment");
     editorState = EditorState.forceSelection(editorState, newSelection);
-    return { editorState, toUpdateKeys: [selection.focusKey] };
+    return { editorState, toUpdateKeys: [selection.focusKey, afterKey] };
 }
 
 export function updateBlockData(editorState, blockKey, data) {
