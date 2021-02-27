@@ -72,6 +72,17 @@ export function applyEntity(contentState: ContentState, selection: SelectionStat
     return Modifier.applyEntity(contentState, selection, entityKey);
 }
 
+export function updateEntityData(content: ContentState, entityKey: string, data) {
+    let oldData = content.getEntity(entityKey).getData();
+
+    return content.replaceEntityData(
+        entityKey,
+        Object.assign({}, oldData, {
+            data,
+        })
+    );
+}
+
 /**
  * 在选择的后点插入一个实体。不会移除非折叠的区域
  * @param contentState

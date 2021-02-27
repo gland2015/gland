@@ -87,6 +87,7 @@ export function backspace(editorState: EditorState) {
         if (!beforeDetail.isText) {
             content = utils.deleteBlock(content, beforeKey);
             editorState = EditorState.push(editorState, content, "delete-character");
+            editorState = EditorState.forceSelection(editorState, selection);
             return { editorState, toUpdateKeys: [] };
         }
 

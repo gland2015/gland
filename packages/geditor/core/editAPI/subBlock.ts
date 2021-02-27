@@ -107,6 +107,7 @@ export function updateFixedSubblockNum(editorState: EditorState, pKey: string, g
     }
 
     let selKey = selection.focusKey;
+    let offset = selection.focusOffset;
     childs.forEach(function (block, index) {
         let op = getOp(block, index);
         if (!op) return;
@@ -131,14 +132,30 @@ export function updateFixedSubblockNum(editorState: EditorState, pKey: string, g
             let times = op[1] || 1;
             while (times > 0) {
                 content = utils.splitBlock(content, bKey, undefined, 0);
+                if (selKey === bKey) {
+                    selKey = content.getKeyAfter(selKey);
+                }
                 times--;
             }
         }
     });
 
+    let tarBlock = content.getBlockForKey(selKey);
+    if (tarBlock) {
+        let tl = tarBlock.getText().length;
+        if (tl < offset) {
+            offset = tl;
+        }
+    } else {
+        selKey = content.getFirstBlock().getKey();
+        offset = 0;
+    }
+
     let newSel: any = utils.basicSelState.merge({
         anchorKey: selKey,
         focusKey: selKey,
+        anchorOffset: offset,
+        focusOffset: offset,
     });
 
     editorState = EditorState.push(editorState, content, "split-block");

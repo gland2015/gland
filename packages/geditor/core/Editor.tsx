@@ -1,3 +1,6 @@
+// 1、火狐光标兼容
+// 2、编辑块之后光标重定位，防止丢失
+
 import React from "react";
 import { EventEmitter } from "events";
 import { Editor as DraftEditor, EditorState, convertToRaw, genKey } from "@gland/draft-ts";
@@ -57,6 +60,7 @@ export const Editor = React.memo(
                     toUpdateKeys: null as Array<string>,
                     editorState: null,
                     updateEditorState: null,
+                    targetKey: null,
                     readOnly: false,
                     event: new EventEmitter(),
                     data: null,
@@ -76,6 +80,7 @@ export const Editor = React.memo(
             updateEditorState,
             readOnly,
             data,
+            targetKey,
             nonTexts,
             wrappers,
             subBlocks,
@@ -111,7 +116,6 @@ export const Editor = React.memo(
                     {Toolbar && <Toolbar currentState={currentState} context={attr.context} />}
                     <div className={className} style={style}>
                         <div
-                            onMouseDown={readOnly ? null : handleMousedown}
                             onCutCapture={readOnly ? null : disableEvent}
                             onDragStartCapture={readOnly ? null : disableEvent}
                             onCompositionStartCapture={handleCompositionStart}

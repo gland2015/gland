@@ -37,6 +37,7 @@ export interface IEditorContext {
     event: EventEmitter;
     data: any;
 
+    targetKey: string;
     noFollowBlocks: Array<string>;
     nonTexts: { [key: string]: any };
     wrappers: { [key: string]: any };
@@ -44,4 +45,3 @@ export interface IEditorContext {
     entitys: { [key: string]: any };
     classNames: { [key: string]: string };
 }
-

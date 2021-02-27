@@ -7,5 +7,6 @@ export * from "./nonTextBlock";
 export * from "./wrapper";
 export * from "./subBlock";
 export * from "./defaultKeyHandler";
+export * from "./selection";
 
 export * as utils from "./utils";

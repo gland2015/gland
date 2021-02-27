@@ -217,6 +217,7 @@ class DraftEditorLeaf extends React.Component<Props> {
                     data-type="custom"
                     contentEditable={false}
                     className={className}
+                    onMouseDown={handleCustomMouseDown}
                 >
                     <span data-text="object">{custom}</span>
                     <span data-text="true">{"\r"}</span>
@@ -238,6 +239,10 @@ class DraftEditorLeaf extends React.Component<Props> {
             </span>
         );
     }
+}
+
+function handleCustomMouseDown(event: React.MouseEvent) {
+    event.preventDefault();
 }
 
 export default DraftEditorLeaf;

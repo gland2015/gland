@@ -34,6 +34,18 @@ export function insertEntity(eState, name: string, data) {
     return { editorState, toUpdateKeys };
 }
 
+export function updateEntity(editorState: EditorState, key, data) {
+    let content = editorState.getCurrentContent();
+    content = utils.updateEntityData(content, key, data);
+
+    let sel = editorState.getSelection();
+
+    editorState = EditorState.push(editorState, content, "change-block-data");
+    editorState = EditorState.forceSelection(editorState, sel);
+
+    return { editorState, toUpdateKeys: null };
+}
+
 // notice 更新状态前，先使编辑器聚焦
 export function applyEntity(editorState, name: string, data) {
     let selection = utils.getForwardSel(editorState.getSelection());
