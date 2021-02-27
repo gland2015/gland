@@ -2,7 +2,6 @@ import { Map } from "immutable";
 import { SelectionState, ContentBlock, ContentState, EditorState, Modifier, convertFromRaw } from "@gland/draft-ts";
 
 import { getTextData } from "../../model";
-import { utils } from "xlsx/types";
 
 export const basicSelState = SelectionState.createEmpty("").merge({
     isBackward: false,
@@ -127,7 +126,6 @@ export function setBlockData(content: ContentState, key: String, blockData: Map<
     return Modifier.setBlockData(content, sel, blockData);
 }
 
-// todo limit
 export function mergeBlock(contentState, key: string) {
     let beforeBlock = contentState.getBlockBefore(key);
     if (!beforeBlock) return contentState;
@@ -157,8 +155,7 @@ export function deleteBlock(contentState, key: string | Array<string>) {
 export function deleteSubBlock(content: ContentState, key) {
     let blockMap = content.getBlockMap();
     blockMap = blockMap.filter(function (block, bKey) {
-        if (bKey === key) return false;
-        return block.getData().get("pKey") !== key;
+        return !isContain(content, key, bKey);
     }) as any;
     return content.set("blockMap", blockMap) as any;
 }
@@ -179,30 +176,6 @@ export function splitBlock(contentState: ContentState, key, blockData?, offset?:
     contentState = Modifier.splitBlock(contentState, sel);
     key = contentState.getKeyAfter(key);
     return setBlockData(contentState, key, blockData);
-}
-
-// todo
-export function insertBlock(contentState: ContentState, key, blockData?, offset?, num = 1, blockDataLast?) {
-    if (num > 1) {
-        if (!blockDataLast) blockDataLast = blockData;
-    } else {
-        blockDataLast = blockData;
-    }
-    const firstBlock = contentState.getBlockForKey(key);
-    contentState = splitBlock(contentState, key, blockDataLast, offset);
-
-    const nextKey = contentState.getKeyAfter(key);
-
-    if (!isCanCustomBlock(contentState, nextKey)) {
-        contentState = splitBlock(contentState, key, blockDataLast);
-        contentState = setBlockData(contentState, nextKey, firstBlock.getData());
-    }
-
-    while (num > 1) {
-        contentState = splitBlock(contentState, key, blockData);
-        num--;
-    }
-    return contentState;
 }
 
 export function isFirstBlock(content: ContentState, key: string) {
@@ -290,28 +263,11 @@ export function getParentKeys(content: ContentState, key) {
     return pKeys;
 }
 
-export function isCanCustomBlock(content: ContentState, key) {
-    const block = content.getBlockForKey(key);
-    if (block.getText()) {
-        return false;
-    }
-    const nextBlock = content.getBlockAfter(key);
-    if (!nextBlock) {
-        return false;
-    }
-    const bData = block.getData();
-    const nextData = nextBlock.getData();
+export function isContain(content: ContentState, pKey, key) {
+    if (key === pKey) return true;
 
-    if (!nextData.get("isText")) {
-        return false;
-    }
-    if (nextData.get("pKey") !== bData.get("pKey")) {
-        return false;
-    }
-    if (nextData.get("head")) {
-        return false;
-    }
-    return true;
+    let pKeys = getParentKeys(content, key);
+    return pKeys.indexOf(pKey) !== -1;
 }
 
 /**

@@ -128,7 +128,7 @@ export function lineFeed(editorState: EditorState, list?: Array<string>) {
             focusKey: newR.newKey,
         }) as any;
 
-        editorState = EditorState.push(editorState, content, "insert-characters");
+        editorState = EditorState.push(editorState, newR.content, "insert-characters");
         editorState = EditorState.forceSelection(editorState, newSel);
         return { editorState, toUpdateKeys: [...collResult.toUpdateKeys, selection.anchorKey] };
     }

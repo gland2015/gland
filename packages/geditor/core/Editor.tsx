@@ -112,14 +112,8 @@ export const Editor = React.memo(
                     <div className={className} style={style}>
                         <div
                             onMouseDown={readOnly ? null : handleMousedown}
-                            onCutCapture={
-                                readOnly
-                                    ? null
-                                    : (e) => {
-                                          e.preventDefault();
-                                          e.stopPropagation();
-                                      }
-                            }
+                            onCutCapture={readOnly ? null : disableEvent}
+                            onDragStartCapture={readOnly ? null : disableEvent}
                             onCompositionStartCapture={handleCompositionStart}
                             onCompositionEndCapture={handleCompositionEnd}
                         >
@@ -254,4 +248,9 @@ function handleMousedown(event: React.MouseEvent) {
     if (event.detail >= 3) {
         event.preventDefault();
     }
+}
+
+function disableEvent(event) {
+    event.preventDefault();
+    event.stopPropagation();
 }
