@@ -1,5 +1,6 @@
 // 1、火狐光标兼容
 // 2、编辑块之后光标重定位，防止丢失
+// 3、getCurrentState，editorState toUpdateKeys = null
 
 import React from "react";
 import { EventEmitter } from "events";
@@ -97,6 +98,9 @@ export const Editor = React.memo(
             attr.context.editor = {
                 focus() {
                     attr.draftEditor.focus();
+                },
+                get remote() {
+                    return attr.remote;
                 },
             };
             return attr.context.editor;
