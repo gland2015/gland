@@ -1,6 +1,8 @@
 // 1、火狐光标兼容
 // 2、编辑块之后光标重定位，防止丢失
 // 3、getCurrentState，editorState toUpdateKeys = null
+// 4、光标选择到非文本块右侧
+// 5、编辑器元数据
 
 import React from "react";
 import { EventEmitter } from "events";
@@ -120,10 +122,9 @@ export const Editor = React.memo(
                     {Toolbar && <Toolbar currentState={currentState} context={attr.context} />}
                     <div className={className} style={style}>
                         <div
-                            onCutCapture={readOnly ? null : disableEvent}
                             onDragStartCapture={readOnly ? null : disableEvent}
-                            onCompositionStartCapture={handleCompositionStart}
-                            onCompositionEndCapture={handleCompositionEnd}
+                            onCompositionStartCapture={readOnly ? null : handleCompositionStart}
+                            onCompositionEndCapture={readOnly ? null : handleCompositionEnd}
                         >
                             {RemoteDataProvider && <RemoteDataProvider ref={(r) => (attr.remote = r)} context={attr.context} />}
                             <DraftEditor
@@ -137,6 +138,8 @@ export const Editor = React.memo(
                                 handlePastedText={handlePastedText}
                                 handleBeforeInput={handleBeforeInput}
                                 handleKeyCommand={handleKeyCommand}
+                                onCut={handleCut}
+                                onPaste={handlePaste}
                             />
                         </div>
                         <div
@@ -163,6 +166,32 @@ export const Editor = React.memo(
             if (contentState !== editorState.getCurrentContent()) {
                 onChange && onChange();
             }
+        }
+
+        function handleCut(editor, event) {
+            event.preventDefault();
+
+            let winSel = window.getSelection();
+            if (!winSel.rangeCount) {
+                return;
+            }
+            let range = winSel.getRangeAt(0);
+            let clonedSelection = range.cloneContents();
+
+            let newDiv = document.createElement("div");
+            newDiv.appendChild(clonedSelection);
+            event.clipboardData.setData("text/html", newDiv.innerHTML);
+            event.clipboardData.setData("text/plain", newDiv.innerText);
+
+            const result = makeCollapsed(editor.props.editorState);
+            updateEditorState(result.editorState, result.toUpdateKeys);
+        }
+
+        function handlePaste(editor, event) {
+            event.preventDefault();
+            let txt = event.clipboardData.getData("text/plain") || "";
+            let result = insertText(editor.props.editorState, txt);
+            updateEditorState(result.editorState, result.toUpdateKeys);
         }
 
         function handleBeforeInput(text, editorState, time) {
@@ -250,12 +279,6 @@ function handlePastedText(text: string, html?: string, editorState?): any {
 
 function handleKeyCommand(command): any {
     return "handled";
-}
-
-function handleMousedown(event: React.MouseEvent) {
-    if (event.detail >= 3) {
-        event.preventDefault();
-    }
 }
 
 function disableEvent(event) {

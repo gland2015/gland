@@ -16,7 +16,7 @@ export function InsertNonTextBlock(editorState: EditorState, ComponentName: stri
     const newBlock = content.getBlockForKey(newKey);
     const newData = newBlock.getData();
     const wrapper = newData.get("wrapper");
-    const pKey = newData.get("pkey");
+    const pKey = newData.get("pKey");
 
     let newBlockData = getNonTextData(ComponentName);
     newBlockData = newBlockData.set("data", data);

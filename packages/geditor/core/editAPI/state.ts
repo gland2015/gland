@@ -102,3 +102,11 @@ export function getCurrentState(editorState: EditorState) {
         entityData,
     };
 }
+
+export function redo(state: EditorState) {
+    return EditorState.redo(state);
+}
+
+export function undo(state: EditorState) {
+    return EditorState.undo(state);
+}

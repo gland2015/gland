@@ -3,11 +3,13 @@ import { IEditorContext } from "../interface";
 import { makeCollapsed, insertNewLine, insertText, backspace, lineFeed } from "./content";
 import { addBlockWrapperDepth, reduceBlockWrapperDepth } from "./wrapper";
 import { moveSelection } from "./selection";
+import { undo, redo } from "./state";
 
 const cursorKeys = [35, 36, 37, 38, 39, 40];
 
 export function defaultKeyHandler(editorState: EditorState, keyState, ctx: IEditorContext) {
     const { keyCode, key } = keyState;
+
     const curIndex = cursorKeys.indexOf(keyCode);
     if (curIndex !== -1) {
         if (curIndex > 1 && ctx.targetKey) {
@@ -42,6 +44,30 @@ export function defaultKeyHandler(editorState: EditorState, keyState, ctx: IEdit
     if (keyState.ctrlKey) {
         if (keyCode === 13) {
             return insertNewLine(editorState, ctx.noFollowBlocks);
+        }
+        if (keyCode === 67) {
+            // c
+            return null;
+        }
+        if (keyCode === 86) {
+            // v
+            return null;
+        }
+        if (keyCode === 88) {
+            // x
+            return null;
+        }
+        if (keyCode === 89) {
+            // y
+            return {
+                editorState: redo(editorState),
+            };
+        }
+        if (keyCode === 90) {
+            // z
+            return {
+                editorState: undo(editorState),
+            };
         }
         return;
     }
