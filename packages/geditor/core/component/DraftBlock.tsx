@@ -1,5 +1,5 @@
 import React from "react";
-import { EditorContext, TargetKeyContext } from "../public/context";
+import { EditorContext, TargetContext } from "../public/context";
 import { IEditorContext } from "../interface";
 
 function DraftBlock(props) {
@@ -60,12 +60,7 @@ const BlockContent = React.memo(
             const Comp = context.nonTexts[name];
             const blockKey = block.getKey();
 
-            return (
-                <NonTextBlock
-                    blockKey={blockKey}
-                    customBlock={<Comp isSelected={false} context={context} data={blockData.get("data")} block={block} blockKey={blockKey} />}
-                />
-            );
+            return <NonTextBlockWithTarget Comp={Comp} context={context} data={blockData.get("data")} block={block} blockKey={blockKey} />;
         }
     },
     function (prevProps, nextProps) {
@@ -73,17 +68,16 @@ const BlockContent = React.memo(
     }
 );
 
-function NonTextBlock(props) {
-    const targetKey = React.useContext(TargetKeyContext);
-    const isSelected = targetKey === props.blockKey;
+function NonTextBlockWithTarget(props) {
+    const target = React.useContext(TargetContext);
+    const isSelected = target.key === props.blockKey;
 
-    if (isSelected) {
-        return React.cloneElement(props.customBlock, {
-            isSelected: true,
-        });
-    } else {
-        return props.customBlock;
-    }
+    return <NonTextBlock isSelected={isSelected} props={props} />;
 }
+
+const NonTextBlock = React.memo(function (props: any) {
+    const { Comp, context, data, block, blockKey } = props.props;
+    return <Comp isSelected={props.isSelected} context={context} data={data} block={block} blockKey={blockKey} />;
+});
 
 export { DraftBlock };

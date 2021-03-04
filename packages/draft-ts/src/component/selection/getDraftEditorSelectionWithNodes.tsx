@@ -30,7 +30,14 @@ type SelectionPoint = {
  * Convert the current selection range to an anchor/focus pair of offset keys
  * and values that can be interpreted by components.
  */
-function getDraftEditorSelectionWithNodes(editorState: EditorState, root: HTMLElement, anchorNode: Node, anchorOffset: number, focusNode: Node, focusOffset: number): DOMDerivedSelection {
+function getDraftEditorSelectionWithNodes(
+    editorState: EditorState,
+    root: HTMLElement,
+    anchorNode: Node,
+    anchorOffset: number,
+    focusNode: Node,
+    focusOffset: number
+): DOMDerivedSelection {
     const anchorIsTextNode = anchorNode.nodeType === Node.TEXT_NODE;
     const focusIsTextNode = focusNode.nodeType === Node.TEXT_NODE;
 
@@ -38,15 +45,34 @@ function getDraftEditorSelectionWithNodes(editorState: EditorState, root: HTMLEl
     // Find the nearest offset-aware elements and use the
     // offset values supplied by the selection range.
     if (anchorIsTextNode && focusIsTextNode) {
-        // if(anchorNode.parentElement.isContentEditable === false) {
-        //   anchorOffset = 1;
-        // }
-        // if(focusNode.parentElement.isContentEditable === false) {
-        //   focusOffset = 1;
-        // }
+        // gland
+        let aType = anchorNode.parentElement.dataset?.type;
+        if (aType) {
+            if (aType === "left") {
+                anchorOffset = 0;
+            } else if (aType === "right" || aType === "custom") {
+                anchorOffset = 1;
+            }
+        }
+
+        let fType = focusNode.parentElement.dataset?.type;
+        if (fType) {
+            if (fType === "left") {
+                focusOffset = 0;
+            } else if (fType === "right" || fType === "custom") {
+                focusOffset = 1;
+            }
+        }
+
         return {
-            selectionState: getUpdatedSelectionState(editorState, nullthrows(findAncestorOffsetKey(anchorNode)), anchorOffset, nullthrows(findAncestorOffsetKey(focusNode)), focusOffset),
-            needsRecovery: false
+            selectionState: getUpdatedSelectionState(
+                editorState,
+                nullthrows(findAncestorOffsetKey(anchorNode)),
+                anchorOffset,
+                nullthrows(findAncestorOffsetKey(focusNode)),
+                focusOffset
+            ),
+            needsRecovery: false,
         };
     }
 
@@ -73,21 +99,35 @@ function getDraftEditorSelectionWithNodes(editorState: EditorState, root: HTMLEl
     // ensure proper selection state maintenance.
 
     if (anchorIsTextNode) {
-        // if(anchorNode.parentElement.isContentEditable === false) {
-        //   anchorOffset = 1;
-        // }
+        // gland
+        let aType = anchorNode.parentElement.dataset?.type;
+        if (aType) {
+            if (aType === "left") {
+                anchorOffset = 0;
+            } else if (aType === "right" || aType === "custom") {
+                anchorOffset = 1;
+            }
+        }
+
         anchorPoint = {
             key: nullthrows(findAncestorOffsetKey(anchorNode)),
-            offset: anchorOffset
+            offset: anchorOffset,
         };
         focusPoint = getPointForNonTextNode(root, focusNode, focusOffset);
     } else if (focusIsTextNode) {
-        // if(focusNode.parentElement.isContentEditable === false) {
-        //   focusOffset = 1;
-        // }
+        // gland
+        let fType = focusNode.parentElement.dataset?.type;
+        if (fType) {
+            if (fType === "left") {
+                focusOffset = 0;
+            } else if (fType === "right" || fType === "custom") {
+                focusOffset = 1;
+            }
+        }
+
         focusPoint = {
             key: nullthrows(findAncestorOffsetKey(focusNode)),
-            offset: focusOffset
+            offset: focusOffset,
         };
         anchorPoint = getPointForNonTextNode(root, anchorNode, anchorOffset);
     } else {
@@ -104,7 +144,7 @@ function getDraftEditorSelectionWithNodes(editorState: EditorState, root: HTMLEl
 
     return {
         selectionState: getUpdatedSelectionState(editorState, anchorPoint.key, anchorPoint.offset, focusPoint.key, focusPoint.offset),
-        needsRecovery
+        needsRecovery,
     };
 }
 
@@ -115,7 +155,8 @@ function getFirstLeaf(node: any): Node {
     while (
         node.firstChild &&
         // data-blocks has no offset
-        ((isElement(node.firstChild) && (node.firstChild as Element).getAttribute("data-blocks") === "true") || getSelectionOffsetKeyForNode(node.firstChild))
+        ((isElement(node.firstChild) && (node.firstChild as Element).getAttribute("data-blocks") === "true") ||
+            getSelectionOffsetKeyForNode(node.firstChild))
     ) {
         node = node.firstChild;
     }
@@ -190,14 +231,10 @@ function getPointForNonTextNode(editorRoot: HTMLElement, startNode: Node, childO
         leafKey = nullthrows(getSelectionOffsetKeyForNode(lastLeaf));
         textLength = getTextContentLength(lastLeaf);
     }
-    // gland
-    if (startNode && (startNode as any).dataset.text === "object") {
-        textLength = 1;
-    }
-    
+
     return {
         key: leafKey,
-        offset: textLength
+        offset: textLength,
     };
 }
 
@@ -210,6 +247,19 @@ function getPointForNonTextNode(editorRoot: HTMLElement, startNode: Node, childO
 function getTextContentLength(node: any): number {
     // gland
     if (!node.isContentEditable) return 1;
+    let dataset = node?.dataset;
+    if (dataset?.type) {
+        if (dataset?.type === "right") {
+            return 1;
+        }
+        if (dataset?.type === "left") {
+            return 0;
+        }
+        if (dataset?.type === "custom") {
+            return 1;
+        }
+    }
+
     const textContent = node.textContent;
     return textContent === "\n" ? 0 : textContent.length;
 }

@@ -54,7 +54,7 @@ const handlerMap = {
     composite: DraftEditorCompositionHandler,
     drag: DraftEditorDragHandler,
     cut: null,
-    render: null
+    render: null,
 };
 
 type State = {
@@ -136,16 +136,16 @@ class UpdateDraftEditorFlags extends React.Component<{
 class DraftEditor extends React.Component<DraftEditorProps, State> {
     static defaultProps: DraftEditorDefaultProps = {
         blockRenderMap: DefaultDraftBlockRenderMap,
-        blockRendererFn: function() {
+        blockRendererFn: function () {
             return null;
         },
-        blockStyleFn: function() {
+        blockStyleFn: function () {
             return "";
         },
         keyBindingFn: getDefaultKeyBinding as any,
         readOnly: false,
         spellCheck: false,
-        stripPastedStyles: false
+        stripPastedStyles: false,
     };
 
     _blockSelectEvents: boolean;
@@ -233,7 +233,7 @@ class DraftEditor extends React.Component<DraftEditorProps, State> {
         this.getEditorKey = () => this._editorKey;
 
         if (window["__DEV__"]) {
-            ["onDownArrow", "onEscape", "onLeftArrow", "onRightArrow", "onTab", "onUpArrow"].forEach(propName => {
+            ["onDownArrow", "onEscape", "onLeftArrow", "onRightArrow", "onTab", "onUpArrow"].forEach((propName) => {
                 if (props.hasOwnProperty(propName)) {
                     // eslint-disable-next-line no-console
                     console.warn(
@@ -265,8 +265,8 @@ class DraftEditor extends React.Component<DraftEditorProps, State> {
         // Wrap event handlers in `flushControlled`. In sync mode, this is
         // effectively a no-op. In async mode, this ensures all updates scheduled
         // inside the handler are flushed before React yields to the browser.
-        return e => {
-            e.persist()
+        return (e) => {
+            e.persist();
             // console.log('eventname '+ eventName )
             if (!this.props.readOnly) {
                 const method = this._handler && this._handler[eventName];
@@ -291,7 +291,7 @@ class DraftEditor extends React.Component<DraftEditorProps, State> {
                 text: nullthrows(this.props.placeholder),
                 editorState: this.props.editorState,
                 textAlignment: this.props.textAlignment,
-                accessibilityID: this._placeholderAccessibilityID
+                accessibilityID: this._placeholderAccessibilityID,
             };
 
             /* $FlowFixMe(>=0.112.0 site=mobile) This comment suppresses an error
@@ -310,12 +310,22 @@ class DraftEditor extends React.Component<DraftEditorProps, State> {
     }
 
     render(): ReactNode {
-        const { blockRenderMap, blockRendererFn, blockStyleFn, customStyleFn, customStyleMap, editorState, readOnly, textAlignment, textDirectionality } = this.props;
+        const {
+            blockRenderMap,
+            blockRendererFn,
+            blockStyleFn,
+            customStyleFn,
+            customStyleMap,
+            editorState,
+            readOnly,
+            textAlignment,
+            textDirectionality,
+        } = this.props;
         const rootClass = cx({
             "DraftEditor/root": true,
             "DraftEditor/alignLeft": textAlignment === "left",
             "DraftEditor/alignRight": textAlignment === "right",
-            "DraftEditor/alignCenter": textAlignment === "center"
+            "DraftEditor/alignCenter": textAlignment === "center",
         });
 
         const contentStyle = {
@@ -324,7 +334,7 @@ class DraftEditor extends React.Component<DraftEditorProps, State> {
             userSelect: "text",
             WebkitUserSelect: "text",
             whiteSpace: "pre-wrap",
-            wordWrap: "break-word"
+            wordWrap: "break-word",
         };
 
         // The aria-expanded and aria-haspopup properties should only be rendered
@@ -336,23 +346,24 @@ class DraftEditor extends React.Component<DraftEditorProps, State> {
         const ariaExpanded = ariaRole === "combobox" ? !!this.props.ariaExpanded : null;
 
         const editorContentsProps = {
+            readOnly,
             blockRenderMap,
             blockRendererFn,
             blockStyleFn,
             customStyleMap: {
                 ...DefaultDraftInlineStyle,
-                ...customStyleMap
+                ...customStyleMap,
             },
             customStyleFn,
             editorKey: this._editorKey,
             editorState,
-            textDirectionality
+            textDirectionality,
         };
 
         return (
             <div className={rootClass}>
                 {this._renderPlaceholder()}
-                <div className={cx("DraftEditor/editorContainer")} ref={ref => (this.editorContainer = ref)}>
+                <div className={cx("DraftEditor/editorContainer")} ref={(ref) => (this.editorContainer = ref)}>
                     <div
                         aria-activedescendant={readOnly ? null : this.props.ariaActiveDescendantID}
                         aria-autocomplete={(readOnly ? null : this.props.ariaAutoComplete) as any}
@@ -372,7 +383,7 @@ class DraftEditor extends React.Component<DraftEditorProps, State> {
                             // DraftEditorLeaf spans) and causes problems. We add notranslate
                             // here which makes its autotranslation skip over this subtree.
                             notranslate: !readOnly,
-                            "public/DraftEditor/content": true
+                            "public/DraftEditor/content": true,
                         })}
                         contentEditable={!readOnly}
                         data-testid={this.props.webDriverTestID}
@@ -396,7 +407,7 @@ class DraftEditor extends React.Component<DraftEditorProps, State> {
                         onMouseUp={this._onMouseUp as any}
                         onPaste={this._onPaste as any}
                         onSelect={this._onSelect as any}
-                        ref={ref => (this.editor = ref)}
+                        ref={(ref) => (this.editor = ref)}
                         role={readOnly ? null : ariaRole}
                         spellCheck={allowSpellCheck && this.props.spellCheck}
                         style={contentStyle as any}
@@ -527,7 +538,7 @@ class DraftEditor extends React.Component<DraftEditorProps, State> {
 
         const handler = {
             ...handlerMap,
-            edit: editHandler
+            edit: editHandler,
         };
         this._handler = handler[mode];
     };

@@ -1,5 +1,5 @@
 import React from "react";
-import { IEditorContext } from "../interface";
+import { IEditorContext, EditTarget } from "../interface";
 
 export const EditorContext = React.createContext(null as IEditorContext);
-export const TargetKeyContext = React.createContext(null as string);
+export const TargetContext = React.createContext(null as EditTarget);

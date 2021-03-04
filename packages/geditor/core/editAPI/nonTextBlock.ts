@@ -45,7 +45,7 @@ export function updateBlockData(editorState, blockKey, data) {
     let selection = editorState.getSelection();
 
     let block = content.getBlockForKey(blockKey);
-    if (!block) throw new Error("没有这个块" + blockKey);
+    if (!block) throw new Error("not find the block：" + blockKey);
 
     let blockData = block.getData().set("data", data);
 

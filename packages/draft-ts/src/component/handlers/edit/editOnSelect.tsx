@@ -9,60 +9,47 @@
  * @emails oncall+draft_js
  */
 
-'use strict';
+"use strict";
 
-import  DraftEditor from '../../base/DraftEditor.react';
+import DraftEditor from "../../base/DraftEditor.react";
 
-import DraftJsDebugLogging from '../../../stubs/DraftJsDebugLogging';
-import EditorState from '../../../model/immutable/EditorState';
+import DraftJsDebugLogging from "../../../stubs/DraftJsDebugLogging";
+import EditorState from "../../../model/immutable/EditorState";
 
-
-import getContentEditableContainer from '../../utils/getContentEditableContainer';
-import getDraftEditorSelection from '../../selection/getDraftEditorSelection';
+import getContentEditableContainer from "../../utils/getContentEditableContainer";
+import getDraftEditorSelection from "../../selection/getDraftEditorSelection";
 // @ts-ignore
 function editOnSelect(editor: DraftEditor, event): void {
-  if (
-    editor._blockSelectEvents ||
-    editor._latestEditorState !== editor.props.editorState
-  ) {
-    if (editor._blockSelectEvents) {
-      const editorState = editor.props.editorState;
-      const selectionState = editorState.getSelection();
-      DraftJsDebugLogging.logBlockedSelectionEvent({
-        // For now I don't think we need any other info
-        anonymizedDom: 'N/A',
-        extraParams: JSON.stringify({stacktrace: new Error().stack}),
-        selectionState: JSON.stringify(selectionState.toJS()),
-      });
+    if (editor._blockSelectEvents || editor._latestEditorState !== editor.props.editorState) {
+        if (editor._blockSelectEvents) {
+            const editorState = editor.props.editorState;
+            const selectionState = editorState.getSelection();
+            DraftJsDebugLogging.logBlockedSelectionEvent({
+                // For now I don't think we need any other info
+                anonymizedDom: "N/A",
+                extraParams: JSON.stringify({ stacktrace: new Error().stack }),
+                selectionState: JSON.stringify(selectionState.toJS()),
+            });
+        }
+        return;
     }
-    return;
-  }
 
-  let editorState = editor.props.editorState;
-  const documentSelection = getDraftEditorSelection(
-    editorState,
-    getContentEditableContainer(editor),
-  );
-  const updatedSelectionState = documentSelection.selectionState;
+    let editorState = editor.props.editorState;
+    const documentSelection = getDraftEditorSelection(editorState, getContentEditableContainer(editor));
+    const updatedSelectionState = documentSelection.selectionState;
 
-    event.persist()
-  //  console.log('selectionState', editorState.getSelection().toJS(), event)
+    event.persist();
+    //  console.log('selectionState', editorState.getSelection().toJS(), event)
 
-  if (updatedSelectionState !== editorState.getSelection()) {
-    if (documentSelection.needsRecovery) {
-      editorState = EditorState.forceSelection(
-        editorState,
-        updatedSelectionState,
-      );
-    } else {
-      editorState = EditorState.acceptSelection(
-        editorState,
-        updatedSelectionState,
-      );
+    if (updatedSelectionState !== editorState.getSelection()) {
+        if (documentSelection.needsRecovery) {
+            editorState = EditorState.forceSelection(editorState, updatedSelectionState);
+        } else {
+            editorState = EditorState.acceptSelection(editorState, updatedSelectionState);
+        }
+
+        editor.update(editorState);
     }
- 
-    editor.update(editorState);
-  }
 }
 
-export default  editOnSelect;
+export default editOnSelect;

@@ -1,6 +1,6 @@
-import { EditorState, ContentState, ContentBlock, convertFromRaw, genKey } from "@gland/draft-ts";
+import { EditorState, convertFromRaw } from "@gland/draft-ts";
 
-import { getDecorator, getTextData } from "../model";
+import { getDecorator } from "../model";
 import { setBlockData, getInitContent, getForwardSel } from "./utils";
 
 export function getEditorState(rawContent?, decorators?: Array<any>) {
@@ -31,17 +31,15 @@ export function setStateBlockData(editorState, key: string, blockData) {
     return editorState;
 }
 
-/**
- * 获取焦点处编辑器情况的概要
- * @param editorState
- * @param editorTheme
- */
 export function getCurrentState(editorState: EditorState) {
     const contentState = editorState.getCurrentContent();
     let selection = editorState.getSelection();
     selection = getForwardSel(selection);
-    // notice 样式皆以选择的前点为准
+    // notice： style in forward selection key
     const block = contentState.getBlockForKey(selection.anchorKey);
+    if (!block) {
+        return {};
+    }
     const blockData = block.getData();
 
     const pKey = blockData.get("pKey");

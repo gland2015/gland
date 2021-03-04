@@ -1,16 +1,10 @@
-// 1、火狐光标兼容
-// 2、编辑块之后光标重定位，防止丢失
-// 3、getCurrentState，editorState toUpdateKeys = null
-// 4、光标选择到非文本块右侧
-// 5、编辑器元数据
-
 import React from "react";
 import { EventEmitter } from "events";
 import { Editor as DraftEditor, EditorState, convertToRaw, genKey } from "@gland/draft-ts";
 
 import { EditorProps } from "./interface";
 import { customStyleFn, blockRenderMap } from "./model";
-import { EditorContext, TargetKeyContext } from "./public/context";
+import { EditorContext, TargetContext } from "./public/context";
 import { getEditorState, insertText, makeCollapsed, haveSpecEntity, defaultKeyHandler, getCurrentState } from "./editAPI";
 
 function reducer(state, action) {
@@ -40,7 +34,22 @@ export const Editor = React.memo(
         const editorState: EditorState = state.editorState;
         const contentState = editorState.getCurrentContent();
         const selection = editorState.getSelection();
-        const targetKey = selection.isBackward ? selection.focusKey : selection.anchorKey;
+
+        const target = React.useMemo(() => {
+            if (readOnly) return {} as any;
+
+            const targetKey = selection.isBackward ? selection.focusKey : selection.anchorKey;
+            const targetOffset = selection.isBackward ? selection.focusOffset : selection.anchorOffset;
+            const hasFocus = selection.hasFocus;
+            const isCollapsed = selection.isCollapsed();
+
+            return {
+                key: targetKey,
+                offset: targetOffset,
+                hasFocus,
+                isCollapsed,
+            };
+        }, [selection]);
 
         React.useEffect(() => {
             if (attr.hasInit) {
@@ -59,13 +68,14 @@ export const Editor = React.memo(
                 draftEditor: null,
                 remote: null,
                 context: {
+                    event: new EventEmitter(),
                     editor: null,
                     toUpdateKeys: null as Array<string>,
+
                     editorState: null,
                     updateEditorState: null,
-                    targetKey: null,
+                    target: null,
                     readOnly: false,
-                    event: new EventEmitter(),
                     data: null,
                     nonTexts: null,
                     wrappers: null,
@@ -83,7 +93,7 @@ export const Editor = React.memo(
             updateEditorState,
             readOnly,
             data,
-            targetKey,
+            target,
             nonTexts,
             wrappers,
             subBlocks,
@@ -99,10 +109,15 @@ export const Editor = React.memo(
         React.useImperativeHandle(ref, () => {
             attr.context.editor = {
                 focus() {
-                    attr.draftEditor.focus();
+                    if (!attr.context.target.hasFocus) {
+                        attr.draftEditor.focus();
+                    }
                 },
                 get remote() {
                     return attr.remote;
+                },
+                getStore() {
+                    return convertToRaw(contentState);
                 },
             };
             return attr.context.editor;
@@ -118,7 +133,7 @@ export const Editor = React.memo(
 
         return (
             <EditorContext.Provider value={attr.context}>
-                <TargetKeyContext.Provider value={targetKey}>
+                <TargetContext.Provider value={target}>
                     {Toolbar && <Toolbar currentState={currentState} context={attr.context} />}
                     <div className={className} style={style}>
                         <div
@@ -150,7 +165,7 @@ export const Editor = React.memo(
                             }}
                         ></div>
                     </div>
-                </TargetKeyContext.Provider>
+                </TargetContext.Provider>
             </EditorContext.Provider>
         );
 
@@ -181,7 +196,7 @@ export const Editor = React.memo(
             let newDiv = document.createElement("div");
             newDiv.appendChild(clonedSelection);
             event.clipboardData.setData("text/html", newDiv.innerHTML);
-            event.clipboardData.setData("text/plain", newDiv.innerText);
+            event.clipboardData.setData("text/plain", newDiv.innerText.replace(/\u200b\u200c\u200d/g, ""));
 
             const result = makeCollapsed(editor.props.editorState);
             updateEditorState(result.editorState, result.toUpdateKeys);
@@ -190,6 +205,7 @@ export const Editor = React.memo(
         function handlePaste(editor, event) {
             event.preventDefault();
             let txt = event.clipboardData.getData("text/plain") || "";
+            txt = txt.replace(/\u200b\u200c\u200d/g, "");
             let result = insertText(editor.props.editorState, txt);
             updateEditorState(result.editorState, result.toUpdateKeys);
         }
@@ -198,7 +214,6 @@ export const Editor = React.memo(
             if (attr.handleComposition) {
                 attr.handleComposition(text);
             } else {
-                // notice 这是包含了已有的样式的，无是null
                 let result = insertText(editorState, text);
                 updateEditorState(result.editorState, result.toUpdateKeys);
             }
@@ -210,7 +225,7 @@ export const Editor = React.memo(
             event.stopPropagation();
             let result = makeCollapsed(state.editorState);
             const editorStateAtStart = result.editorState;
-            // gland 因为输入法输入无法阻止，要防止输入错位，只有重定位
+
             const needInsert = haveSpecEntity(result.editorState);
             if (needInsert) {
                 result = insertText(result.editorState, "\r");
@@ -242,7 +257,6 @@ export const Editor = React.memo(
 
         function keyBindingFn(event) {
             const keyCode = event.keyCode;
-            // 输入法状态下的事件
             if (keyCode === 229) return "disabled";
             const key = event.key;
             const shiftKey = event.shiftKey;

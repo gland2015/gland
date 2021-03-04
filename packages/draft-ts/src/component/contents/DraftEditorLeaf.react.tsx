@@ -19,7 +19,7 @@ import DraftEditorTextNode from "./DraftEditorTextNode.react";
 import React, { ReactNode } from "react";
 import invariant from "fbjs/lib/invariant";
 import isHTMLBRElement from "../utils/isHTMLBRElement";
-import { setDraftEditorSelection } from "../selection/setDraftEditorSelection";
+import { setDraftEditorSelection, addPointToSelection, addFocusToSelection, setCustomLeafRangeSelection } from "../selection/setDraftEditorSelection";
 import clsx from "clsx";
 
 type Props = {
@@ -28,6 +28,8 @@ type Props = {
 
     // Mapping of style names to CSS declarations.
     customStyleMap: Object;
+
+    readOnly?: boolean;
 
     // Function that maps style names to CSS style objects.
     customStyleFn: Function;
@@ -77,24 +79,24 @@ class DraftEditorLeaf extends React.Component<Props> {
      */
 
     leaf: HTMLElement;
+    rgtLeaf: HTMLElement;
+    lftLeaf: HTMLElement;
 
     _setSelection(): void {
         const { selection, isLast } = this.props;
-        const isCustom = this.leaf.dataset["type"] === "custom";
-        // gland 重要更改，防止非contenteditable元素获取焦点
-        if (!isLast && isCustom) {
-            return;
-        }
+
         // If selection state is irrelevant to the parent block, no-op.
         if (selection == null || !selection.getHasFocus()) {
             return;
         }
 
+        const isCustom = this.leaf.dataset["type"] === "custom";
         const { block, start, text } = this.props;
         const blockKey = block.getKey();
         let end = start + text.length;
+
         // gland
-        if (isCustom || typeof text === "object") {
+        if (isCustom) {
             end = start + 1;
         }
         if (!selection.hasEdgeWithin(blockKey, start, end)) {
@@ -103,19 +105,17 @@ class DraftEditorLeaf extends React.Component<Props> {
 
         // gland
         if (isCustom) {
-            if (selection.focusOffset === selection.anchorOffset) {
-                if (selection.anchorOffset === start) {
-                    setIndepentSelection(selection, this.leaf, -1);
-                } else {
-                    setIndepentSelection(selection, this.leaf, 0);
-                }
-            }
+            setCustomLeafRangeSelection(
+                selection,
+                this.lftLeaf && this.lftLeaf.firstChild,
+                this.rgtLeaf && this.rgtLeaf.firstChild,
+                blockKey,
+                start,
+                end
+            );
             return;
         }
-        if (typeof text === "object") {
-            setDraftEditorSelection(selection, this.leaf.firstChild, blockKey, start, end);
-            return;
-        }
+
         // Determine the appropriate target node for selection. If the child
         // is not a text node, it is a <br /> spacer. In this case, use the
         // <span> itself as the selection target.
@@ -130,15 +130,9 @@ class DraftEditorLeaf extends React.Component<Props> {
         } else if (isHTMLBRElement(child)) {
             targetNode = node;
         } else {
-            if (child.firstChild) {
-                targetNode = child.firstChild;
-            } else {
-                // console.log("my  set", node, { child }, selection.toJS(), blockKey, start, end);
-                setCursorPosition(child, 0);
-                return;
-            }
+            targetNode = child.firstChild;
+            invariant(targetNode, "Missing targetNode");
         }
-        // console.log("selection set", this.leaf, selection.toJS(), targetNode, blockKey, start, end);
         setDraftEditorSelection(selection, targetNode, blockKey, start, end);
     }
 
@@ -159,40 +153,33 @@ class DraftEditorLeaf extends React.Component<Props> {
     }
 
     render(): ReactNode {
-        const { block, isLast, custom } = this.props;
+        const { block, isLast, start, custom } = this.props;
         let { text } = this.props;
 
         // If the leaf is at the end of its block and ends in a soft newline, append
         // an extra line feed character. Browsers collapse trailing newline
         // characters, which leaves the cursor in the wrong place after a
         // shift+enter. The extra character repairs this.
-
-        // gland 改变表述
         if (isLast) {
-            if (typeof text === "string") {
-                if (text.endsWith("\n")) {
-                    text += "\n";
-                }
+            if (text.endsWith("\n")) {
+                text += "\n";
             }
         }
 
-        const { customStyleMap, customStyleFn, offsetKey, styleSet } = this.props;
+        const { customStyleMap, customStyleFn, offsetKey, styleSet, readOnly } = this.props;
+
         let styleObj = styleSet.reduce((map: any, styleName) => {
             const mergedStyles: any = {};
             const style = customStyleMap[styleName];
-
             if (style !== undefined && map.textDecoration !== style.textDecoration) {
                 // .trim() is necessary for IE9/10/11 and Edge
                 mergedStyles.textDecoration = [map.textDecoration, style.textDecoration].join(" ").trim();
             }
-
             return Object.assign(map, style, mergedStyles);
         }, {});
-
         let className = null;
         if (customStyleFn) {
             const newStyles = customStyleFn(styleSet, block);
-
             if (newStyles.classNames?.length) {
                 className = clsx(
                     newStyles["classNames"].map(function (name) {
@@ -200,36 +187,44 @@ class DraftEditorLeaf extends React.Component<Props> {
                     })
                 );
             }
-
             styleObj = Object.assign(styleObj, newStyles);
-
             delete styleObj["classNames"];
         }
-        //                     {isLast ? <span data-text="r" ref={ref=>(this.lastleafR = ref)}  data-offset-key={offsetKey} >{"\r"}</span> : null}
 
-        // gland  \r &#13; 可使光标垂直对齐正常和处在行尾时聚焦
         if (custom) {
+            // gland 1、two custom ele together 2、firefox select the center，and chrome select ele 3、when it in line end need text
+            //
             return (
-                <span
-                    data-offset-key={offsetKey}
-                    ref={(ref) => (this.leaf = ref)}
-                    style={styleObj}
-                    data-type="custom"
-                    contentEditable={false}
-                    className={className}
-                    onMouseDown={handleCustomMouseDown}
-                >
-                    <span data-text="object">{custom}</span>
-                    <span data-text="true">{"\r"}</span>
-                </span>
-            );
-        }
-
-        if (typeof text === "object") {
-            return (
-                <span data-offset-key={offsetKey} ref={(ref) => (this.leaf = ref)} style={styleObj} className={className}>
-                    <span data-text="object">{text}</span>
-                </span>
+                <React.Fragment>
+                    {start === 0 && !readOnly ? (
+                        <span ref={(r) => (this.lftLeaf = r)} data-offset-key={offsetKey} data-type="left">
+                            {"\u200b"}
+                        </span>
+                    ) : null}
+                    <span
+                        ref={(ref) => (this.leaf = ref)}
+                        style={
+                            readOnly
+                                ? styleObj
+                                : {
+                                      ...styleObj,
+                                      pointerEvents: "none",
+                                      MozUserSelect: "none",
+                                  }
+                        }
+                        className={className}
+                        contentEditable={false}
+                        data-offset-key={offsetKey}
+                        data-type="custom"
+                    >
+                        <span data-text="object">{custom}</span>
+                    </span>
+                    {readOnly ? null : (
+                        <span ref={(r) => (this.rgtLeaf = r)} data-offset-key={offsetKey} data-type="right">
+                            {"\u200b"}
+                        </span>
+                    )}
+                </React.Fragment>
             );
         }
 
@@ -241,61 +236,55 @@ class DraftEditorLeaf extends React.Component<Props> {
     }
 }
 
-function handleCustomMouseDown(event: React.MouseEvent) {
-    event.preventDefault();
-}
-
 export default DraftEditorLeaf;
 
-//gland
+// gland
+// /**
+//  * @param ele
+//  * @param offset
+//  */
+// function setCursorPosition(ele, offset) {
+//     let selection = window.getSelection();
+//     let range = document.createRange();
+//     range.setStart(ele, offset);
+//     range.setEnd(ele, offset);
+//     selection.removeAllRanges();
+//     selection.addRange(range);
+// }
 
-/**
- * 设置光标标位置
- * @param ele
- * @param offset
- */
-function setCursorPosition(ele, offset) {
-    let selection = window.getSelection();
-    let range = document.createRange();
-    range.setStart(ele, offset);
-    range.setEnd(ele, offset);
-    selection.removeAllRanges();
-    selection.addRange(range);
-}
+// function setIndepentSelection(selection, leaf, k) {
+//     let ele = leaf.parentElement;
+//     let offset = ele.childNodes.length + k;
+//     if (selection.isCollapsed()) {
+//         setCursorPosition(ele, offset);
+//         return;
+//     }
+//     // let anchorKey = selectionState.getAnchorKey();
+//     // let anchorOffset = selectionState.getAnchorOffset();
+//     // let focusKey = selectionState.getFocusKey();
+//     // let focusOffset = selectionState.getFocusOffset();
+//     // let isBackward = selectionState.getIsBackward();
+//     // if (anchorKey === focusKey) {
+//     //     console.log('eeeeee', selection)
+//     //     if (selection.rangeCount > 0) {
+//     //         range.setEnd(ele, offset);
+//     //         selection.addRange(range.cloneRange());
+//     //         return;
+//     //     }
 
-function setIndepentSelection(selectionState, leaf, k) {
-    let ele = leaf.parentElement;
-    let offset = ele.childNodes.length + k;
-    if (selectionState.isCollapsed()) {
-        setCursorPosition(ele, offset);
-        return;
-    }
-    // let anchorKey = selectionState.getAnchorKey();
-    // let anchorOffset = selectionState.getAnchorOffset();
-    // let focusKey = selectionState.getFocusKey();
-    // let focusOffset = selectionState.getFocusOffset();
-    // let isBackward = selectionState.getIsBackward();
-    // if (anchorKey === focusKey) {
-    //     console.log('eeeeee', selection)
-    //     if (selection.rangeCount > 0) {
-    //         range.setEnd(ele, offset);
-    //         selection.addRange(range.cloneRange());
-    //         return;
-    //     }
-
-    // }
-    // if (isBackward) {
-    //     [anchorKey, anchorOffset, focusKey, focusOffset] = [focusKey, focusOffset, anchorKey, anchorOffset];
-    // }
-    // if (blockKey === anchorKey) {
-    //     range.setStart(ele, offset);
-    //     selection.removeAllRanges();
-    //     selection.addRange(range);
-    //     return;
-    // }
-    // if (blockKey === focusKey) {
-    //     range.setEnd(ele, offset);
-    //     selection.addRange(range);
-    //     return;
-    // }
-}
+//     // }
+//     // if (isBackward) {
+//     //     [anchorKey, anchorOffset, focusKey, focusOffset] = [focusKey, focusOffset, anchorKey, anchorOffset];
+//     // }
+//     // if (blockKey === anchorKey) {
+//     //     range.setStart(ele, offset);
+//     //     selection.removeAllRanges();
+//     //     selection.addRange(range);
+//     //     return;
+//     // }
+//     // if (blockKey === focusKey) {
+//     //     range.setEnd(ele, offset);
+//     //     selection.addRange(range);
+//     //     return;
+//     // }
+// }

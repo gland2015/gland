@@ -1,4 +1,3 @@
-import { Map } from "immutable";
 import { SelectionState, ContentBlock, ContentState, EditorState, Modifier, convertFromRaw } from "@gland/draft-ts";
 import { getForwardSel, deleteBlock, isPureTextBlock, getBlockData, mergeBlock, getParentKeys } from "./basic";
 import { clearText } from "./senior";

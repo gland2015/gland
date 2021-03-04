@@ -1,30 +1,44 @@
 import { EditorState } from "@gland/draft-ts";
 import { IEditorContext } from "../interface";
-import { makeCollapsed, insertNewLine, insertText, backspace, lineFeed } from "./content";
+import { insertNewLine, insertText, backspace, lineFeed } from "./content";
 import { addBlockWrapperDepth, reduceBlockWrapperDepth } from "./wrapper";
 import { moveSelection } from "./selection";
 import { undo, redo } from "./state";
+import { haveSpecEntity } from "./entity";
 
 const cursorKeys = [35, 36, 37, 38, 39, 40];
 
 export function defaultKeyHandler(editorState: EditorState, keyState, ctx: IEditorContext) {
     const { keyCode, key } = keyState;
-
     const curIndex = cursorKeys.indexOf(keyCode);
     if (curIndex !== -1) {
-        if (curIndex > 1 && ctx.targetKey) {
+        if (curIndex > 1 && ctx.target) {
             let selection = editorState.getSelection();
-            if (selection.isCollapsed()) {
-                let content = editorState.getCurrentContent();
-                let block = content.getBlockForKey(ctx.targetKey);
-                if (block) {
-                    let data = block.getData();
-                    if (!data.get("isText")) {
-                        if (keyCode === 37 || keyCode === 38) {
-                            return moveSelection(editorState, "beforeBlock");
-                        } else {
-                            return moveSelection(editorState, "afterBlock");
-                        }
+            let content = editorState.getCurrentContent();
+            let block = content.getBlockForKey(selection.focusKey);
+            if (block) {
+                let data = block.getData();
+                if (!data.get("isText")) {
+                    if (keyCode === 37 || keyCode === 38) {
+                        return moveSelection(editorState, "beforeBlock");
+                    } else {
+                        return moveSelection(editorState, "afterBlock");
+                    }
+                }
+
+                if (keyCode === 37 || keyCode === 39) {
+                    let keepAnchor = keyState.shiftKey;
+                    if (!selection.isCollapsed() && !keepAnchor) {
+                        return null;
+                    }
+                    const lftKey = block.getEntityAt(selection.focusOffset - 1);
+                    const rgtKey = block.getEntityAt(selection.focusOffset);
+                    if (!lftKey && !rgtKey) return null;
+
+                    let lftData = lftKey && content.getEntity(lftKey);
+                    let rgtData = rgtKey && content.getEntity(rgtKey);
+                    if ((lftData && lftData.getMutability() === "IMMUTABLE") || (rgtData && rgtData.getMutability() === "IMMUTABLE")) {
+                        return moveSelection(editorState, keyCode === 37 ? "beforeChar" : "afterChar", keepAnchor);
                     }
                 }
             }
@@ -44,6 +58,10 @@ export function defaultKeyHandler(editorState: EditorState, keyState, ctx: IEdit
     if (keyState.ctrlKey) {
         if (keyCode === 13) {
             return insertNewLine(editorState, ctx.noFollowBlocks);
+        }
+        if (keyCode === 65) {
+            // a
+            return null;
         }
         if (keyCode === 67) {
             // c

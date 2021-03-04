@@ -37,11 +37,18 @@ export interface IEditorContext {
     event: EventEmitter;
     data: any;
 
-    targetKey: string;
+    target: EditTarget;
     noFollowBlocks: Array<string>;
     nonTexts: { [key: string]: any };
     wrappers: { [key: string]: any };
     subBlocks: { [key: string]: any };
     entitys: { [key: string]: any };
     classNames: { [key: string]: string };
+}
+
+export interface EditTarget {
+    key: string;
+    offset: number;
+    hasFocus: boolean;
+    isCollapsed: boolean;
 }

@@ -31,20 +31,24 @@ export function insertText(editorState: EditorState, text: string, style?: Array
     }
     let content = editorState.getCurrentContent();
     const selection = editorState.getSelection();
-    let newContent = utils.addText(content, selection, text, textStyle);
+
+    let vaildRes = utils.getInsertStrVaildPos(content, selection.anchorKey, selection.anchorOffset);
+
+    let newContent = utils.addText(vaildRes.content, vaildRes.key, vaildRes.offset, text, textStyle);
     editorState = EditorState.push(editorState, newContent, "insert-characters");
 
-    const tl = newContent === content ? 0 : text.length;
-    const key = selection.anchorKey;
-    const offset = selection.anchorOffset + tl + offsetDeviation;
+    const txtlen = newContent === content ? 0 : text.length;
+    const key = vaildRes.key;
+    const offset = vaildRes.offset + txtlen + offsetDeviation;
     const newSelection = selection.merge({
         anchorOffset: offset,
         anchorKey: key,
         focusOffset: offset,
         focusKey: key,
     }) as SelectionState;
+
     editorState = EditorState.forceSelection(editorState, newSelection);
-    return { editorState, toUpdateKeys: [selection.anchorKey, ...collResult.toUpdateKeys] };
+    return { editorState, toUpdateKeys: [selection.anchorKey, vaildRes.key, ...collResult.toUpdateKeys] };
 }
 
 export function backspace(editorState: EditorState) {
@@ -122,7 +126,7 @@ export function lineFeed(editorState: EditorState, list?: Array<string>) {
     const currentBlock = content.getBlockForKey(selection.anchorKey);
     const curDetail = utils.getBlockDetail(content, selection.anchorKey);
 
-    if (!curDetail.isText) {
+    if (!curDetail.isText || (curDetail.isFixed && curDetail.head)) {
         const newR = utils.newSafeTextLine(content, selection.anchorKey);
         const newSel = utils.basicSelState.merge({
             anchorKey: newR.newKey,

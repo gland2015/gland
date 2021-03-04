@@ -9,32 +9,32 @@
  * @emails oncall+draft_js
  */
 
-'use strict';
+"use strict";
 
-import  {BlockNodeRecord} from '../../model/immutable/BlockNodeRecord';
-import  {DraftBlockRenderMap} from '../../model/immutable/DraftBlockRenderMap';
-import  {DraftInlineStyle} from '../../model/immutable/DraftInlineStyle';
-import  EditorState from '../../model/immutable/EditorState';
-import  {BidiDirection} from 'fbjs/lib/UnicodeBidiDirection';
+import { BlockNodeRecord } from "../../model/immutable/BlockNodeRecord";
+import { DraftBlockRenderMap } from "../../model/immutable/DraftBlockRenderMap";
+import { DraftInlineStyle } from "../../model/immutable/DraftInlineStyle";
+import EditorState from "../../model/immutable/EditorState";
+import { BidiDirection } from "fbjs/lib/UnicodeBidiDirection";
 
-import DraftEditorBlock from './DraftEditorBlock.react';
-import DraftOffsetKey from '../selection/DraftOffsetKey';
-import React, {ReactNode} from 'react'
-import cx from 'fbjs/lib/cx'
-import joinClasses from 'fbjs/lib/joinClasses';
+import DraftEditorBlock from "./DraftEditorBlock.react";
+import DraftOffsetKey from "../selection/DraftOffsetKey";
+import React, { ReactNode } from "react";
+import cx from "fbjs/lib/cx";
+import joinClasses from "fbjs/lib/joinClasses";
 
-
-import nullthrows from 'fbjs/lib/nullthrows';
+import nullthrows from "fbjs/lib/nullthrows";
 
 type Props = {
-  blockRenderMap: DraftBlockRenderMap,
-  blockRendererFn: (block: BlockNodeRecord) => Object,
-  blockStyleFn?: (block: BlockNodeRecord) => string,
-  customStyleFn?: (style: DraftInlineStyle, block: BlockNodeRecord) => Object,
-  customStyleMap?: Object,
-  editorKey?: string,
-  editorState: EditorState,
-  textDirectionality?: BidiDirection,
+    blockRenderMap: DraftBlockRenderMap;
+    blockRendererFn: (block: BlockNodeRecord) => Object;
+    blockStyleFn?: (block: BlockNodeRecord) => string;
+    customStyleFn?: (style: DraftInlineStyle, block: BlockNodeRecord) => Object;
+    customStyleMap?: Object;
+    readOnly?: boolean;
+    editorKey?: string;
+    editorState: EditorState;
+    textDirectionality?: BidiDirection;
 };
 
 /**
@@ -43,25 +43,19 @@ type Props = {
  * their own styling at all. If more than five levels of nesting are needed,
  * the necessary CSS classes can be provided via `blockStyleFn` configuration.
  */
-const getListItemClasses = (
-  type: string,
-  depth: number,
-  shouldResetCount: boolean,
-  direction: BidiDirection,
-): string => {
-  return cx({
-    'public/DraftStyleDefault/unorderedListItem':
-      type === 'unordered-list-item',
-    'public/DraftStyleDefault/orderedListItem': type === 'ordered-list-item',
-    'public/DraftStyleDefault/reset': shouldResetCount,
-    'public/DraftStyleDefault/depth0': depth === 0,
-    'public/DraftStyleDefault/depth1': depth === 1,
-    'public/DraftStyleDefault/depth2': depth === 2,
-    'public/DraftStyleDefault/depth3': depth === 3,
-    'public/DraftStyleDefault/depth4': depth >= 4,
-    'public/DraftStyleDefault/listLTR': direction === 'LTR',
-    'public/DraftStyleDefault/listRTL': direction === 'RTL',
-  });
+const getListItemClasses = (type: string, depth: number, shouldResetCount: boolean, direction: BidiDirection): string => {
+    return cx({
+        "public/DraftStyleDefault/unorderedListItem": type === "unordered-list-item",
+        "public/DraftStyleDefault/orderedListItem": type === "ordered-list-item",
+        "public/DraftStyleDefault/reset": shouldResetCount,
+        "public/DraftStyleDefault/depth0": depth === 0,
+        "public/DraftStyleDefault/depth1": depth === 1,
+        "public/DraftStyleDefault/depth2": depth === 2,
+        "public/DraftStyleDefault/depth3": depth === 3,
+        "public/DraftStyleDefault/depth4": depth >= 4,
+        "public/DraftStyleDefault/listLTR": direction === "LTR",
+        "public/DraftStyleDefault/listRTL": direction === "RTL",
+    });
 };
 
 /**
@@ -74,211 +68,196 @@ const getListItemClasses = (
  * the contents of the editor.
  */
 class DraftEditorContents extends React.Component<Props> {
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const prevEditorState = this.props.editorState;
-    const nextEditorState = nextProps.editorState;
+    shouldComponentUpdate(nextProps: Props): boolean {
+        const prevEditorState = this.props.editorState;
+        const nextEditorState = nextProps.editorState;
 
-    const prevDirectionMap = prevEditorState.getDirectionMap();
-    const nextDirectionMap = nextEditorState.getDirectionMap();
+        const prevDirectionMap = prevEditorState.getDirectionMap();
+        const nextDirectionMap = nextEditorState.getDirectionMap();
 
-    // Text direction has changed for one or more blocks. We must re-render.
-    if (prevDirectionMap !== nextDirectionMap) {
-      return true;
-    }
+        // Text direction has changed for one or more blocks. We must re-render.
+        if (prevDirectionMap !== nextDirectionMap) {
+            return true;
+        }
 
-    const didHaveFocus = prevEditorState.getSelection().getHasFocus();
-    const nowHasFocus = nextEditorState.getSelection().getHasFocus();
+        const didHaveFocus = prevEditorState.getSelection().getHasFocus();
+        const nowHasFocus = nextEditorState.getSelection().getHasFocus();
 
-    if (didHaveFocus !== nowHasFocus) {
-      return true;
-    }
+        if (didHaveFocus !== nowHasFocus) {
+            return true;
+        }
 
-    const nextNativeContent = nextEditorState.getNativelyRenderedContent();
+        const nextNativeContent = nextEditorState.getNativelyRenderedContent();
 
-    const wasComposing = prevEditorState.isInCompositionMode();
-    const nowComposing = nextEditorState.isInCompositionMode();
+        const wasComposing = prevEditorState.isInCompositionMode();
+        const nowComposing = nextEditorState.isInCompositionMode();
 
-    // If the state is unchanged or we're currently rendering a natively
-    // rendered state, there's nothing new to be done.
-    if (
-      prevEditorState === nextEditorState ||
-      (nextNativeContent !== null &&
-        nextEditorState.getCurrentContent() === nextNativeContent) ||
-      (wasComposing && nowComposing)
-    ) {
-      return false;
-    }
+        // If the state is unchanged or we're currently rendering a natively
+        // rendered state, there's nothing new to be done.
+        if (
+            prevEditorState === nextEditorState ||
+            (nextNativeContent !== null && nextEditorState.getCurrentContent() === nextNativeContent) ||
+            (wasComposing && nowComposing)
+        ) {
+            return false;
+        }
 
-    const prevContent = prevEditorState.getCurrentContent();
-    const nextContent = nextEditorState.getCurrentContent();
-    const prevDecorator = prevEditorState.getDecorator();
-    const nextDecorator = nextEditorState.getDecorator();
-    return (
-      wasComposing !== nowComposing ||
-      prevContent !== nextContent ||
-      prevDecorator !== nextDecorator ||
-      nextEditorState.mustForceSelection()
-    );
-  }
-
-  render(): ReactNode {
-    const {
-      blockRenderMap,
-      blockRendererFn,
-      blockStyleFn,
-      customStyleMap,
-      customStyleFn,
-      editorState,
-      editorKey,
-      textDirectionality,
-    } = this.props;
-
-    const content = editorState.getCurrentContent();
-    const selection = editorState.getSelection();
-    const forceSelection = editorState.mustForceSelection();
-    const decorator = editorState.getDecorator();
-    const directionMap = nullthrows(editorState.getDirectionMap());
-
-    const blocksAsArray = content.getBlocksAsArray();
-    const processedBlocks = [];
-
-    let currentDepth = null;
-    let lastWrapperTemplate = null;
-
-    for (let ii = 0; ii < blocksAsArray.length; ii++) {
-      const block = blocksAsArray[ii];
-      const key = block.getKey();
-      const blockType = block.getType();
-
-      const customRenderer:any = blockRendererFn(block);
-      let CustomComponent, customProps, customEditable;
-      if (customRenderer) {
-        CustomComponent = customRenderer.component;
-        customProps = customRenderer.props;
-        customEditable = customRenderer.editable;
-      }
-
-      const direction = textDirectionality
-        ? textDirectionality
-        : directionMap.get(key);
-      const offsetKey = DraftOffsetKey.encode(key, 0, 0);
-      const componentProps = {
-        contentState: content,
-        block,
-        blockProps: customProps,
-        blockStyleFn,
-        customStyleMap,
-        customStyleFn,
-        decorator,
-        direction,
-        forceSelection,
-        offsetKey,
-        selection,
-        tree: editorState.getBlockTree(key),
-      };
-
-      const configForType =
-        blockRenderMap.get(blockType) || blockRenderMap.get('unstyled');
-      const wrapperTemplate = configForType.wrapper;
-
-      const Element =
-        configForType.element || blockRenderMap.get('unstyled').element;
-
-      const depth = block.getDepth();
-      let className = '';
-      if (blockStyleFn) {
-        className = blockStyleFn(block);
-      }
-
-      // List items are special snowflakes, since we handle nesting and
-      // counters manually.
-      if (Element === 'li') {
-        const shouldResetCount =
-          lastWrapperTemplate !== wrapperTemplate ||
-          currentDepth === null ||
-          depth > currentDepth;
-        className = joinClasses(
-          className,
-          getListItemClasses(blockType, depth, shouldResetCount, direction),
+        const prevContent = prevEditorState.getCurrentContent();
+        const nextContent = nextEditorState.getCurrentContent();
+        const prevDecorator = prevEditorState.getDecorator();
+        const nextDecorator = nextEditorState.getDecorator();
+        return (
+            wasComposing !== nowComposing || prevContent !== nextContent || prevDecorator !== nextDecorator || nextEditorState.mustForceSelection()
         );
-      }
-
-      const Component = CustomComponent || DraftEditorBlock;
-      let childProps:any = {
-        className,
-        'data-block': true,
-        'data-editor': editorKey,
-        'data-offset-key': offsetKey,
-        key,
-      };
-      if (customEditable !== undefined) {
-        childProps = {
-          ...childProps,
-          contentEditable: customEditable,
-          suppressContentEditableWarning: true,
-        };
-      }
-
-      const child = React.createElement(
-        Element,
-        childProps,
-        /* $FlowFixMe(>=0.112.0 site=mobile) This comment suppresses an error
-         * found when Flow v0.112 was deployed. To see the error delete this
-         * comment and run Flow. */
-        /* $FlowFixMe(>=0.112.0 site=www) This comment suppresses an error
-         * found when Flow v0.112 was deployed. To see the error delete this
-         * comment and run Flow. */
-        /* $FlowFixMe(>=0.112.0 site=www,mobile) This comment suppresses an
-         * error found when Flow v0.112 was deployed. To see the error delete
-         * this comment and run Flow. */
-        <Component {...componentProps} key={key} />,
-      );
-
-      processedBlocks.push({
-        block: child,
-        wrapperTemplate,
-        key,
-        offsetKey,
-      });
-
-      if (wrapperTemplate) {
-        currentDepth = block.getDepth();
-      } else {
-        currentDepth = null;
-      }
-      lastWrapperTemplate = wrapperTemplate;
     }
 
-    // Group contiguous runs of blocks that have the same wrapperTemplate
-    const outputBlocks = [];
-    for (let ii = 0; ii < processedBlocks.length; ) {
-      const info: any = processedBlocks[ii];
-      if (info.wrapperTemplate) {
-        const blocks = [];
-        do {
-          blocks.push(processedBlocks[ii].block);
-          ii++;
-        } while (
-          ii < processedBlocks.length &&
-          processedBlocks[ii].wrapperTemplate === info.wrapperTemplate
-        );
-        const wrapperElement = React.cloneElement(
-          info.wrapperTemplate,
-          {
-            key: info.key + '-wrap',
-            'data-offset-key': info.offsetKey,
-          },
-          blocks,
-        );
-        outputBlocks.push(wrapperElement);
-      } else {
-        outputBlocks.push(info.block);
-        ii++;
-      }
-    }
+    render(): ReactNode {
+        const {
+            blockRenderMap,
+            blockRendererFn,
+            blockStyleFn,
+            customStyleMap,
+            readOnly,
+            customStyleFn,
+            editorState,
+            editorKey,
+            textDirectionality,
+        } = this.props;
 
-    return <div data-contents="true">{outputBlocks}</div>;
-  }
+        const content = editorState.getCurrentContent();
+        const selection = editorState.getSelection();
+        const forceSelection = editorState.mustForceSelection();
+        const decorator = editorState.getDecorator();
+        const directionMap = nullthrows(editorState.getDirectionMap());
+
+        const blocksAsArray = content.getBlocksAsArray();
+        const processedBlocks = [];
+
+        let currentDepth = null;
+        let lastWrapperTemplate = null;
+
+        for (let ii = 0; ii < blocksAsArray.length; ii++) {
+            const block = blocksAsArray[ii];
+            const key = block.getKey();
+            const blockType = block.getType();
+
+            const customRenderer: any = blockRendererFn(block);
+            let CustomComponent, customProps, customEditable;
+            if (customRenderer) {
+                CustomComponent = customRenderer.component;
+                customProps = customRenderer.props;
+                customEditable = customRenderer.editable;
+            }
+
+            const direction = textDirectionality ? textDirectionality : directionMap.get(key);
+            const offsetKey = DraftOffsetKey.encode(key, 0, 0);
+            const componentProps = {
+                contentState: content,
+                block,
+                blockProps: customProps,
+                blockStyleFn,
+                customStyleMap,
+                readOnly,
+                customStyleFn,
+                decorator,
+                direction,
+                forceSelection,
+                offsetKey,
+                selection,
+                tree: editorState.getBlockTree(key),
+            };
+
+            const configForType = blockRenderMap.get(blockType) || blockRenderMap.get("unstyled");
+            const wrapperTemplate = configForType.wrapper;
+
+            const Element = configForType.element || blockRenderMap.get("unstyled").element;
+
+            const depth = block.getDepth();
+            let className = "";
+            if (blockStyleFn) {
+                className = blockStyleFn(block);
+            }
+
+            // List items are special snowflakes, since we handle nesting and
+            // counters manually.
+            if (Element === "li") {
+                const shouldResetCount = lastWrapperTemplate !== wrapperTemplate || currentDepth === null || depth > currentDepth;
+                className = joinClasses(className, getListItemClasses(blockType, depth, shouldResetCount, direction));
+            }
+
+            const Component = CustomComponent || DraftEditorBlock;
+            let childProps: any = {
+                className,
+                "data-block": true,
+                "data-editor": editorKey,
+                "data-offset-key": offsetKey,
+                key,
+            };
+            if (customEditable !== undefined) {
+                childProps = {
+                    ...childProps,
+                    contentEditable: customEditable,
+                    suppressContentEditableWarning: true,
+                };
+            }
+
+            const child = React.createElement(
+                Element,
+                childProps,
+                /* $FlowFixMe(>=0.112.0 site=mobile) This comment suppresses an error
+                 * found when Flow v0.112 was deployed. To see the error delete this
+                 * comment and run Flow. */
+                /* $FlowFixMe(>=0.112.0 site=www) This comment suppresses an error
+                 * found when Flow v0.112 was deployed. To see the error delete this
+                 * comment and run Flow. */
+                /* $FlowFixMe(>=0.112.0 site=www,mobile) This comment suppresses an
+                 * error found when Flow v0.112 was deployed. To see the error delete
+                 * this comment and run Flow. */
+                <Component {...componentProps} key={key} />
+            );
+
+            processedBlocks.push({
+                block: child,
+                wrapperTemplate,
+                key,
+                offsetKey,
+            });
+
+            if (wrapperTemplate) {
+                currentDepth = block.getDepth();
+            } else {
+                currentDepth = null;
+            }
+            lastWrapperTemplate = wrapperTemplate;
+        }
+
+        // Group contiguous runs of blocks that have the same wrapperTemplate
+        const outputBlocks = [];
+        for (let ii = 0; ii < processedBlocks.length; ) {
+            const info: any = processedBlocks[ii];
+            if (info.wrapperTemplate) {
+                const blocks = [];
+                do {
+                    blocks.push(processedBlocks[ii].block);
+                    ii++;
+                } while (ii < processedBlocks.length && processedBlocks[ii].wrapperTemplate === info.wrapperTemplate);
+                const wrapperElement = React.cloneElement(
+                    info.wrapperTemplate,
+                    {
+                        key: info.key + "-wrap",
+                        "data-offset-key": info.offsetKey,
+                    },
+                    blocks
+                );
+                outputBlocks.push(wrapperElement);
+            } else {
+                outputBlocks.push(info.block);
+                ii++;
+            }
+        }
+
+        return <div data-contents="true">{outputBlocks}</div>;
+    }
 }
 
-export default  DraftEditorContents;
+export default DraftEditorContents;

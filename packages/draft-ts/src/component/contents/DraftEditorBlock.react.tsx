@@ -44,6 +44,7 @@ type Props = {
     contentState: ContentState;
     customStyleFn: (style: DraftInlineStyle, block: BlockNodeRecord) => Object;
     customStyleMap: Object;
+    readOnly?: boolean;
     decorator: DraftDecoratorType;
     direction: BidiDirection;
     forceSelection: boolean;
@@ -148,7 +149,6 @@ class DraftEditorBlock extends React.Component<Props> {
                         const end = leaf.get("end");
 
                         return (
-                            // @ts-ignore
                             <DraftEditorLeaf
                                 key={offsetKey}
                                 offsetKey={offsetKey}
@@ -159,6 +159,7 @@ class DraftEditorBlock extends React.Component<Props> {
                                 text={text.slice(start, end)}
                                 styleSet={block.getInlineStyleAt(start)}
                                 customStyleMap={this.props.customStyleMap}
+                                readOnly={this.props.readOnly}
                                 customStyleFn={this.props.customStyleFn}
                                 isLast={ii === lastLeafSet && jj === lastLeaf}
                             />

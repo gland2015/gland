@@ -7,7 +7,7 @@ export const basicSelState = SelectionState.createEmpty("").merge({
     isBackward: false,
     anchorOffset: 0,
     focusOffset: 0,
-    hasFocus: false,
+    hasFocus: true,
 });
 
 export function getInitContent(text?: string) {
@@ -30,6 +30,30 @@ export function getForwardSel(sel: SelectionState): SelectionState {
     } else {
         return sel;
     }
+}
+
+export function ajustIsBackward(content: ContentState, selection: SelectionState): SelectionState {
+    let isBackward = false;
+    if (selection.anchorKey === selection.focusKey) {
+        if (selection.anchorOffset > selection.focusOffset) {
+            isBackward = true;
+        }
+    } else {
+        const startKey = content
+            .getBlockMap()
+            .keySeq()
+            .skipUntil((v) => v === selection.anchorKey || v === selection.focusKey)
+            .first();
+
+        isBackward = startKey === selection.focusKey;
+    }
+
+    if (isBackward === selection.isBackward) {
+        return selection;
+    }
+    return selection.merge({
+        isBackward,
+    }) as any;
 }
 
 export function getBlockLastSel(block: ContentBlock) {
@@ -139,7 +163,6 @@ export function mergeBlock(contentState, key: string) {
     return contentState;
 }
 
-// todo limit only block
 export function deleteBlock(contentState, key: string | Array<string>) {
     let blockMap = contentState.getBlockMap();
     if (typeof key === "string") {
@@ -200,50 +223,6 @@ export function isPureTextBlock(content: ContentState, key: string) {
     return !data.get("isText") || data.get("pKey") || data.get("head") ? false : true;
 }
 
-export function getBlockDetail(content: ContentState, key: string) {
-    const blockData = getBlockData(content, key);
-    const pKey = blockData.get("pKey");
-    const pData = pKey ? getBlockData(content, pKey) : null;
-    const pHead = pData ? pData.get("head") : null;
-    const head = blockData.get("head");
-    const isSubFirst = pKey ? content.getKeyBefore(key) === pKey : false;
-    const isSubBlock = Boolean(pKey || head);
-    const name = blockData.get("name");
-    const isText = blockData.get("isText");
-    const isFixed = Boolean((head && !head.grow) || (pHead && !pHead.grow));
-
-    return {
-        key,
-        pKey,
-        pData,
-        pHead,
-        head,
-        isFixed,
-        isSubBlock,
-        name,
-        isText,
-        blockData,
-        isSubFirst,
-        get canInsertSubBlock() {
-            let can = isText && !head && !isFixed;
-            if (can) {
-                let pKeys = getParentKeys(content, key);
-                can = pKeys.length < 5;
-            }
-            return can;
-        },
-        get canBackspaceAt0() {
-            return !head && !isSubFirst && !isFixed;
-        },
-        get isNormal() {
-            if (!isText && (isFixed || head)) {
-                return false;
-            }
-            return true;
-        },
-    };
-}
-
 export function getParentKeys(content: ContentState, key) {
     const pKeys = [];
     while (key) {
@@ -270,117 +249,30 @@ export function isContain(content: ContentState, pKey, key) {
     return pKeys.indexOf(pKey) !== -1;
 }
 
-/**
- * insert a safe line
- * @param content
- * @param key
- * @param offset
- */
-export function newSafeTextLine(content: ContentState, key: string, offset?: number) {
-    let block = content.getBlockForKey(key);
-    let detail = getBlockDetail(content, key);
-
-    if (typeof offset !== "number") {
-        offset = block.getText().length;
-    }
-
-    let newData = detail.blockData;
-    let splitKey = key;
-    let fromKey = key;
-
-    if (detail.isFixed) {
-        const isSelf = detail.head && !detail.head.grow;
-        if (!isSelf) {
-            newData = detail.pData;
-            fromKey = detail.pKey;
+export function findNearInputBlock(content: ContentState, key: string, direction: "forward" | "backward") {
+    let block: ContentBlock;
+    while (key) {
+        key = direction === "forward" ? content.getKeyBefore(key) : content.getKeyAfter(key);
+        if (!key) {
+            break;
         }
-        splitKey = findSubBlockLastKey(content, fromKey);
-        offset = content.getBlockForKey(splitKey).getText().length;
-    }
-
-    let newHead = newData.get("head");
-    if (newHead) {
-        newData = newData.remove("head");
-        if (newHead.grow) {
-            newData = newData.set("pKey", fromKey).remove("wrapper");
+        if (isInputBlock(content, key)) {
+            block = content.getBlockForKey(key);
+            break;
         }
     }
-
-    if (!newData.get("isText")) {
-        newData = newData.set("isText", true).set("name", "div").remove("data");
-    }
-
-    content = splitBlock(content, splitKey, newData, offset);
-
-    return {
-        content,
-        newKey: content.getKeyAfter(splitKey),
-        isSafeBefore: !detail.isFixed && detail.isText,
-    };
+    return block;
 }
 
-export function findSubBlockLastKey(content: ContentState, key: string) {
-    let blockMap = content.getBlockMap();
-    let tarKey: string;
-
-    blockMap.reverse().every(function (item, curKey) {
-        let data = item.getData();
-        if (data.get("pKey") === key || curKey === key) {
-            tarKey = curKey;
-            return false;
-        }
-
-        return true;
-    });
-
-    return tarKey;
-}
-
-export function newSafeCustomLine(content: ContentState, key, offset) {
-    const restKeys = [];
-    let tr = newSafeTextLine(content, key, offset);
-
-    content = tr.content;
-    let newKey = tr.newKey;
-    if (!tr.isSafeBefore) {
-        restKeys.push(tr.newKey);
-        content = splitBlock(tr.content, tr.newKey, undefined, 0);
-        newKey = content.getKeyAfter(tr.newKey);
+export function isInputBlock(content: ContentState, key) {
+    const block = content.getBlockForKey(key);
+    let data = block.getData();
+    if (!data.get("isText")) {
+        return false;
     }
-
-    let newBlock = content.getBlockForKey(newKey);
-    let newData = newBlock.getData();
-
-    let nextBlock = content.getBlockAfter(newKey);
-    let nextData = nextBlock ? nextBlock.getData() : null;
-
-    if (!nextBlock || newBlock.getText() || !nextData.get("isText") || nextData.get("head") || nextData.get("pKey") !== newData.get("pKey")) {
-        content = splitBlock(tr.content, newKey, undefined, 0);
-        let restKey = content.getKeyAfter(newKey);
-        restKeys.push(restKey);
+    let head = data.get("head");
+    if (head && !head.grow) {
+        return false;
     }
-
-    return {
-        content,
-        newKey,
-        restKeys,
-    };
-}
-
-export function toggleListNameByKeys(content: ContentState, list: Array<string>, keys: Array<string>, name = "div") {
-    if (!name) {
-        name = "div";
-    }
-    keys.forEach(function (key) {
-        let data = getBlockData(content, key);
-        if (!data.get("isText")) return;
-        let oldName = data.get("name");
-
-        if (list.indexOf(oldName) !== -1) {
-            data = data.set("name", name);
-            content = setBlockData(content, key, data);
-        }
-    });
-
-    return content;
+    return true;
 }
