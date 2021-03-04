@@ -137,6 +137,7 @@ export const Editor = React.memo(
                     {Toolbar && <Toolbar currentState={currentState} context={attr.context} />}
                     <div className={className} style={style}>
                         <div
+                            className={classNames.root}
                             onDragStartCapture={readOnly ? null : disableEvent}
                             onCompositionStartCapture={readOnly ? null : handleCompositionStart}
                             onCompositionEndCapture={readOnly ? null : handleCompositionEnd}

@@ -4,7 +4,6 @@ import { insertNewLine, insertText, backspace, lineFeed } from "./content";
 import { addBlockWrapperDepth, reduceBlockWrapperDepth } from "./wrapper";
 import { moveSelection } from "./selection";
 import { undo, redo } from "./state";
-import { haveSpecEntity } from "./entity";
 
 const cursorKeys = [35, 36, 37, 38, 39, 40];
 

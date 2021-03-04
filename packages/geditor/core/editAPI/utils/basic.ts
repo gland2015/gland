@@ -111,34 +111,38 @@ export function reduceCurrentStyles(
     let newContentState = contentState;
 
     while (1) {
-        currentBlock = contentState.getBlockForKey(currentKey);
+        currentBlock = newContentState.getBlockForKey(currentKey);
         if (currentKey !== focusKey) {
-            currentBlock.findStyleRanges(filterFn, (start, end) => {
-                if (end > currentOffset) {
-                    if (start < currentOffset) {
-                        start = currentOffset;
+            if (isInputBlock(newContentState, currentKey)) {
+                currentBlock.findStyleRanges(filterFn, (start, end) => {
+                    if (end > currentOffset) {
+                        if (start < currentOffset) {
+                            start = currentOffset;
+                        }
+                        newContentState = Fn(newContentState, start, end, currentBlock, currentKey);
                     }
-                    newContentState = Fn(newContentState, start, end, currentBlock, currentKey);
-                }
-            });
-            currentKey = contentState.getKeyAfter(currentKey);
+                });
+            }
+            currentKey = newContentState.getKeyAfter(currentKey);
             currentOffset = 0;
             if (currentKey == null) {
                 console.log("error next blockKey not find");
                 break;
             }
         } else {
-            currentBlock.findStyleRanges(filterFn, (start, end) => {
-                if (end > currentOffset && start < focusOffset) {
-                    if (start < currentOffset) {
-                        start = currentOffset;
+            if (isInputBlock(newContentState, currentKey)) {
+                currentBlock.findStyleRanges(filterFn, (start, end) => {
+                    if (end > currentOffset && start < focusOffset) {
+                        if (start < currentOffset) {
+                            start = currentOffset;
+                        }
+                        if (end > focusOffset) {
+                            end = focusOffset;
+                        }
+                        newContentState = Fn(newContentState, start, end, currentBlock, currentKey);
                     }
-                    if (end > focusOffset) {
-                        end = focusOffset;
-                    }
-                    newContentState = Fn(newContentState, start, end, currentBlock, currentKey);
-                }
-            });
+                });
+            }
             break;
         }
     }

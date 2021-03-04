@@ -1,5 +1,3 @@
-// 修改内联样式
-
 import { RichUtils, Modifier, EditorState } from "@gland/draft-ts";
 import * as utils from "./utils";
 
@@ -29,12 +27,6 @@ function getReg(name) {
     return new RegExp(str);
 }
 
-/**
- * 移除是与name同类型的样式，也包括name，name不是字符串则移除所有
- * 若是点开头，是类名或其一部分，将按规则匹配
- * @param eState editorState
- * @param name
- */
 function inlineRemove(eState, name) {
     let reg = getReg(name);
     let toUpdateKeys = [];
@@ -63,12 +55,14 @@ function inlineRemove(eState, name) {
         return contentState;
     };
     if (sel.isCollapsed()) {
-        currentStyle.forEach((value) => {
-            if (value.match(reg)) {
-                editorState = RichUtils.toggleInlineStyle(eState, value);
-            }
-        });
-        toUpdateKeys = [sel.anchorKey];
+        if (utils.isInputBlock(contentState, sel.anchorKey)) {
+            currentStyle.forEach((value) => {
+                if (value.match(reg)) {
+                    editorState = RichUtils.toggleInlineStyle(eState, value);
+                }
+            });
+            toUpdateKeys = [sel.anchorKey];
+        }
     } else {
         contentState = utils.reduceCurrentStyles(Fn, contentState, sel);
         editorState = EditorState.push(eState, contentState, "change-inline-style");
