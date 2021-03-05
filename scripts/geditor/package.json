@@ -1,0 +1,5 @@
+{
+    "scripts": {
+        "build": "npx babel ../../packages/geditor --out-dir ../../build/geditor"
+    }
+}

@@ -1,4 +1,4 @@
-import {decodeByBrowser} from './dataTransform';
+import { decodeByBrowser } from "./dataTransform";
 
 export { parseWMFFile };
 
@@ -7,14 +7,14 @@ interface decode {
 }
 /**
  * 解析wmf图元文件为png的dataurl
- * @param blob 
- * @param decode 
+ * @param blob
+ * @param decode
  */
 function parseWMFFile(blob: Blob, decode: decode | any = myDecode): Promise<string> {
-    return new Promise(async function(resolve, reject) {
+    return new Promise(async function (resolve, reject) {
         let canvas = document.createElement("canvas");
         let reader: any = new FileReader();
-        reader.onload = async function(event) {
+        reader.onload = async function (event) {
             try {
                 await parseWMF(new DataView(event.target.result), canvas);
                 setTimeout(() => {
@@ -25,7 +25,7 @@ function parseWMFFile(blob: Blob, decode: decode | any = myDecode): Promise<stri
                 reject();
             }
         };
-        reader.onerror = function(event) {
+        reader.onerror = function (event) {
             console.error(event);
             reject();
         };
@@ -50,10 +50,10 @@ function parseWMFFile(blob: Blob, decode: decode | any = myDecode): Promise<stri
         // TODO: Not implement rop
         let img = new Image();
         img.src = "data:image/bmp;base64," + base64ImgData;
-        img.onload = function() {
+        img.onload = function () {
             ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
         };
-        img.onerror = function(stuff) {
+        img.onerror = function (stuff) {
             console.error("Img Onerror:", stuff);
         };
     }
@@ -135,12 +135,7 @@ function parseWMFFile(blob: Blob, decode: decode | any = myDecode): Promise<stri
         let green = (color >> 8) & 0xff;
         let red = color & 0xff;
         let result: any = (red << 16) | (green << 8) | blue;
-        result =
-            "#" +
-            result
-                .toString(16)
-                .toLocaleUpperCase()
-                .substr(0, 6);
+        result = "#" + result.toString(16).toLocaleUpperCase().substr(0, 6);
         return result;
     }
 
@@ -967,7 +962,7 @@ function parseWMFFile(blob: Blob, decode: decode | any = myDecode): Promise<stri
 
                     insertObjToFirstNull(objs, {
                         type: "PALETTE",
-                        entries: entries
+                        entries: entries,
                     });
 
                     break;
@@ -977,7 +972,7 @@ function parseWMFFile(blob: Blob, decode: decode | any = myDecode): Promise<stri
 
                     insertObjToFirstNull(objs, {
                         type: "PATTERN_BRUSH",
-                        image: image
+                        image: image,
                     });
 
                     break;
@@ -996,7 +991,7 @@ function parseWMFFile(blob: Blob, decode: decode | any = myDecode): Promise<stri
                         type: "PEN",
                         style: style,
                         color: color,
-                        width: width
+                        width: width,
                     });
 
                     break;
@@ -1057,7 +1052,7 @@ function parseWMFFile(blob: Blob, decode: decode | any = myDecode): Promise<stri
                         outPrecision: outPrecision,
                         clipPrecision: clipPrecision,
                         quality: quality,
-                        pitchAndFamily: pitchAndFamily
+                        pitchAndFamily: pitchAndFamily,
                     };
 
                     insertObjToFirstNull(objs, obj);
@@ -1075,7 +1070,7 @@ function parseWMFFile(blob: Blob, decode: decode | any = myDecode): Promise<stri
                         type: "BRUSH",
                         style: style,
                         color: color,
-                        hatch: hatch
+                        hatch: hatch,
                     });
 
                     break;
@@ -1095,7 +1090,7 @@ function parseWMFFile(blob: Blob, decode: decode | any = myDecode): Promise<stri
                         sx: sx,
                         sy: sy,
                         ex: ex,
-                        ey: ey
+                        ey: ey,
                     });
 
                     break;
@@ -1113,11 +1108,11 @@ function parseWMFFile(blob: Blob, decode: decode | any = myDecode): Promise<stri
 function myDecode(codes, charset) {
     const charsetMap = {
         CP936: "GBK",
-        CP1252: "windows-1252"
+        CP1252: "windows-1252",
         //big5: 'big5',
         //['utf-8']: 'utf-8',
     };
-    return new Promise(async function(resolve, reject) {
+    return new Promise(async function (resolve, reject) {
         let chars;
         let codeStrs;
         if (charsetMap[charset]) charset = charsetMap[charset];
@@ -1132,7 +1127,7 @@ function myDecode(codes, charset) {
 
     function toHexString(uint8Array) {
         let result = "";
-        uint8Array.forEach(function(value) {
+        uint8Array.forEach(function (value) {
             if (value) {
                 result += "%" + value.toString(16);
             }
@@ -1146,4 +1141,3 @@ function myDecode(codes, charset) {
         else return str;
     }
 }
-

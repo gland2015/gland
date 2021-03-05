@@ -11,7 +11,9 @@ export function reduceTextBlockData(editorState: EditorState, Fn: (conent, block
     return { editorState, toUpdateKeys };
 
     function myFn(conent, blockData, key) {
-        if (blockData.get("isText")) {
+        let isText = blockData.get("isText");
+        let head = blockData.get("head");
+        if (isText && (!head || head.grow)) {
             let newBlockData = Fn(conent, blockData, blockData.get("name"), key);
             if (blockData !== newBlockData) {
                 toUpdateKeys.push(key);

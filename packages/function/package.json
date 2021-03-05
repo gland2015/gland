@@ -11,7 +11,8 @@
     "keywords": [
         "react",
         "javascript",
-        "function"
+        "function",
+        "nodejs"
     ],
     "sideEffects": false,
     "scripts": {

@@ -113,16 +113,14 @@ export function reduceCurrentStyles(
     while (1) {
         currentBlock = newContentState.getBlockForKey(currentKey);
         if (currentKey !== focusKey) {
-            if (isInputBlock(newContentState, currentKey)) {
-                currentBlock.findStyleRanges(filterFn, (start, end) => {
-                    if (end > currentOffset) {
-                        if (start < currentOffset) {
-                            start = currentOffset;
-                        }
-                        newContentState = Fn(newContentState, start, end, currentBlock, currentKey);
+            currentBlock.findStyleRanges(filterFn, (start, end) => {
+                if (end > currentOffset) {
+                    if (start < currentOffset) {
+                        start = currentOffset;
                     }
-                });
-            }
+                    newContentState = Fn(newContentState, start, end, currentBlock, currentKey);
+                }
+            });
             currentKey = newContentState.getKeyAfter(currentKey);
             currentOffset = 0;
             if (currentKey == null) {
@@ -130,19 +128,17 @@ export function reduceCurrentStyles(
                 break;
             }
         } else {
-            if (isInputBlock(newContentState, currentKey)) {
-                currentBlock.findStyleRanges(filterFn, (start, end) => {
-                    if (end > currentOffset && start < focusOffset) {
-                        if (start < currentOffset) {
-                            start = currentOffset;
-                        }
-                        if (end > focusOffset) {
-                            end = focusOffset;
-                        }
-                        newContentState = Fn(newContentState, start, end, currentBlock, currentKey);
+            currentBlock.findStyleRanges(filterFn, (start, end) => {
+                if (end > currentOffset && start < focusOffset) {
+                    if (start < currentOffset) {
+                        start = currentOffset;
                     }
-                });
-            }
+                    if (end > focusOffset) {
+                        end = focusOffset;
+                    }
+                    newContentState = Fn(newContentState, start, end, currentBlock, currentKey);
+                }
+            });
             break;
         }
     }

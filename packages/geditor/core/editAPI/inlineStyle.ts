@@ -55,14 +55,12 @@ function inlineRemove(eState, name) {
         return contentState;
     };
     if (sel.isCollapsed()) {
-        if (utils.isInputBlock(contentState, sel.anchorKey)) {
-            currentStyle.forEach((value) => {
-                if (value.match(reg)) {
-                    editorState = RichUtils.toggleInlineStyle(eState, value);
-                }
-            });
-            toUpdateKeys = [sel.anchorKey];
-        }
+        currentStyle.forEach((value) => {
+            if (value.match(reg)) {
+                editorState = RichUtils.toggleInlineStyle(eState, value);
+            }
+        });
+        toUpdateKeys = [sel.anchorKey];
     } else {
         contentState = utils.reduceCurrentStyles(Fn, contentState, sel);
         editorState = EditorState.push(eState, contentState, "change-inline-style");
