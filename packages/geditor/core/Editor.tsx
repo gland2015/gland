@@ -1,8 +1,11 @@
+// todo
+// 1、wrapper depth method
+
 import React from "react";
 import { EventEmitter } from "events";
 import { Editor as DraftEditor, EditorState, convertToRaw, genKey } from "@gland/draft-ts";
 
-import { EditorProps } from "./interface";
+import { EditorProps, IEditorContext } from "./interface";
 import { customStyleFn, blockRenderMap } from "./model";
 import { EditorContext, TargetContext } from "./public/context";
 import { getEditorState, insertText, makeCollapsed, haveSpecEntity, defaultKeyHandler, getCurrentState } from "./editAPI";
@@ -27,8 +30,8 @@ function initer(props: EditorProps) {
 
 export const Editor = React.memo(
     React.forwardRef(function (props: EditorProps, ref) {
-        const { Toolbar, value, config, readOnly, onChange, className, style, data } = props;
-        const { decorators, handleKey, noFollowBlocks, RemoteDataProvider, nonTexts, wrappers, subBlocks, entitys, classNames } = config;
+        const { Toolbar, value, config, readOnly, onChange, className, style, data, RemoteDataProvider } = props;
+        const { decorators, handleKey, noFollowBlocks, nonTexts, wrappers, subBlocks, entitys, classNames } = config;
 
         const [state, dispatch] = React.useReducer(reducer, props, initer);
         const editorState: EditorState = state.editorState;
@@ -59,6 +62,8 @@ export const Editor = React.memo(
                         editorState: getEditorState(value, config.decorators),
                     },
                 });
+            } else {
+                attr.hasInit = true;
             }
         }, [value]);
 
@@ -71,19 +76,7 @@ export const Editor = React.memo(
                     event: new EventEmitter(),
                     editor: null,
                     toUpdateKeys: null as Array<string>,
-
-                    editorState: null,
-                    updateEditorState: null,
-                    target: null,
-                    readOnly: false,
-                    data: null,
-                    nonTexts: null,
-                    wrappers: null,
-                    entitys: null,
-                    subBlocks: null,
-                    classNames: null,
-                    noFollowBlocks: null,
-                },
+                } as IEditorContext,
                 handleComposition: null,
             };
         }, []);
@@ -91,14 +84,14 @@ export const Editor = React.memo(
         Object.assign(attr.context, {
             editorState: state.editorState,
             updateEditorState,
-            readOnly,
             data,
             target,
+            readOnly,
             nonTexts,
             wrappers,
+            classNames,
             subBlocks,
             entitys,
-            classNames,
             noFollowBlocks,
         });
 
@@ -108,10 +101,8 @@ export const Editor = React.memo(
 
         React.useImperativeHandle(ref, () => {
             attr.context.editor = {
-                focus() {
-                    if (!attr.context.target.hasFocus) {
-                        attr.draftEditor.focus();
-                    }
+                focus(pos?) {
+                    attr.draftEditor.focus(pos);
                 },
                 get remote() {
                     return attr.remote;
@@ -127,10 +118,6 @@ export const Editor = React.memo(
             return getCurrentState(editorState);
         }, [editorState]);
 
-        React.useEffect(() => {
-            attr.hasInit = true;
-        }, []);
-
         return (
             <EditorContext.Provider value={attr.context}>
                 <TargetContext.Provider value={target}>
@@ -145,6 +132,7 @@ export const Editor = React.memo(
                             {RemoteDataProvider && <RemoteDataProvider ref={(r) => (attr.remote = r)} context={attr.context} />}
                             <DraftEditor
                                 ref={(r) => (attr.draftEditor = r)}
+                                key={readOnly + ""}
                                 readOnly={readOnly}
                                 editorState={state.editorState}
                                 onChange={updateEditorState}

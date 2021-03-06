@@ -123,7 +123,6 @@ function packBlocks(childrens: Array<any>, context) {
         if (data_head) {
             const Comp_sub = subBlocks[data_head.name];
             const list = [];
-
             const ele = <Comp_sub key={key} childs={list} head={item} context={context} data={data_head.data} subblock={true} />;
 
             if (target) {

@@ -1,0 +1,80 @@
+import React from "react";
+import loadable from "@loadable/component";
+import { Spinner } from "../../spin/Spinner";
+import {
+    dark,
+    atomDark,
+    a11yDark,
+    base16AteliersulphurpoolLight,
+    cb,
+    coy,
+    darcula,
+    dracula,
+    duotoneDark,
+    duotoneEarth,
+    duotoneForest,
+    duotoneLight,
+    duotoneSea,
+    duotoneSpace,
+    funky,
+    ghcolors,
+    hopscotch,
+    materialDark,
+    materialLight,
+    materialOceanic,
+    nord,
+    okaidia,
+    pojoaque,
+    prism,
+    shadesOfPurple,
+    solarizedlight,
+    synthwave84,
+    tomorrow,
+    twilight,
+    vs,
+    vscDarkPlus,
+    xonokai,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
+
+const options = {
+    fallback: <Spinner style={{ fontSize: 30 }} />,
+};
+
+export const SyntaxHighlighter = loadable(() => import("./SyntaxHighlighter"), options);
+
+export const styles = {
+    dark,
+    atomDark,
+    a11yDark,
+    base16AteliersulphurpoolLight,
+    cb,
+    coy,
+    darcula,
+    dracula,
+    duotoneDark,
+    duotoneEarth,
+    duotoneForest,
+    duotoneLight,
+    duotoneSea,
+    duotoneSpace,
+    funky,
+    ghcolors,
+    hopscotch,
+    materialDark,
+    materialLight,
+    materialOceanic,
+    nord,
+    okaidia,
+    pojoaque,
+    prism,
+    shadesOfPurple,
+    solarizedlight,
+    synthwave84,
+    tomorrow,
+    twilight,
+    vs,
+    vscDarkPlus,
+    xonokai,
+};
+
+//

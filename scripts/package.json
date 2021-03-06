@@ -1,0 +1,5 @@
+{
+    "scripts": {
+        "build": "node ./utils/buildall.js"
+    }
+}

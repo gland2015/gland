@@ -45,7 +45,6 @@ const BlockContent = React.memo(
             const style = blockData.get("style");
 
             const textLength = block.getText().length;
-
             return React.createElement(
                 htmlType,
                 {

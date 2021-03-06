@@ -2,7 +2,10 @@ import React from "react";
 import "katex/dist/katex.min.css";
 import { BlockMath } from "react-katex";
 
-import { Modal, FabricButton, TextInput, ChoiceGroup } from "@/components/fluent";
+import { FabricButton } from "@gland/react/button";
+import { Modal } from "@gland/react/modal";
+import { TextInput } from "@gland/react/input";
+import { ChoiceGroup } from "@gland/react/radio";
 
 import { ToolAttr } from "../utils";
 import { toolClasses as classes } from "../style";

@@ -1,5 +1,6 @@
 import React from "react";
-import { Callout, FabricLink } from "@/components/fluent";
+import { Callout } from "@gland/react/popover";
+import { FabricLink } from "@gland/react/link";
 import { icons } from "../icons";
 import { richClasses as classes } from "../style";
 import { editEvent } from "../editEvent";
@@ -15,10 +16,9 @@ export function Link(props) {
         []
     );
 
-    
     return (
         <React.Fragment>
-            <a ref={(r) => (attr.root = r)} href={data.url} className={classes.link}>
+            <a ref={(r) => (attr.root = r)} href={data.url} className={classes.link} target="__blank">
                 {children}
             </a>
             {readOnly ? null : (

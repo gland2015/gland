@@ -1,5 +1,5 @@
 import React from "react";
-import { fluentIcon } from "@/asset/svg/icons";
+import { fluentIcon } from "../../common/asset/icons";
 
 export function FileProxyComp(props) {
     return (

@@ -1,7 +1,9 @@
 import React from "react";
-import { Modal, Dropdown, FabricButton } from "@/components/fluent";
-import { CodeMirror } from "../../../AsyncBasic/CodeMirror";
-import { styles } from "../../../AsyncBasic/SyntaxHighlighter";
+import { Modal } from "@gland/react/modal";
+import { Dropdown } from "@gland/react/dropdown";
+import { FabricButton } from "@gland/react/button";
+import { CodeMirror } from "@gland/react/common/CodeMirror";
+import { styles } from "@gland/react/common/SyntaxHighlighter";
 import { ToolAttr } from "../utils";
 import { toolClasses as classes } from "../style";
 

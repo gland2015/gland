@@ -261,6 +261,12 @@ export function useHandleEdit(toolAttr) {
             editorCtx.updateEditorState(result.editorState, result.toUpdateKeys);
         }
 
+        function handleEditExpandableList(args) {
+            const editorState = editorCtx.editorState;
+            let result = handles.handleEditExpandableList(editorState, args.key, args.data);
+            editorCtx.updateEditorState(result.editorState, result.toUpdateKeys);
+        }
+
         function handleAddTable(data) {
             const editorState = editorCtx.editorState;
             let result = handles.handleAddTable(editorState, data, data.row * data.column);
@@ -342,6 +348,8 @@ export function useHandleEdit(toolAttr) {
         attr.event.on(attr.editEvent.editComment, handleEditComment);
 
         attr.event.on(attr.editEvent.expandableList, handleAddExpandableList);
+        attr.event.on(attr.editEvent.editExpandableList, handleEditExpandableList);
+
         attr.event.on(attr.editEvent.addTable, handleAddTable);
         attr.event.on(attr.editEvent.editTableAttr, handleEditTableAttr);
         attr.event.on(attr.editEvent.editTableNum, handleEditTableNum);

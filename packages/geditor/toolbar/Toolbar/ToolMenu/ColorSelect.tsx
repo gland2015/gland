@@ -1,7 +1,8 @@
 import React from "react";
 import clsx from "clsx";
 import { SketchPicker } from "react-color";
-import { Callout, FabricButton } from "@/components/fluent";
+import { FabricButton } from "@gland/react/button";
+import { Callout } from "@gland/react/popover";
 
 import { icons } from "../../icons";
 import { toolClasses as classes } from "../style";

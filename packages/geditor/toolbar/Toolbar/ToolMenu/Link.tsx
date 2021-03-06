@@ -4,7 +4,9 @@ import { icons } from "../../icons";
 import { toolNormalBtn, toolClasses as classes } from "../style";
 import { ToolAttr } from "../utils";
 import { BtnTip } from "./widget";
-import { Callout, TextInput, FabricButton } from "@/components/fluent";
+import { FabricButton } from "@gland/react/button";
+import { Callout } from "@gland/react/popover";
+import { TextInput } from "@gland/react/input";
 
 export function Link(props: { attr: ToolAttr }) {
     const [show, setShow] = React.useState(false);

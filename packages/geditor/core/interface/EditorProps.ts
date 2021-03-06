@@ -4,7 +4,6 @@ import { EditorState } from "@gland/draft-ts";
 export interface EditorConfig {
     decorators: Array<any>;
     handleKey;
-    RemoteDataProvider: any;
 
     noFollowBlocks: Array<string>;
     nonTexts: { [key: string]: any };
@@ -24,6 +23,7 @@ export interface EditorProps {
 
     data?: any;
     Toolbar?: any;
+    RemoteDataProvider: any;
     onChange?: () => any;
 }
 

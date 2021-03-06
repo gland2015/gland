@@ -14,7 +14,6 @@ export function DraftEntity(props) {
     if (isIMMu) {
         return <Comp {...props} context={context} data={data} />;
     }
-
     return <EntityWithIsSelected props={props} context={context} data={data} Comp={Comp} />;
 }
 

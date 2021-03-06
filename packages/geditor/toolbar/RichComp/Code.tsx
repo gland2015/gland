@@ -1,11 +1,8 @@
 import React from "react";
 import clsx from "clsx";
-
-import { SyntaxHighlighter, styles } from "../../AsyncBasic/SyntaxHighlighter";
+import { SyntaxHighlighter, styles } from "@gland/react/common/SyntaxHighlighter";
 
 import { richClasses as classes } from "../style";
-import { FabricButton } from "@/components/fluent";
-
 import { editEvent } from "../editEvent";
 import { icons } from "../icons";
 

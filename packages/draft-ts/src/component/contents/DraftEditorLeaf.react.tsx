@@ -81,6 +81,7 @@ class DraftEditorLeaf extends React.Component<Props> {
     leaf: HTMLElement;
     rgtLeaf: HTMLElement;
     lftLeaf: HTMLElement;
+    charzero = "\u200b";
 
     _setSelection(): void {
         const { selection, isLast } = this.props;
@@ -98,6 +99,12 @@ class DraftEditorLeaf extends React.Component<Props> {
         // gland
         if (isCustom) {
             end = start + 1;
+            if (this.rgtLeaf && this.rgtLeaf.innerText !== this.charzero) {
+                this.rgtLeaf.innerHTML = this.charzero;
+            }
+            if (this.lftLeaf && this.lftLeaf.innerText !== this.charzero) {
+                this.lftLeaf.innerHTML = this.charzero;
+            }
         }
         if (!selection.hasEdgeWithin(blockKey, start, end)) {
             return;
@@ -198,7 +205,7 @@ class DraftEditorLeaf extends React.Component<Props> {
                 <React.Fragment>
                     {start === 0 && !readOnly ? (
                         <span ref={(r) => (this.lftLeaf = r)} data-offset-key={offsetKey} data-type="left">
-                            {"\u200b"}
+                            {this.charzero}
                         </span>
                     ) : null}
                     <span
@@ -208,7 +215,6 @@ class DraftEditorLeaf extends React.Component<Props> {
                                 ? styleObj
                                 : {
                                       ...styleObj,
-                                      pointerEvents: "none",
                                       MozUserSelect: "none",
                                   }
                         }
@@ -221,7 +227,7 @@ class DraftEditorLeaf extends React.Component<Props> {
                     </span>
                     {readOnly ? null : (
                         <span ref={(r) => (this.rgtLeaf = r)} data-offset-key={offsetKey} data-type="right">
-                            {"\u200b"}
+                            {this.charzero}
                         </span>
                     )}
                 </React.Fragment>

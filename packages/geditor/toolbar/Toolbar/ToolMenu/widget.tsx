@@ -1,9 +1,10 @@
 import React from "react";
 import clsx from "clsx";
+import { Tooltip, Callout } from "@gland/react/popover";
+import { preventDefault } from "@gland/function/preventDefault";
+
 import { icons } from "../../icons";
-import { Tooltip, Callout } from "@/components/fluent";
 import { toolClasses as classes, toolNormalBtn } from "../style";
-import { preventDefault } from "@/utils";
 
 export function VerLine(props) {
     return <div className={classes.verLine} />;

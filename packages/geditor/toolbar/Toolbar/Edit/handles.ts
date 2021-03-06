@@ -256,6 +256,10 @@ export function handleAddExpandableList(state) {
     return insertSubBlock(state, { name: "ExpandableList", grow: true, data: { open: true } }, 1);
 }
 
+export function handleEditExpandableList(state, key, data) {
+    return updateSubblockHeadData(state, key, data);
+}
+
 export function handleAddTable(state, data, childNum) {
     return insertSubBlock(state, { name: "Table", grow: false, data }, childNum);
 }

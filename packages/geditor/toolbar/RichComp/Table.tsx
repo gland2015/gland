@@ -1,9 +1,9 @@
 import React from "react";
-import { ContextualMenu, ContextWrapper } from "@/components/fluent";
-import { TargetContext } from "@gland/geditor/core";
-import { richClasses as classes } from "../style";
 import clsx from "clsx";
 
+import { ContextualMenu, ContextWrapper } from "@gland/react/menu";
+import { TargetContext } from "../../core";
+import { richClasses as classes } from "../style";
 import { editEvent } from "../editEvent";
 
 export function Table(props) {
@@ -43,7 +43,7 @@ function TableWithTargetKey(props) {
 
 const TableRender = React.memo(function (props: any) {
     const { rows, targetKey } = props;
-    const { data, context, head } = props.props;
+    let { data, context, head } = props.props;
     const { widthType, width, align } = data;
     const { readOnly } = context;
     const blockKey = head.key;

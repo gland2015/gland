@@ -75,7 +75,9 @@ class DraftEditorBlock extends React.Component<Props> {
             this.props.block !== nextProps.block ||
             this.props.tree !== nextProps.tree ||
             this.props.direction !== nextProps.direction ||
-            (isBlockOnSelectionEdge(nextProps.selection, nextProps.block.getKey()) && nextProps.forceSelection)
+            // gland
+            // (isBlockOnSelectionEdge(nextProps.selection, nextProps.block.getKey()) && nextProps.forceSelection) ||
+            nextProps.forceSelection
         );
     }
 

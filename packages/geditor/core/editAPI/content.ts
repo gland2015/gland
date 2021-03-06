@@ -47,7 +47,7 @@ export function insertText(editorState: EditorState, text: string, style?: Array
         focusKey: key,
     }) as SelectionState;
 
-    editorState = EditorState.forceSelection(editorState, newSelection);
+    editorState = EditorState.acceptSelection(editorState, newSelection);
     return { editorState, toUpdateKeys: [selection.anchorKey, vaildRes.key, ...collResult.toUpdateKeys] };
 }
 

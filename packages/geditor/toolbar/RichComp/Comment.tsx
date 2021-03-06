@@ -1,6 +1,6 @@
 import React from "react";
 import clsx from "clsx";
-import { Tooltip } from "@/components/fluent";
+import { Tooltip } from "@gland/react/popover";
 import { icons } from "../icons";
 import { richClasses as classes } from "../style";
 import { editEvent } from "../editEvent";
@@ -29,7 +29,7 @@ function CommentContent(props) {
             beakWidth={10}
         >
             <div
-                className={classes.comment}
+                className={clsx(classes.comment, context.readOnly ? null : classes.comment_edit)}
                 onClick={
                     context.readOnly
                         ? null

@@ -61,6 +61,7 @@ export const editEvent = {
     editComment: "editComment",
 
     expandableList: "expandableList",
+    editExpandableList: "editExpandableList",
 
     openEditTable: "openEditTable",
     addTable: "addTable",

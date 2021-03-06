@@ -1,5 +1,4 @@
 import aesjs from 'aes-js';
-// import scrypt from 'scrypt-js';
 import md5 from 'md5';
 
 function encrypt(string, key) {

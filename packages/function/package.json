@@ -1,29 +1,30 @@
 {
-    "name": "@gland/function",
-    "description": "各种实用的函数",
-    "license": "MIT",
-    "version": "1.0.0",
-    "private": false,
-    "author": "gland2015",
-    "publishConfig": {
-        "access": "public"
-    },
-    "keywords": [
-        "react",
-        "javascript",
-        "function",
-        "nodejs"
-    ],
-    "sideEffects": false,
-    "scripts": {
-        "build": "rollup --config ./__rollup.config.js",
-        "clear": "node ./__clearFile.js"
-    },
-    "dependencies": {},
-    "devDependencies": {},
-    "homepage": "https://github.com/gland2015/gland",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/gland2015/gland.git"
-    }
+	"name": "@gland/function",
+	"description": "some practical function",
+	"license": "MIT",
+	"version": "1.0.1",
+	"private": false,
+	"author": "gland2015",
+	"publishConfig": {
+		"access": "public"
+	},
+	"keywords": [
+		"react",
+		"javascript",
+		"function",
+		"nodejs"
+	],
+	"sideEffects": false,
+	"scripts": {},
+	"dependencies": {
+		"jssha": "^3.2.0",
+		"md5": "^2.3.0",
+		"xlsx": "^0.16.8"
+	},
+	"devDependencies": {},
+	"homepage": "https://github.com/gland2015/gland",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/gland2015/gland.git"
+	}
 }

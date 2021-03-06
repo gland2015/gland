@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "ES2019",
+        "module": "commonjs",
+        "lib": ["dom", "es2015", "es2017", "es2018"],
+        "jsx": "react",
+        "declaration": true,
+        "sourceMap": true,
+        "strict": false,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "noResolve": true
+    }
+}

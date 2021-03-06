@@ -1,6 +1,6 @@
 import React from "react";
 import clsx from "clsx";
-import { FabricButton, Spinner } from "@/components/fluent";
+import { Spinner } from "@gland/react/spin";
 import { icons } from "../icons";
 import { richClasses as classes } from "../style";
 import { editEvent } from "../editEvent";

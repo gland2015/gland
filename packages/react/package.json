@@ -1,0 +1,42 @@
+{
+	"name": "@gland/geditor",
+	"description": "some react commponent",
+	"license": "MIT",
+	"version": "1.0.1",
+	"private": false,
+	"author": "gland2015",
+	"publishConfig": {
+		"access": "public"
+	},
+	"keywords": [
+		"react"
+	],
+	"dependencies": {
+		"clsx": "^1.1.1",
+		"codemirror": "^5.58.1",
+		"highlight.js": "^10.3.1",
+		"history": "^4.10.1",
+		"immutable": "^3.7.4",
+		"notistack": "^1.0.1",
+		"react-codemirror2": "^7.2.1",
+		"react-color": "^2.19.3",
+		"react-jss": "^10.5.1",
+		"react-katex": "^2.0.2",
+		"react-markdown": "^5.0.0",
+		"react-player": "^2.9.0",
+		"react-router": "^5.2.0",
+		"react-router-dom": "^5.2.0",
+		"react-spring": "^9.0.0-rc.3",
+		"react-syntax-highlighter": "^15.4.3",
+		"react-use-gesture": "^7.0.16",
+		"remark-gfm": "^1.0.0",
+		"remark-math": "^4.0.0",
+		"tslib": "^2.0.3"
+	},
+	"devDependencies": {},
+	"homepage": "https://github.com/gland2015/gland",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/gland2015/gland.git"
+	}
+}

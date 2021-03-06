@@ -1,10 +1,10 @@
 import React from "react";
 import clsx from "clsx";
-import { TargetContext } from "@gland/geditor/core";
+import { TargetContext } from "../../core";
 import { icons } from "../icons";
 import { richClasses as classes } from "../style";
-
-import { Collapse } from "@/components/common";
+import { Collapse } from "@gland/react/common/Collapse";
+import { editEvent } from "../editEvent";
 
 export function ExpandableList(props) {
     const target: any = React.useContext(TargetContext);
@@ -39,7 +39,7 @@ function getIsSelected(childs, key) {
 }
 
 const Content = React.memo(function (props: any) {
-    const { context, data, head, childs } = props.props;
+    let { context, data, head, childs } = props.props;
     const targetKey = props.targetKey;
 
     const [open, setOpen] = React.useState(data.open);
@@ -47,21 +47,21 @@ const Content = React.memo(function (props: any) {
     React.useEffect(() => {
         if (open || context.readOnly) return;
         setOpen(true);
-        data.open = true;
+        handleOpenChange(true);
     }, [childs?.length]);
 
     React.useEffect(() => {
         if (open || context.readOnly) return;
         if (targetKey && targetKey !== head.key) {
             setOpen(true);
-            data.open = true;
+            handleOpenChange(true);
         }
     }, [targetKey]);
 
     return (
         <div className={clsx(classes.expandList, context.readOnly ? null : classes.expandList_e, targetKey ? classes.expandList_focus : null)}>
             <div
-                className={classes.expandListHead}
+                className={clsx(classes.expandListHead, context.readOnly ? classes.expandListNotE : null)}
                 onClick={
                     context.readOnly
                         ? (e) => {
@@ -78,8 +78,8 @@ const Content = React.memo(function (props: any) {
                             ? null
                             : () => {
                                   let newOpen = !open;
-                                  data.open = newOpen;
                                   setOpen(newOpen);
+                                  handleOpenChange(newOpen);
                               }
                     }
                 >
@@ -92,6 +92,10 @@ const Content = React.memo(function (props: any) {
             </Collapse>
         </div>
     );
+
+    function handleOpenChange(newOpen) {
+        context.event.emit(editEvent.editExpandableList, { key: head.key, data: { open: newOpen } });
+    }
 });
 
 function handleMosuedown(event: React.MouseEvent) {

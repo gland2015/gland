@@ -5,7 +5,7 @@ import { preventDefault } from "@gland/function/preventDefault";
 
 import { jss } from "../../common/jss";
 import { fluentIcon } from "../../common/asset";
-import { AnimateDiv } from "../../common/animation";
+import { AnimateDiv } from "../../common/Animation";
 import { FabricButton } from "../../button/FabricButton";
 
 const transition = `opacity 300ms cubic-bezier(0.4, 0, 0.2, 1), transform 300ms cubic-bezier(0.4, 0, 0.2, 1)`;

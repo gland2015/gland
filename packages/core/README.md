@@ -1,2 +1,0 @@
-# gland
-javascript和react

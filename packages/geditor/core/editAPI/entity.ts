@@ -38,10 +38,8 @@ export function updateEntity(editorState: EditorState, key, data) {
     content = utils.updateEntityData(content, key, data);
 
     let sel = editorState.getSelection();
-
-    editorState = EditorState.push(editorState, content, "change-block-data");
+    editorState = EditorState.push(editorState, content, "change-inline-style");
     editorState = EditorState.forceSelection(editorState, sel);
-
     return { editorState, toUpdateKeys: null };
 }
 

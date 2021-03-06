@@ -1,10 +1,10 @@
 import React from "react";
 import clsx from "clsx";
-import { Callout } from "@/components/fluent";
+import { Callout } from "@gland/react/popover";
 
 import { icons } from "../../icons";
 import { toolClasses as classes, toolNormalBtn } from "../style";
-import { preventDefault } from "@/utils";
+import { preventDefault } from "@gland/function/preventDefault";
 import { BtnTip } from "./widget";
 import { emojiList, emojiMap } from "../../emoji";
 import { ToolAttr } from "../utils";

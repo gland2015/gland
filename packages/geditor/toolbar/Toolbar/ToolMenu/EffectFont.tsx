@@ -1,10 +1,10 @@
 import React from "react";
 import clsx from "clsx";
 import { icons } from "../../icons";
-import { Callout } from "@/components/fluent";
+import { Callout } from "@gland/react/popover";
 import { BtnTip } from "./widget";
 import { toolClasses as classes } from "../style";
-import { preventDefault } from "@/utils";
+import { preventDefault } from "@gland/function/preventDefault";
 import { ToolAttr } from "../utils";
 
 export function EffectFont(props: { attr: ToolAttr }) {

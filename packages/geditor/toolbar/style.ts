@@ -1,32 +1,5 @@
 import { jss } from "@gland/react/common/jss";
 
-export function attachStyle() {
-    if (!rootJssSheet.attached) {
-        rootJssSheet.attach();
-        fontEffectSheet.attach();
-        richJssSheet.attach();
-    }
-}
-
-const rootJssSheet = jss.createStyleSheet({
-    root: {
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-    },
-    editor: {
-        display: "flex",
-        flexDirection: "column",
-        overflow: "auto",
-        flexGrow: 1,
-        "& .public-DraftEditor-content": {
-            padding: 10,
-        },
-    },
-});
-
-export const rootClasses = rootJssSheet.classes;
-
 const richJssSheet = jss.createStyleSheet({
     // basic
     root: {
@@ -142,7 +115,7 @@ const richJssSheet = jss.createStyleSheet({
         textAlign: "center",
         borderRadius: 3,
         border: "1px solid transparent",
-        margin: 5,
+        margin: "7px 20px",
         padding: "8px 8px",
         minHeight: 20,
         minWidth: 20,
@@ -270,17 +243,19 @@ const richJssSheet = jss.createStyleSheet({
         display: "inline-block",
         cursor: "pointer",
         borderRadius: 2,
-        "&:hover": {
-            backgroundColor: "rgb(243, 242, 241)",
-        },
-        "&:active": {
-            backgroundColor: "rgb(237, 235, 233)",
-        },
         "& svg": {
             width: "1em",
             height: "1em",
             fill: "currentcolor",
             verticalAlign: "text-bottom",
+        },
+    },
+    comment_edit: {
+        "&:hover": {
+            backgroundColor: "rgb(243, 242, 241)",
+        },
+        "&:active": {
+            backgroundColor: "rgb(237, 235, 233)",
         },
     },
     commentCt: {
@@ -319,6 +294,9 @@ const richJssSheet = jss.createStyleSheet({
         display: "flex",
         alignItems: "center",
     },
+    expandListNotE: {
+        cursor: "pointer",
+    },
     expandListIcon: {
         marginRight: 5,
         borderRadius: 3,
@@ -353,7 +331,7 @@ const richJssSheet = jss.createStyleSheet({
     },
     tableRoot: {
         padding: "5px 10px",
-        margin: "5px 7px",
+        margin: "7px 20px",
         maxWidth: "100%",
         maxHeight: 400,
         overflow: "auto",
@@ -539,21 +517,11 @@ const fontEffectSheet = jss.createStyleSheet({
     },
 });
 
-// listol: {
-//     counterReset: "custom_count",
-// },
-// listol_item: {
-//     "&[data-subwrapper=true]": {
-//         paddingLeft: 25,
-//     },
-//     "&>*:first-child:not([data-depth])": {
-//         position: "relative",
-//         display: "flex",
-//         "&:before": {
-//             counterIncrement: "custom_count",
-//             content: 'counter(custom_count)"."',
-//             marginRight: 7,
-//             marginLeft: 5,
-//         },
-//     },
-// },
+function attachStyle() {
+    if (!richJssSheet.attached) {
+        richJssSheet.attach();
+        fontEffectSheet.attach();
+    }
+}
+
+attachStyle();
