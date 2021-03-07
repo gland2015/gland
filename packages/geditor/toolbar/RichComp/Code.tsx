@@ -1,6 +1,6 @@
 import React from "react";
 import clsx from "clsx";
-import { SyntaxHighlighter, styles } from "@gland/react/common/SyntaxHighlighter";
+import { SyntaxHighlighter, syntaxStyles } from "@gland/react/common/SyntaxHighlighter";
 
 import { richClasses as classes } from "../style";
 import { editEvent } from "../editEvent";
@@ -31,7 +31,7 @@ export function Code(props) {
             }
         >
             <div className={clsx(context.readOnly ? null : classes.notSelect, classes.codeContent)}>
-                <SyntaxHighlighter style={styles[data.theme]} language={data.mode} children={data.value || ""} />
+                <SyntaxHighlighter style={syntaxStyles[data.theme]} language={data.mode} children={data.value || ""} />
             </div>
             {context.readOnly ? null : <div style={{ fontSize: 0 }}>{"\r"}</div>}
             {context.readOnly ? null : (

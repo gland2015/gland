@@ -2,7 +2,7 @@ import React from "react";
 import clsx from "clsx";
 
 import { jss } from "../jss";
-import { img } from "../asset";
+import { imgAsset } from "../asset";
 
 const jssSheet = jss.createStyleSheet({
     root: { textAlign: "center", marginTop: 20, fontSize: 40 },
@@ -19,7 +19,7 @@ export function NoData(props: NoDataProps) {
 
     return (
         <div className={clsx(jssSheet.classes.root, className)} {...rest}>
-            <img.NoData />
+            <imgAsset.NoData />
         </div>
     );
 }

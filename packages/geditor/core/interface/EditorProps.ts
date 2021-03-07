@@ -15,7 +15,7 @@ export interface EditorConfig {
 
 export interface EditorProps {
     style?: React.CSSProperties;
-    className?: string;
+    editCls?: { rootCls?: string; wrapperCls?: string; toolCls?: string; footerCls?: string };
     config: EditorConfig;
 
     value?: string | any;

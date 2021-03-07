@@ -1,3 +1,3 @@
-import * as img from "./index_";
+import * as imgAsset from "./index_";
 
-export { img };
+export { imgAsset };

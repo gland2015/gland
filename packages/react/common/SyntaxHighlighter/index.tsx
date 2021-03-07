@@ -42,7 +42,7 @@ const options = {
 
 export const SyntaxHighlighter = loadable(() => import("./SyntaxHighlighter"), options);
 
-export const styles = {
+export const syntaxStyles = {
     dark,
     atomDark,
     a11yDark,

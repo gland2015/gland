@@ -6,6 +6,9 @@ const richJssSheet = jss.createStyleSheet({
         "& $h1,$h2,$h3,$h4": {
             margin: "0.3em 0",
         },
+        "& .public-DraftEditor-content": {
+            padding: 10,
+        },
     },
     div: {
         color: "#222",

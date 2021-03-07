@@ -1,4 +1,5 @@
 import React from "react";
+import clsx from "clsx";
 
 import { toolClasses as classes } from "../style";
 import { VerLine, BtnTip } from "./widget";
@@ -25,7 +26,7 @@ import { BlockType } from "./BlockType";
 import { List } from "./List";
 import { ListOl } from "./ListOl";
 
-export const ToolMenu = React.memo<{ attr: ToolAttr }>(function (props) {
+export const ToolMenu = React.memo<{ attr: ToolAttr; className: string }>(function (props) {
     const menuAttr = React.useRef({} as { root: HTMLDivElement }).current;
 
     React.useEffect(() => {
@@ -46,7 +47,7 @@ export const ToolMenu = React.memo<{ attr: ToolAttr }>(function (props) {
     }, []);
 
     return (
-        <div className={classes.root} ref={(r) => (menuAttr.root = r)}>
+        <div className={clsx(classes.root, props.className)} ref={(r) => (menuAttr.root = r)}>
             <BtnTip tip="粗体">
                 <Bold attr={props.attr} />
             </BtnTip>

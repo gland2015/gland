@@ -29,7 +29,7 @@ export function Toolbar(props) {
 
     return (
         <ToolContext.Provider value={ctxValue}>
-            <ToolMenu attr={attr} />
+            <ToolMenu attr={attr} className={props.className} />
             <Edit attr={attr} />
         </ToolContext.Provider>
     );

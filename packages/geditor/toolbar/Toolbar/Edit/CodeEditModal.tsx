@@ -3,7 +3,7 @@ import { Modal } from "@gland/react/modal";
 import { Dropdown } from "@gland/react/dropdown";
 import { FabricButton } from "@gland/react/button";
 import { CodeMirror } from "@gland/react/common/CodeMirror";
-import { styles } from "@gland/react/common/SyntaxHighlighter";
+import { syntaxStyles } from "@gland/react/common/SyntaxHighlighter";
 import { ToolAttr } from "../utils";
 import { toolClasses as classes } from "../style";
 
@@ -47,7 +47,7 @@ const modeMap = {
     xmlDoc: "xml",
 };
 
-const themes = Object.keys(styles).map(function (key) {
+const themes = Object.keys(syntaxStyles).map(function (key) {
     return {
         key,
         label: key,

@@ -6,7 +6,7 @@ import { icons } from "../../icons";
 import { toolClasses as classes, toolNormalBtn } from "../style";
 import { preventDefault } from "@gland/function/preventDefault";
 import { BtnTip } from "./widget";
-import { emojiList, emojiMap } from "../../emoji";
+import { emojiList, emojiMap, zhLabelMap } from "../../emoji";
 import { ToolAttr } from "../utils";
 
 export function SmileWink(props: { attr: ToolAttr }) {
@@ -58,7 +58,7 @@ const EmojiSelect = React.memo(function (props: { onSelect }) {
                 return (
                     <span
                         key={title}
-                        title={`[${title}]`}
+                        title={`[${zhLabelMap[title]}]`}
                         className={clsx(classes.btn, classes.emojiItem)}
                         onClick={(e) => {
                             props.onSelect(title);

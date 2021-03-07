@@ -2,6 +2,7 @@
 // 1、wrapper depth method
 
 import React from "react";
+import clsx from "clsx";
 import { EventEmitter } from "events";
 import { Editor as DraftEditor, EditorState, convertToRaw, genKey } from "@gland/draft-ts";
 
@@ -30,7 +31,7 @@ function initer(props: EditorProps) {
 
 export const Editor = React.memo(
     React.forwardRef(function (props: EditorProps, ref) {
-        const { Toolbar, value, config, readOnly, onChange, className, style, data, RemoteDataProvider } = props;
+        const { Toolbar, value, config, readOnly, onChange, style, data, RemoteDataProvider, editCls } = props;
         const { decorators, handleKey, noFollowBlocks, nonTexts, wrappers, subBlocks, entitys, classNames } = config;
 
         const [state, dispatch] = React.useReducer(reducer, props, initer);
@@ -121,15 +122,15 @@ export const Editor = React.memo(
         return (
             <EditorContext.Provider value={attr.context}>
                 <TargetContext.Provider value={target}>
-                    {Toolbar && <Toolbar currentState={currentState} context={attr.context} />}
-                    <div className={className} style={style}>
+                    {Toolbar && <Toolbar currentState={currentState} context={attr.context} className={editCls?.toolCls} />}
+                    <div className={clsx(editCls?.wrapperCls)} style={style}>
+                        {RemoteDataProvider && <RemoteDataProvider ref={(r) => (attr.remote = r)} context={attr.context} />}
                         <div
-                            className={classNames.root}
+                            className={clsx(classNames.root, editCls?.rootCls)}
                             onDragStartCapture={readOnly ? null : disableEvent}
                             onCompositionStartCapture={readOnly ? null : handleCompositionStart}
                             onCompositionEndCapture={readOnly ? null : handleCompositionEnd}
                         >
-                            {RemoteDataProvider && <RemoteDataProvider ref={(r) => (attr.remote = r)} context={attr.context} />}
                             <DraftEditor
                                 ref={(r) => (attr.draftEditor = r)}
                                 key={readOnly + ""}
@@ -147,11 +148,15 @@ export const Editor = React.memo(
                             />
                         </div>
                         <div
-                            style={{ flexGrow: 1, minHeight: 50 }}
-                            onMouseDown={(e) => {
-                                e.preventDefault();
-                                attr.draftEditor.focus();
-                            }}
+                            className={editCls?.footerCls}
+                            onMouseDown={
+                                readOnly
+                                    ? null
+                                    : (e) => {
+                                          e.preventDefault();
+                                          attr.draftEditor.focus();
+                                      }
+                            }
                         ></div>
                     </div>
                 </TargetContext.Provider>

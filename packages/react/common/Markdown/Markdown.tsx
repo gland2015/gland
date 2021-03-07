@@ -7,7 +7,7 @@ import { InlineMath, BlockMath } from "react-katex";
 import clsx from "clsx";
 import "./github.css";
 
-import { SyntaxHighlighter, styles as syntaxStyles } from "../SyntaxHighlighter";
+import { SyntaxHighlighter, syntaxStyles } from "../SyntaxHighlighter";
 
 const plugins = [math, gfm];
 
