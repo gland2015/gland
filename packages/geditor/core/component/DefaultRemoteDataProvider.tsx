@@ -5,11 +5,9 @@ class DefaultRemoteDataProvider extends React.Component<any, any> {
     constructor(props) {
         super(props);
     }
-
     render() {
         return null;
     }
-
     addContentAsset = async (file, from) => {
         const url = await blobToDataURL(file);
         return {
@@ -18,7 +16,6 @@ class DefaultRemoteDataProvider extends React.Component<any, any> {
             isRemote: false,
         };
     };
-
     getContentAsset = async (data, setState) => {
         return data.url;
     };

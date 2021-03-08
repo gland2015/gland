@@ -2,8 +2,8 @@ import { EventEmitter } from "events";
 import { EditorState } from "@gland/draft-ts";
 
 export interface EditorConfig {
-    decorators: Array<any>;
-    handleKey;
+    decorators?: Array<any>;
+    handleKey?;
 
     noFollowBlocks: Array<string>;
     nonTexts: { [key: string]: any };

@@ -206,7 +206,7 @@ function getMyConfig({ publicPath, outputPath, enableMin }) {
             extensions: [".js", ".ts", ".jsx", ".tsx", ".css", ".scss", ".less"],
             alias: {
                 "@gland": path.resolve(__dirname, "../packages"),
-                "@": path.resolve(process.cwd(), "./src"),
+                "@": path.resolve(__dirname, "./src"),
             },
             mainFields,
         },
