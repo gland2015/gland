@@ -7,10 +7,11 @@ import { BtnTip } from "./widget";
 
 export function Image(props: { attr: ToolAttr }) {
     const [state, setState] = React.useState(null);
+    const lang = props.attr.lang;
 
     return (
         <React.Fragment>
-            <BtnTip tip={"图片"} disable={state}>
+            <BtnTip tip={lang.tip.image} disable={state}>
                 <div
                     className={toolNormalBtn}
                     onClick={() => {

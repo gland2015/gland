@@ -45,6 +45,7 @@ export function CommentEditModal(props: { attr: ToolAttr }) {
     const [state, dispatch] = React.useReducer(reducer, props, initer);
 
     const attr = props.attr;
+    const lang = attr.lang;
 
     React.useEffect(() => {
         const attr = props.attr;
@@ -65,7 +66,7 @@ export function CommentEditModal(props: { attr: ToolAttr }) {
 
     return (
         <Modal
-            title="编辑注释"
+            title={lang.other.commentEdit}
             isOpen={state.open}
             style={{ minWidth: 400 }}
             onDismiss={(event, from) => {
@@ -75,7 +76,7 @@ export function CommentEditModal(props: { attr: ToolAttr }) {
         >
             <div style={{ minHeight: 50 }}>
                 <TextInput
-                    label="标题"
+                    label={lang.base.title}
                     autoFocus
                     value={state.data.title}
                     onChange={(e) => {
@@ -93,7 +94,7 @@ export function CommentEditModal(props: { attr: ToolAttr }) {
             </div>
             <div>
                 <TextInput
-                    label="描述"
+                    label={lang.base.description}
                     multiline
                     autoAdjustHeight
                     value={state.data.description}
@@ -125,7 +126,7 @@ export function CommentEditModal(props: { attr: ToolAttr }) {
                         }
                     }}
                 >
-                    确定
+                    {lang.base.confirm}
                 </FabricButton>
                 <FabricButton
                     style={{ marginLeft: 20 }}
@@ -134,7 +135,7 @@ export function CommentEditModal(props: { attr: ToolAttr }) {
                         attr.event.emit(attr.editEvent.focus);
                     }}
                 >
-                    取消
+                    {lang.base.cancel}
                 </FabricButton>
             </div>
         </Modal>

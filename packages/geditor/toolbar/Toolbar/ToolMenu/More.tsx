@@ -5,16 +5,18 @@ import { DropButton } from "./widget";
 import { ToolAttr } from "../utils";
 
 export function More(props: { attr: ToolAttr }) {
+    const lang = props.attr.lang;
+
     return (
         <DropButton
             mode="narrower"
-            tip="更多"
+            tip={lang.tip.more}
             list={[
                 {
                     label: (
                         <React.Fragment>
                             <icons.Video />
-                            <span>添加视频</span>
+                            <span>{lang.other.addVideo}</span>
                         </React.Fragment>
                     ),
                     value: "video",
@@ -23,7 +25,7 @@ export function More(props: { attr: ToolAttr }) {
                     label: (
                         <React.Fragment>
                             <icons.PlayCircle />
-                            <span>添加音频</span>
+                            <span>{lang.other.addAudio}</span>
                         </React.Fragment>
                     ),
                     value: "audio",
@@ -32,7 +34,7 @@ export function More(props: { attr: ToolAttr }) {
                     label: (
                         <React.Fragment>
                             <icons.FuJian />
-                            <span>添加附件</span>
+                            <span>{lang.other.addFile}</span>
                         </React.Fragment>
                     ),
                     value: "file",
@@ -41,7 +43,7 @@ export function More(props: { attr: ToolAttr }) {
                     label: (
                         <React.Fragment>
                             <icons.CommentAltDots />
-                            <span>添加注释</span>
+                            <span>{lang.other.addComment}</span>
                         </React.Fragment>
                     ),
                     value: "comment",
@@ -50,7 +52,7 @@ export function More(props: { attr: ToolAttr }) {
                     label: (
                         <React.Fragment>
                             <icons.PuzzlePiece />
-                            <span>插入iframe</span>
+                            <span>{lang.other.insertIframe}</span>
                         </React.Fragment>
                     ),
                     value: "iframe",
@@ -59,7 +61,7 @@ export function More(props: { attr: ToolAttr }) {
                     label: (
                         <React.Fragment>
                             <icons.HorizontalRule />
-                            <span>插入水平线</span>
+                            <span>{lang.other.insertRule}</span>
                         </React.Fragment>
                     ),
                     value: "horizontalRule",
@@ -68,7 +70,7 @@ export function More(props: { attr: ToolAttr }) {
                     label: (
                         <React.Fragment>
                             <icons.Table />
-                            <span>插入表格</span>
+                            <span>{lang.other.insertTable}</span>
                         </React.Fragment>
                     ),
                     value: "table",
@@ -77,7 +79,7 @@ export function More(props: { attr: ToolAttr }) {
                     label: (
                         <React.Fragment>
                             <icons.AngleDoubleDown />
-                            <span>可展开列表</span>
+                            <span>{lang.other.expandableList}</span>
                         </React.Fragment>
                     ),
                     value: "expandableList",
@@ -86,7 +88,7 @@ export function More(props: { attr: ToolAttr }) {
                     label: (
                         <React.Fragment>
                             <icons.Redo />
-                            <span>重做</span>
+                            <span>{lang.base.redo}</span>
                         </React.Fragment>
                     ),
                     value: "redo",
@@ -95,7 +97,7 @@ export function More(props: { attr: ToolAttr }) {
                     label: (
                         <React.Fragment>
                             <icons.Undo />
-                            <span>撤销</span>
+                            <span>{lang.base.undo}</span>
                         </React.Fragment>
                     ),
                     value: "undo",

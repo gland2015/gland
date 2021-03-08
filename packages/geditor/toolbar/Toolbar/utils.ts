@@ -2,6 +2,7 @@ import React from "react";
 import { EventEmitter } from "events";
 
 import { editEvent } from "../editEvent";
+import { langType } from "../lang/zh";
 
 export interface ToolAttr {
     event: EventEmitter;
@@ -14,6 +15,7 @@ export interface ToolAttr {
     editorCtx;
     currentState;
     toolCtx: ToolCtx;
+    lang: langType;
 }
 
 interface ToolCtx {

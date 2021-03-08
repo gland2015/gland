@@ -4,12 +4,14 @@ import { DropButton } from "./widget";
 import { ToolAttr } from "../utils";
 
 export function TextHeight(props: { attr: ToolAttr }) {
+    const lang = props.attr.lang;
+
     return (
         <DropButton
-            tip="字体大小"
+            tip={lang.tip.textHeight}
             list={[
                 {
-                    label: "默认大小",
+                    label: lang.other.defaultSize,
                     value: null,
                 },
                 {

@@ -4,19 +4,21 @@ import { DropButton } from "./widget";
 import { ToolAttr, ToolContext } from "../utils";
 
 export function TextAlign(props: { attr: ToolAttr }) {
+    const lang = props.attr.lang;
+
     return (
         <DropButton
-            tip="对齐"
+            tip={lang.tip.align}
             list={[
                 {
-                    label: <span style={{ marginLeft: "1.3em" }}>默认对齐</span>,
+                    label: <span style={{ marginLeft: "1.3em" }}>{lang.other.defaultAlign}</span>,
                     value: null,
                 },
                 {
                     label: (
                         <React.Fragment>
                             <icons.AlignLeft />
-                            <span>左对齐</span>
+                            <span>{lang.other.leftAlign}</span>
                         </React.Fragment>
                     ),
                     value: "left",
@@ -25,7 +27,7 @@ export function TextAlign(props: { attr: ToolAttr }) {
                     label: (
                         <React.Fragment>
                             <icons.AlignRight />
-                            <span>右对齐</span>
+                            <span>{lang.other.rightAlign}</span>
                         </React.Fragment>
                     ),
                     value: "right",
@@ -34,7 +36,7 @@ export function TextAlign(props: { attr: ToolAttr }) {
                     label: (
                         <React.Fragment>
                             <icons.AlignCenter />
-                            <span>居中对齐</span>
+                            <span>{lang.other.centerAlign}</span>
                         </React.Fragment>
                     ),
                     value: "center",
@@ -43,7 +45,7 @@ export function TextAlign(props: { attr: ToolAttr }) {
                     label: (
                         <React.Fragment>
                             <icons.AlignJustify />
-                            <span>两端对齐</span>
+                            <span>{lang.other.justifyAlign}</span>
                         </React.Fragment>
                     ),
                     value: "justify",

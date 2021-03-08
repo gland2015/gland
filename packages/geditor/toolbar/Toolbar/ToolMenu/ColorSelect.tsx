@@ -10,16 +10,20 @@ import { BtnTip } from "./widget";
 import { ToolAttr } from "../utils";
 
 export function TextColor(props) {
+    const tip = props.attr.lang.tip;
+
     return (
-        <ColorSelectBtn tip="字体颜色" type="text" attr={props.attr}>
+        <ColorSelectBtn tip={tip.fontColor} type="text" attr={props.attr}>
             <icons.TextColor />
         </ColorSelectBtn>
     );
 }
 
 export function BackgroundColor(props) {
+    const tip = props.attr.lang.tip;
+
     return (
-        <ColorSelectBtn tip="背景颜色" type="bg" attr={props.attr}>
+        <ColorSelectBtn tip={tip.bgColor} type="bg" attr={props.attr}>
             <icons.FillDrip />
         </ColorSelectBtn>
     );
@@ -94,6 +98,7 @@ function ColorSelectBtn(props: { tip?: string; attr?: ToolAttr; children?; type?
                         setColor(c);
                         toolAttr.event.emit(props.type === "bg" ? toolAttr.editEvent.bgColor : toolAttr.editEvent.color, c);
                     }}
+                    lang={toolAttr.lang}
                 />
             </Callout>
         </React.Fragment>
@@ -129,7 +134,7 @@ function ColorPicker(props) {
                     }}
                 >
                     <div className={classes.pickerAutoItem} style={{ backgroundColor: props.autoColor || null }}></div>
-                    <div>自动</div>
+                    <div>{props.lang.base.auto}</div>
                 </div>
                 <div>
                     <FabricButton
@@ -138,7 +143,7 @@ function ColorPicker(props) {
                             props.onChange && props.onChange(state.isAuto ? undefined : state.color);
                         }}
                     >
-                        确定
+                        {props.lang.base.confirm}
                     </FabricButton>
                 </div>
             </div>

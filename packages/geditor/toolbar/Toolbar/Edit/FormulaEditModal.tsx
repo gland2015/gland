@@ -46,6 +46,7 @@ export function FormulaEditModal(props: { attr: ToolAttr }) {
     const [state, dispatch] = React.useReducer(reducer, props, initer);
 
     const attr = props.attr;
+    const lang = attr.lang;
 
     React.useEffect(() => {
         const attr = props.attr;
@@ -66,7 +67,7 @@ export function FormulaEditModal(props: { attr: ToolAttr }) {
 
     return (
         <Modal
-            title="编辑公式"
+            title={lang.other.formulaEdit}
             isOpen={state.open}
             style={{ minWidth: 550 }}
             onDismiss={(event, from) => {
@@ -76,7 +77,7 @@ export function FormulaEditModal(props: { attr: ToolAttr }) {
         >
             <div className={classes.formulaIpt}>
                 <TextInput
-                    label="katex代码"
+                    label={lang.other.katexCode}
                     multiline
                     autoAdjustHeight
                     autoFocus
@@ -94,12 +95,12 @@ export function FormulaEditModal(props: { attr: ToolAttr }) {
             <div className={classes.formulaRd}>{state.data?.value ? <BlockMath math={state.data?.value} /> : null}</div>
             {state.key ? null : (
                 <div className={classes.formulaType}>
-                    <span className={classes.label}>类型：</span>
+                    <span className={classes.label}>{lang.base.type}: </span>
                     <ChoiceGroup
                         selectedKey={state.type}
                         options={[
-                            { key: "block", text: "块级" },
-                            { key: "inline", text: "内联" },
+                            { key: "block", text: lang.base.block },
+                            { key: "inline", text: lang.base.inline },
                         ]}
                         onChange={(item) => {
                             dispatch({
@@ -139,7 +140,7 @@ export function FormulaEditModal(props: { attr: ToolAttr }) {
                         }
                     }}
                 >
-                    确定
+                    {lang.base.confirm}
                 </FabricButton>
                 <FabricButton
                     style={{ marginLeft: 20 }}
@@ -148,7 +149,7 @@ export function FormulaEditModal(props: { attr: ToolAttr }) {
                         attr.event.emit(attr.editEvent.focus);
                     }}
                 >
-                    取消
+                    {lang.base.cancel}
                 </FabricButton>
             </div>
         </Modal>

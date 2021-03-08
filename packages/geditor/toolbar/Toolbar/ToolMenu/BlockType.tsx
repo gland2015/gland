@@ -3,78 +3,39 @@ import { DropButton } from "./widget";
 import { ToolAttr, ToolContext } from "../utils";
 
 export function BlockType(props: { attr: ToolAttr }) {
+    const attr = props.attr;
+    let blockType = attr.lang.blockType;
+
     return (
         <DropButton
             mode="wider"
-            tip="块类型"
-            list={list}
+            tip={attr.lang.tip.blockType}
+            list={blockList.map(function (value) {
+                return {
+                    value,
+                    label: blockType[value],
+                };
+            })}
             getCurValue={() => {
-                const attr = props.attr;
                 return attr.currentState.blockType;
             }}
             onSelect={(item) => {
-                const attr = props.attr;
                 const value = item.value;
                 attr.event.emit(attr.editEvent.toggleBlock, value);
             }}
             style={{ minWidth: 100 }}
         >
             <div style={{ minWidth: 60 }}>
-                <BlockName />
+                <BlockName attr={attr} />
             </div>
         </DropButton>
     );
 }
 
-const list = [
-    {
-        label: "正文",
-        value: "div",
-    },
-    {
-        label: "标题1",
-        value: "h1",
-    },
-    {
-        label: "标题2",
-        value: "h2",
-    },
-    {
-        label: "标题3",
-        value: "h3",
-    },
-    {
-        label: "标题4",
-        value: "h4",
-    },
-    {
-        label: "引用",
-        value: "blockquote",
-    },
-];
+const blockList = ["div", "h1", "h2", "h3", "h4", "blockquote"];
 
-const labelMap = {
-    div: "正文",
-    h1: "标题1",
-    h2: "标题2",
-    h3: "标题3",
-    h4: "标题4",
-    blockquote: "引用",
-    Code: "代码",
-    Formula: "公式",
-    HorizontalRule: "水平线",
-    Image: "图片",
-    Video: "视频",
-    Audio: "音频",
-    File: "附件",
-    Iframe: "Iframe",
-};
-
-function getLabel(blockType, blockComponentName) {
-    return labelMap[blockType] || labelMap[blockComponentName] || "";
-}
-
-function BlockName(props) {
+function BlockName(props: { attr: ToolAttr }) {
     let ctx = React.useContext(ToolContext);
-    return getLabel(ctx.blockType, ctx.blockComponentName);
+    let blockType = props.attr.lang.blockType;
+    return blockType[ctx.blockType] || blockType[ctx.blockComponentName];
 }

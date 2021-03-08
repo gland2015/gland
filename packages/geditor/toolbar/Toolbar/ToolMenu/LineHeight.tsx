@@ -4,12 +4,14 @@ import { DropButton } from "./widget";
 import { ToolAttr } from "../utils";
 
 export function LineHeight(props: { attr: ToolAttr }) {
+    const lang = props.attr.lang;
+
     return (
         <DropButton
-            tip="行高"
+            tip={lang.tip.lineHeight}
             list={[
                 {
-                    label: "默认行高",
+                    label: lang.other.defaultLH,
                     value: null,
                 },
                 {

@@ -3,8 +3,19 @@ import clsx from "clsx";
 import { icons } from "../../icons";
 import { toolNormalBtn, toolClasses as classes } from "../style";
 import { ToolAttr, ToolContext } from "../utils";
+import { BtnTip } from "./widget";
 
 export function Bold(props: { attr: ToolAttr }) {
+    const tip = props.attr.lang.tip;
+
+    return (
+        <BtnTip tip={tip.bold}>
+            <BoldContent attr={props.attr} />
+        </BtnTip>
+    );
+}
+
+function BoldContent(props: { attr: ToolAttr }) {
     const ctx = React.useContext(ToolContext);
 
     return (

@@ -10,10 +10,11 @@ import { ToolAttr } from "../utils";
 export function EffectFont(props: { attr: ToolAttr }) {
     const [show, setShow] = React.useState(false);
     const attr = React.useRef({} as { root }).current;
+    const tip = props.attr.lang.tip;
 
     return (
         <React.Fragment>
-            <BtnTip tip={"特效字体"} disable={show}>
+            <BtnTip tip={tip.fontEffect} disable={show}>
                 <div
                     className={clsx(classes.btn, classes.dropBtn, show ? classes.btn_s : null)}
                     ref={(r) => (attr.root = r)}
@@ -43,6 +44,7 @@ export function EffectFont(props: { attr: ToolAttr }) {
                 onMouseDown={preventDefault}
             >
                 <FontEffectSelect
+                    lang={props.attr.lang}
                     getCurValue={() => {
                         let clsList = props.attr.currentState.inlineClassName;
                         let v = (clsList && clsList[0] && clsList[0].slice(1)) || null;
@@ -59,79 +61,40 @@ export function EffectFont(props: { attr: ToolAttr }) {
 }
 
 let effectList = [
-    {
-        label: "无",
-        value: null,
-    },
-    {
-        label: "3D",
-        value: "gl-ed-feffect-3d",
-    },
-    {
-        label: "内阴影",
-        value: "gl-ed-feffect-nyy",
-    },
-    {
-        label: "霓虹灯",
-        value: "gl-ed-feffect-lhd",
-    },
-    {
-        label: "凸版",
-        value: "gl-ed-feffect-tb",
-    },
-    {
-        label: "浮雕",
-        value: "gl-ed-feffect-fd",
-    },
-    {
-        label: "描边",
-        value: "gl-ed-feffect-mb",
-    },
-    {
-        label: "抽空",
-        value: "gl-ed-feffect-ck",
-    },
-    {
-        label: "补色3D",
-        value: "gl-ed-feffect-bs3d",
-    },
-    {
-        label: "模糊",
-        value: "gl-ed-feffect-mh",
-    },
-    {
-        label: "高斯模糊",
-        value: "gl-ed-feffect-gsmh",
-    },
-    {
-        label: "描边线条",
-        value: "gl-ed-feffect-mbxt",
-    },
-    {
-        label: "波浪线",
-        value: "gl-ed-feffect-blx",
-    },
-    {
-        label: "流光",
-        value: "gl-ed-feffect-lg",
-    },
+    "none",
+    "gl-ed-feffect-3d",
+    "gl-ed-feffect-nyy",
+    "gl-ed-feffect-lhd",
+    "gl-ed-feffect-tb",
+    "gl-ed-feffect-fd",
+    "gl-ed-feffect-mb",
+    "gl-ed-feffect-ck",
+    "gl-ed-feffect-bs3d",
+    "gl-ed-feffect-mh",
+    "gl-ed-feffect-gsmh",
+    "gl-ed-feffect-mbxt",
+    "gl-ed-feffect-blx",
+    "gl-ed-feffect-lg",
 ];
 
 function FontEffectSelect(props) {
     const curValue = props.getCurValue();
+    const lang = props.lang;
 
     return (
         <div className={classes.effectSelect}>
             {effectList.map(function (item, index) {
+                const value = item === "none" ? null : item;
+
                 return (
                     <div
                         key={index}
-                        className={clsx(classes.effectSelectItem, item.value, curValue === item.value ? classes.btn_s : null)}
+                        className={clsx(classes.effectSelectItem, value, curValue === value ? classes.btn_s : null)}
                         onClick={() => {
-                            props.onChange && props.onChange(item);
+                            props.onChange && props.onChange(value);
                         }}
                     >
-                        {item.label}
+                        {lang.fontEffect[item]}
                     </div>
                 );
             })}

@@ -3,8 +3,19 @@ import clsx from "clsx";
 import { ToolContext, ToolAttr } from "../utils";
 import { icons } from "../../icons";
 import { toolNormalBtn, toolClasses as classes } from "../style";
+import { BtnTip } from "./widget";
 
 export function Italic(props: { attr: ToolAttr }) {
+    const lang = props.attr.lang;
+
+    return (
+        <BtnTip tip={lang.tip.italic}>
+            <ItalicContent attr={props.attr} />
+        </BtnTip>
+    );
+}
+
+function ItalicContent(props: { attr: ToolAttr }) {
     const ctx = React.useContext(ToolContext);
 
     return (

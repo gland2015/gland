@@ -72,6 +72,7 @@ export function ImageEditModal(props: { attr: ToolAttr }) {
     const [state, dispatch] = React.useReducer(reducer, props, initer);
 
     const attr = props.attr;
+    const lang = attr.lang;
 
     React.useEffect(() => {
         const attr = props.attr;
@@ -94,7 +95,7 @@ export function ImageEditModal(props: { attr: ToolAttr }) {
 
     return (
         <Modal
-            title="编辑图片"
+            title={lang.other.imgEdit}
             isOpen={state.open}
             style={{ minWidth: 500 }}
             onDismiss={(event, from) => {
@@ -105,11 +106,11 @@ export function ImageEditModal(props: { attr: ToolAttr }) {
         >
             <div>
                 <div className={classes.imageType}>
-                    <span className={classes.label}>图片来源：</span>
+                    <span className={classes.label}>{lang.other.imgFrom}: </span>
                     <ChoiceGroup
                         options={[
-                            { key: "0", text: "链接" },
-                            { key: "1", text: "上传" },
+                            { key: "0", text: lang.base.link },
+                            { key: "1", text: lang.base.upload },
                         ]}
                         selectedKey={state.data.catalog}
                         onChange={(item) => {
@@ -130,7 +131,7 @@ export function ImageEditModal(props: { attr: ToolAttr }) {
                 <div className={classes.iptLine}>
                     {state.data.catalog === "0" ? (
                         <TextInput
-                            label={"图片地址"}
+                            label={lang.other.imgAddr}
                             value={state.href}
                             underlined
                             style={{ width: "100%", fontSize: 16 }}
@@ -146,7 +147,7 @@ export function ImageEditModal(props: { attr: ToolAttr }) {
                     ) : (
                         <div className={classes.imageSel}>
                             <div className={classes.imageName}>
-                                <span className={classes.label}>新图片：</span> {state.filename || "未选择"}
+                                <span className={classes.label}>{lang.other.imgNew}: </span> {state.filename || lang.base.unselected}
                             </div>
                             <FabricButton
                                 color={"primary"}
@@ -155,7 +156,7 @@ export function ImageEditModal(props: { attr: ToolAttr }) {
                                     modalAttr.input.click();
                                 }}
                             >
-                                选择文件
+                                {lang.base.selectFile}
                             </FabricButton>
                             <input
                                 ref={(r) => (modalAttr.input = r)}
@@ -172,12 +173,12 @@ export function ImageEditModal(props: { attr: ToolAttr }) {
                 </div>
                 {state.key ? null : (
                     <div className={classes.iptLine}>
-                        <span className={classes.label}>类型：</span>
+                        <span className={classes.label}>{lang.base.type}</span>
                         <ChoiceGroup
                             selectedKey={state.type}
                             options={[
-                                { key: "block", text: "块级" },
-                                { key: "inline", text: "内联" },
+                                { key: "block", text: lang.base.block },
+                                { key: "inline", text: lang.base.inline },
                             ]}
                             onChange={(item) => {
                                 dispatch({
@@ -193,10 +194,10 @@ export function ImageEditModal(props: { attr: ToolAttr }) {
                 {state.type === "block" ? (
                     <div className={classes.iptLine}>
                         <TextInput
-                            label="标题"
+                            label={lang.base.title}
                             value={state.data.title}
                             underlined
-                            placeholder="可选"
+                            placeholder={lang.base.optional}
                             style={{ width: "100%", fontSize: 16 }}
                             onChange={(e) => {
                                 dispatch({
@@ -213,13 +214,13 @@ export function ImageEditModal(props: { attr: ToolAttr }) {
                     </div>
                 ) : null}
                 <div className={classes.iptLine}>
-                    <span className={classes.label}>宽度：</span>
+                    <span className={classes.label}>{lang.base.width}: </span>
                     <ChoiceGroup
                         selectedKey={state.data?.widthType}
                         options={[
-                            { key: "auto", text: "自动" },
-                            { key: "px", text: "像素" },
-                            state.type === "block" ? { key: "rate", text: "百分比" } : null,
+                            { key: "auto", text: lang.base.auto },
+                            { key: "px", text: lang.base.px },
+                            state.type === "block" ? { key: "rate", text: lang.base.rate } : null,
                         ].filter(Boolean)}
                         onChange={(item) => {
                             let width = 500;
@@ -254,21 +255,21 @@ export function ImageEditModal(props: { attr: ToolAttr }) {
                 </div>
                 {state.type === "block" ? (
                     <div className={classes.iptLine}>
-                        <span className={classes.label}>对齐：</span>
+                        <span className={classes.label}>{lang.base.align}: </span>
                         <ChoiceGroup
                             selectedKey={state.data?.align}
                             options={[
                                 {
                                     key: "center",
-                                    text: "居中",
+                                    text: lang.base.centerAlign,
                                 },
                                 {
                                     key: "left",
-                                    text: "左对齐",
+                                    text: lang.base.leftAlign,
                                 },
                                 {
                                     key: "right",
-                                    text: "右对齐",
+                                    text: lang.base.rightAlign,
                                 },
                             ]}
                             onChange={(item) => {
@@ -383,7 +384,7 @@ export function ImageEditModal(props: { attr: ToolAttr }) {
                         }
                     }}
                 >
-                    确定
+                    {lang.base.confirm}
                 </FabricButton>
                 <FabricButton
                     style={{ marginLeft: 20 }}
@@ -394,7 +395,7 @@ export function ImageEditModal(props: { attr: ToolAttr }) {
                         attr.event.emit(attr.editEvent.focus);
                     }}
                 >
-                    取消
+                    {lang.base.cancel}
                 </FabricButton>
             </div>
         </Modal>

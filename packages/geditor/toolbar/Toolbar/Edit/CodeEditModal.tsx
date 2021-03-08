@@ -109,6 +109,7 @@ function initer(props) {
 export function CodeEditModal(props: { attr: ToolAttr }) {
     const [state, dispatch] = React.useReducer(reducer, props, initer);
     const attr = props.attr;
+    const lang = attr.lang;
 
     React.useEffect(() => {
         function OpenEdit(options) {
@@ -127,7 +128,7 @@ export function CodeEditModal(props: { attr: ToolAttr }) {
 
     return (
         <Modal
-            title="编辑代码"
+            title={lang.other.codeEdit}
             isOpen={state.open}
             style={{ minWidth: 800 }}
             animation="slideDown"
@@ -138,7 +139,7 @@ export function CodeEditModal(props: { attr: ToolAttr }) {
         >
             <div>
                 <div className={classes.codeSelect}>
-                    <span>语言：</span>
+                    <span>{lang.base.language}: </span>
                     <Dropdown
                         list={modes}
                         menuStyle={{
@@ -152,7 +153,7 @@ export function CodeEditModal(props: { attr: ToolAttr }) {
                             });
                         }}
                     />
-                    <span style={{ marginLeft: 20 }}>主题：</span>
+                    <span style={{ marginLeft: 20 }}>{lang.base.theme}: </span>
                     <Dropdown
                         list={themes}
                         menuStyle={{
@@ -205,7 +206,7 @@ export function CodeEditModal(props: { attr: ToolAttr }) {
                         }
                     }}
                 >
-                    确定
+                    {lang.base.confirm}
                 </FabricButton>
                 <FabricButton
                     style={{ marginLeft: 20 }}
@@ -214,7 +215,7 @@ export function CodeEditModal(props: { attr: ToolAttr }) {
                         attr.event.emit(attr.editEvent.focus);
                     }}
                 >
-                    取消
+                    {lang.base.cancel}
                 </FabricButton>
             </div>
         </Modal>

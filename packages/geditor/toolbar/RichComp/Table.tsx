@@ -5,6 +5,7 @@ import { ContextualMenu, ContextWrapper } from "@gland/react/menu";
 import { TargetContext } from "../../core";
 import { richClasses as classes } from "../style";
 import { editEvent } from "../editEvent";
+import { langType } from "../lang/zh";
 
 export function Table(props) {
     const column = props.data.column;
@@ -45,7 +46,7 @@ const TableRender = React.memo(function (props: any) {
     const { rows, targetKey } = props;
     let { data, context, head } = props.props;
     const { widthType, width, align } = data;
-    const { readOnly } = context;
+    const { readOnly, lang } = context;
     const blockKey = head.key;
 
     let w = null;
@@ -105,7 +106,9 @@ const TableRender = React.memo(function (props: any) {
                     );
                 })}
             </div>
-            {readOnly ? null : <RightContext ref={(r) => (attr.right = r)} event={context.event} rows={rows} blockKey={blockKey} tableData={data} />}
+            {readOnly ? null : (
+                <RightContext ref={(r) => (attr.right = r)} lang={lang} event={context.event} rows={rows} blockKey={blockKey} tableData={data} />
+            )}
         </div>
     );
 });
@@ -115,6 +118,7 @@ export const RightContext = React.forwardRef(function (props: any, ref) {
     let [show, setShow] = React.useState(false);
 
     const { event, rows, blockKey, tableData } = props;
+    const lang: langType = props.lang;
 
     React.useImperativeHandle(ref, () => ({
         show(opt) {
@@ -146,25 +150,25 @@ export const RightContext = React.forwardRef(function (props: any, ref) {
         return [
             {
                 key: "col-left",
-                text: "左增列",
+                text: lang.other.addLeftCol,
                 data,
                 disabled: disCol,
             },
             {
                 key: "col-right",
-                text: "右增列",
+                text: lang.other.addRightCol,
                 data,
                 disabled: disCol,
             },
             {
                 key: "row-up",
-                text: "上增行",
+                text: lang.other.addUpRow,
                 data,
                 disabled: disRow,
             },
             {
                 key: "row-down",
-                text: "下增行",
+                text: lang.other.addDownRow,
                 data,
                 disabled: disRow,
             },
@@ -174,12 +178,12 @@ export const RightContext = React.forwardRef(function (props: any, ref) {
             },
             {
                 key: "col-del",
-                text: "删除列",
+                text: lang.other.delCol,
                 data,
             },
             {
                 key: "row-del",
-                text: "删除行",
+                text: lang.other.delRow,
                 data,
             },
             {
@@ -188,7 +192,7 @@ export const RightContext = React.forwardRef(function (props: any, ref) {
             },
             {
                 key: "table-attr",
-                text: "表格属性",
+                text: lang.other.tableAttr,
                 data,
             },
         ];

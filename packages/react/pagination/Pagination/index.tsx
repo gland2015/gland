@@ -6,6 +6,8 @@ import { fluentIcon } from "../../common/asset";
 import { TextInput } from "../../input/TextInput";
 import { Dropdown } from "../../dropdown/Dropdown";
 
+import { lang_en, lang_zh } from "./lang";
+
 const jssSheet = jss.createStyleSheet({
     root: {
         display: "flex",
@@ -111,6 +113,7 @@ interface PaginationProps {
 
     style?: React.CSSProperties;
     className?: string;
+    lang?: "zh" | "en";
 
     pageSizeOptions?: Array<{ key: number; label: string }>;
     disableQuickJumper?: boolean;
@@ -121,7 +124,10 @@ export function Pagination(props: PaginationProps) {
     if (!jssSheet.attached) {
         jssSheet.attach();
     }
-    let { total, pageSize, current, pageSizeOptions, disableQuickJumper, disableSizeChanger, onChange, showTotal } = props;
+    let { total, pageSize, current, pageSizeOptions, disableQuickJumper, disableSizeChanger, onChange, showTotal, lang } = props;
+
+    const labels = lang === "en" ? lang_en : lang_zh;
+
     if (!pageSize) {
         pageSize = 10;
     }
@@ -129,19 +135,19 @@ export function Pagination(props: PaginationProps) {
         pageSizeOptions = [
             {
                 key: 10,
-                label: "10条/页",
+                label: labels.per10,
             },
             {
                 key: 20,
-                label: "20条/页",
+                label: labels.per20,
             },
             {
                 key: 50,
-                label: "50条/页",
+                label: labels.per50,
             },
             {
                 key: 100,
-                label: "100条/页",
+                label: labels.per100,
             },
         ];
     }
@@ -222,7 +228,7 @@ export function Pagination(props: PaginationProps) {
                         <div
                             key={item}
                             className={classes.jumpItem}
-                            title="向前5页"
+                            title={labels.f5}
                             onClick={() => {
                                 let n = curPage - 5;
                                 if (n < 0) {
@@ -241,7 +247,7 @@ export function Pagination(props: PaginationProps) {
                         <div
                             key={item}
                             className={classes.jumpItem}
-                            title="向后5页"
+                            title={labels.b5}
                             onClick={() => {
                                 let n = curPage + 5;
                                 if (n > pageTotalNum) {
@@ -304,7 +310,7 @@ export function Pagination(props: PaginationProps) {
             )}
             {disableQuickJumper || pageTotalNum < 8 ? null : (
                 <div className={classes.jumpInput}>
-                    <span>跳至</span>
+                    <span>{labels.skipTo}</span>
                     <TextInput
                         className={classes.textInput}
                         onEntry={(value, event) => {
@@ -326,7 +332,7 @@ export function Pagination(props: PaginationProps) {
                             event.target.value = null;
                         }}
                     />
-                    <span>页</span>
+                    <span>{labels.page}</span>
                 </div>
             )}
         </div>

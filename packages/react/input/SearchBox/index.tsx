@@ -58,6 +58,11 @@ const { classes } = jss
                     width: "1em",
                     height: "1em",
                 },
+                "& svg": {
+                    width: "1em",
+                    height: "1em",
+                    fill: "currentcolor",
+                },
             },
             "& .suffix": {
                 cursor: "pointer",

@@ -69,6 +69,7 @@ export function IframeEditModal(props: { attr: ToolAttr }) {
     const [state, dispatch] = React.useReducer(reducer, props, initer);
 
     const attr = props.attr;
+    const lang = attr.lang;
 
     React.useEffect(() => {
         const attr = props.attr;
@@ -91,7 +92,7 @@ export function IframeEditModal(props: { attr: ToolAttr }) {
 
     return (
         <Modal
-            title="编辑Iframe"
+            title={lang.other.iframeEdit}
             isOpen={state.open}
             style={{ minWidth: 780 }}
             animation="slideDown"
@@ -103,11 +104,11 @@ export function IframeEditModal(props: { attr: ToolAttr }) {
         >
             <div>
                 <div className={classes.iptLine}>
-                    <span className={classes.label}>iframe来源：</span>
+                    <span className={classes.label}>{lang.other.iframeFrom}</span>
                     <ChoiceGroup
                         options={[
-                            { key: "0", text: "链接" },
-                            { key: "1", text: "编码" },
+                            { key: "0", text: lang.base.link },
+                            { key: "1", text: lang.base.editCode },
                         ]}
                         selectedKey={state.data.catalog}
                         onChange={(item) => {
@@ -127,7 +128,7 @@ export function IframeEditModal(props: { attr: ToolAttr }) {
                 <div className={classes.iptLine}>
                     {state.data.catalog === "0" ? (
                         <TextInput
-                            label="链接地址"
+                            label={lang.other.linkAddress}
                             value={state.href}
                             underlined
                             style={{ width: "100%", fontSize: 16 }}
@@ -159,21 +160,21 @@ export function IframeEditModal(props: { attr: ToolAttr }) {
                     )}
                 </div>
                 <div className={classes.iptLine}>
-                    <span className={classes.label}>对齐：</span>
+                    <span className={classes.label}>{lang.base.align}: </span>
                     <ChoiceGroup
                         selectedKey={state.data?.align}
                         options={[
                             {
                                 key: "center",
-                                text: "居中",
+                                text: lang.base.centerAlign,
                             },
                             {
                                 key: "left",
-                                text: "左对齐",
+                                text: lang.base.leftAlign,
                             },
                             {
                                 key: "right",
-                                text: "右对齐",
+                                text: lang.base.rightAlign,
                             },
                         ]}
                         onChange={(item) => {
@@ -189,7 +190,7 @@ export function IframeEditModal(props: { attr: ToolAttr }) {
                 <div className={classes.twoCol}>
                     <div className={classes.twoColItem}>
                         <TextInput
-                            label="宽度"
+                            label={lang.base.width}
                             type="number"
                             value={state.data?.width || ""}
                             className={classes.twoColIpt}
@@ -205,7 +206,7 @@ export function IframeEditModal(props: { attr: ToolAttr }) {
                     </div>
                     <div className={classes.twoColItem}>
                         <TextInput
-                            label="高度"
+                            label={lang.base.height}
                             type="number"
                             value={state.data?.height || ""}
                             className={classes.twoColIpt}
@@ -250,7 +251,7 @@ export function IframeEditModal(props: { attr: ToolAttr }) {
                         }
                     }}
                 >
-                    确定
+                    {lang.base.confirm}
                 </FabricButton>
                 <FabricButton
                     style={{ marginLeft: 20 }}
@@ -261,7 +262,7 @@ export function IframeEditModal(props: { attr: ToolAttr }) {
                         attr.event.emit(attr.editEvent.focus);
                     }}
                 >
-                    取消
+                    {lang.base.cancel}
                 </FabricButton>
             </div>
         </Modal>

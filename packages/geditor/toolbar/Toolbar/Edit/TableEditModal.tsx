@@ -46,6 +46,7 @@ export function TableEditModal(props: { attr: ToolAttr }) {
     const [state, dispatch] = React.useReducer(reducer, props, initer);
 
     const attr = props.attr;
+    const lang = attr.lang;
 
     React.useEffect(() => {
         const attr = props.attr;
@@ -66,7 +67,7 @@ export function TableEditModal(props: { attr: ToolAttr }) {
 
     return (
         <Modal
-            title="编辑表格"
+            title={lang.other.tableEdit}
             isOpen={state.open}
             style={{ minWidth: 500 }}
             onDismiss={(event, from) => {
@@ -79,7 +80,7 @@ export function TableEditModal(props: { attr: ToolAttr }) {
                     <div className={classes.twoCol}>
                         <div className={classes.twoColItem}>
                             <TextInput
-                                label="行数"
+                                label={lang.other.rowNum}
                                 type="number"
                                 value={state.data?.row || ""}
                                 className={classes.twoColIpt}
@@ -95,7 +96,7 @@ export function TableEditModal(props: { attr: ToolAttr }) {
                         </div>
                         <div className={classes.twoColItem}>
                             <TextInput
-                                label="列数"
+                                label={lang.other.colNum}
                                 type="number"
                                 value={state.data?.column || ""}
                                 className={classes.twoColIpt}
@@ -112,13 +113,13 @@ export function TableEditModal(props: { attr: ToolAttr }) {
                     </div>
                 )}
                 <div className={classes.iptLine}>
-                    <span className={classes.label}>宽度：</span>
+                    <span className={classes.label}>{lang.base.width}</span>
                     <ChoiceGroup
                         selectedKey={state.data?.widthType}
                         options={[
-                            { key: "auto", text: "自动" },
-                            { key: "px", text: "像素" },
-                            { key: "rate", text: "百分比" },
+                            { key: "auto", text: lang.base.auto },
+                            { key: "px", text: lang.base.px },
+                            { key: "rate", text: lang.base.rate },
                         ]}
                         onChange={(item) => {
                             let width = 500;
@@ -152,21 +153,21 @@ export function TableEditModal(props: { attr: ToolAttr }) {
                     ) : null}
                 </div>
                 <div className={classes.iptLine}>
-                    <span className={classes.label}>对齐：</span>
+                    <span className={classes.label}>{lang.base.align}: </span>
                     <ChoiceGroup
                         selectedKey={state.data?.align}
                         options={[
                             {
                                 key: "center",
-                                text: "居中",
+                                text: lang.base.centerAlign,
                             },
                             {
                                 key: "left",
-                                text: "左对齐",
+                                text: lang.base.leftAlign,
                             },
                             {
                                 key: "right",
-                                text: "右对齐",
+                                text: lang.base.rightAlign,
                             },
                         ]}
                         onChange={(item) => {
@@ -242,7 +243,7 @@ export function TableEditModal(props: { attr: ToolAttr }) {
                         }
                     }}
                 >
-                    确定
+                    {lang.base.confirm}
                 </FabricButton>
                 <FabricButton
                     style={{ marginLeft: 20 }}
@@ -251,7 +252,7 @@ export function TableEditModal(props: { attr: ToolAttr }) {
                         attr.event.emit(attr.editEvent.focus);
                     }}
                 >
-                    取消
+                    {lang.base.cancel}
                 </FabricButton>
             </div>
         </Modal>

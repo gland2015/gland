@@ -7,7 +7,7 @@ import { editEvent } from "../editEvent";
 
 export function Link(props) {
     const { data, entityKey, context, children, isSelected, blockKey, start, end } = props;
-    const { readOnly } = context;
+    const { readOnly, lang } = context;
 
     const attr = React.useMemo(
         () => ({
@@ -38,7 +38,7 @@ export function Link(props) {
                         </FabricLink>
                         <div
                             className={classes.linBtn}
-                            title="编辑"
+                            title={lang.base.edit}
                             onClick={() => {
                                 context.event.emit(editEvent.openEditLink, { key: entityKey, data });
                             }}
@@ -47,7 +47,7 @@ export function Link(props) {
                         </div>
                         <div
                             className={classes.linBtn}
-                            title="删除链接"
+                            title={lang.other.linkRemove}
                             onClick={() => {
                                 context.event.emit(editEvent.removeLink, { key: blockKey, start, end });
                             }}

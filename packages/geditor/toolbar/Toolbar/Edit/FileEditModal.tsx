@@ -74,6 +74,7 @@ export function FileEditModal(props: { attr: ToolAttr }) {
     const [state, dispatch] = React.useReducer(reducer, props, initer);
 
     const attr = props.attr;
+    const lang = attr.lang;
 
     React.useEffect(() => {
         const attr = props.attr;
@@ -96,7 +97,7 @@ export function FileEditModal(props: { attr: ToolAttr }) {
 
     return (
         <Modal
-            title="编辑文件"
+            title={lang.other.fileEdit}
             isOpen={state.open}
             style={{ minWidth: 500 }}
             onDismiss={(event, from) => {
@@ -107,11 +108,11 @@ export function FileEditModal(props: { attr: ToolAttr }) {
         >
             <div>
                 <div className={classes.iptLine}>
-                    <span className={classes.label}>文件来源：</span>
+                    <span className={classes.label}>{lang.other.fileFrom}: </span>
                     <ChoiceGroup
                         options={[
-                            { key: "0", text: "链接" },
-                            { key: "1", text: "上传" },
+                            { key: "0", text: lang.base.link },
+                            { key: "1", text: lang.base.upload },
                         ]}
                         selectedKey={state.data.catalog}
                         onChange={(item) => {
@@ -132,7 +133,7 @@ export function FileEditModal(props: { attr: ToolAttr }) {
                 <div className={classes.iptLine}>
                     {state.data.catalog === "0" ? (
                         <TextInput
-                            label="文件地址"
+                            label={lang.other.fileAddress}
                             value={state.href}
                             underlined
                             style={{ width: "100%", fontSize: 16 }}
@@ -148,8 +149,8 @@ export function FileEditModal(props: { attr: ToolAttr }) {
                     ) : (
                         <div className={classes.iptLine}>
                             <div className={classes.iptLine}>
-                                <span className={classes.label}>新文件：</span>
-                                <div className={classes.nameshow}>{state.filename || "未选择"}</div>
+                                <span className={classes.label}>{lang.other.fileNew}: </span>
+                                <div className={classes.nameshow}>{state.filename || lang.base.unselected}</div>
                             </div>
                             <FabricButton
                                 color={"primary"}
@@ -158,7 +159,7 @@ export function FileEditModal(props: { attr: ToolAttr }) {
                                     modalAttr.input.click();
                                 }}
                             >
-                                选择文件
+                                {lang.base.selectFile}
                             </FabricButton>
                             <input
                                 ref={(r) => (modalAttr.input = r)}
@@ -186,7 +187,7 @@ export function FileEditModal(props: { attr: ToolAttr }) {
                 </div>
                 <div className={classes.iptLine}>
                     <TextInput
-                        label="标题"
+                        label={lang.base.title}
                         value={state.data.title}
                         underlined
                         style={{ width: "100%", fontSize: 16 }}
@@ -206,7 +207,7 @@ export function FileEditModal(props: { attr: ToolAttr }) {
                 <div className={classes.twoCol}>
                     <div className={classes.twoColItem}>
                         <TextInput
-                            label="文件名"
+                            label={lang.base.filename}
                             value={state.data?.filename || ""}
                             className={classes.twoColIpt}
                             style={{ width: 150 }}
@@ -222,7 +223,7 @@ export function FileEditModal(props: { attr: ToolAttr }) {
                     </div>
                     <div className={classes.twoColItem}>
                         <TextInput
-                            label="大小"
+                            label={lang.base.size}
                             value={state.data?.size || ""}
                             className={classes.twoColIpt}
                             style={{ width: 150 }}
@@ -238,21 +239,21 @@ export function FileEditModal(props: { attr: ToolAttr }) {
                     </div>
                 </div>
                 <div className={classes.iptLine}>
-                    <span className={classes.label}>对齐：</span>
+                    <span className={classes.label}>{lang.base.align}: </span>
                     <ChoiceGroup
                         selectedKey={state.data?.align}
                         options={[
                             {
                                 key: "center",
-                                text: "居中",
+                                text: lang.base.centerAlign,
                             },
                             {
                                 key: "left",
-                                text: "左对齐",
+                                text: lang.base.leftAlign,
                             },
                             {
                                 key: "right",
-                                text: "右对齐",
+                                text: lang.base.rightAlign,
                             },
                         ]}
                         onChange={(item) => {
@@ -338,7 +339,7 @@ export function FileEditModal(props: { attr: ToolAttr }) {
                         }
                     }}
                 >
-                    确定
+                    {lang.base.confirm}
                 </FabricButton>
                 <FabricButton
                     style={{ marginLeft: 20 }}
@@ -349,7 +350,7 @@ export function FileEditModal(props: { attr: ToolAttr }) {
                         attr.event.emit(attr.editEvent.focus);
                     }}
                 >
-                    取消
+                    {lang.base.cancel}
                 </FabricButton>
             </div>
         </Modal>

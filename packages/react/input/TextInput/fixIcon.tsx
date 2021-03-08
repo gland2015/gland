@@ -17,6 +17,11 @@ const { classes } = jss
                 justifyContent: "center",
                 width: "1em",
                 height: "1em",
+                "& svg": {
+                    width: "1em",
+                    height: "1em",
+                    fill: "currentcolor",
+                },
             },
         },
     })

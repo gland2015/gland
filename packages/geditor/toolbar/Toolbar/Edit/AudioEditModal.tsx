@@ -64,19 +64,17 @@ export function AudioEditModal(props: { attr: ToolAttr }) {
     const [state, dispatch] = React.useReducer(reducer, props, initer);
 
     const attr = props.attr;
+    const lang = attr.lang;
 
     React.useEffect(() => {
         const attr = props.attr;
-
         function OpenEdit(options) {
             dispatch({
                 type: "OpenModal",
                 payload: options,
             });
         }
-
         attr.event.on(attr.editEvent.openEditAudio, OpenEdit);
-
         return () => {
             attr.event.off(attr.editEvent.openEditAudio, OpenEdit);
         };
@@ -86,7 +84,7 @@ export function AudioEditModal(props: { attr: ToolAttr }) {
 
     return (
         <Modal
-            title="编辑音频"
+            title={lang.other.audioEdit}
             isOpen={state.open}
             style={{ minWidth: 500 }}
             onDismiss={(event, from) => {
@@ -97,11 +95,11 @@ export function AudioEditModal(props: { attr: ToolAttr }) {
         >
             <div>
                 <div className={classes.iptLine}>
-                    <span className={classes.label}>音频来源：</span>
+                    <span className={classes.label}>{lang.other.audioFrom}：</span>
                     <ChoiceGroup
                         options={[
-                            { key: "0", text: "链接" },
-                            { key: "1", text: "上传" },
+                            { key: "0", text: lang.base.link },
+                            { key: "1", text: lang.base.upload },
                         ]}
                         selectedKey={state.data.catalog}
                         onChange={(item) => {
@@ -122,7 +120,7 @@ export function AudioEditModal(props: { attr: ToolAttr }) {
                 <div className={classes.iptLine}>
                     {state.data.catalog === "0" ? (
                         <TextInput
-                            label="音频地址"
+                            label={lang.other.audioAddress}
                             value={state.href}
                             underlined
                             style={{ width: "100%", fontSize: 16 }}
@@ -138,7 +136,7 @@ export function AudioEditModal(props: { attr: ToolAttr }) {
                     ) : (
                         <div className={classes.iptLine}>
                             <div className={classes.iptLine}>
-                                <span className={classes.label}>新音频：</span> {state.filename || "未选择"}
+                                <span className={classes.label}>{lang.other.audioNew}: </span> {state.filename || lang.base.unselected}
                             </div>
                             <FabricButton
                                 color={"primary"}
@@ -147,7 +145,7 @@ export function AudioEditModal(props: { attr: ToolAttr }) {
                                     modalAttr.input.click();
                                 }}
                             >
-                                选择文件
+                                {lang.base.selectFile}
                             </FabricButton>
                             <input
                                 ref={(r) => (modalAttr.input = r)}
@@ -164,10 +162,10 @@ export function AudioEditModal(props: { attr: ToolAttr }) {
                 </div>
                 <div className={classes.iptLine}>
                     <TextInput
-                        label="标题"
+                        label={lang.base.title}
                         value={state.data.title}
                         underlined
-                        placeholder="可选"
+                        placeholder={lang.base.optional}
                         style={{ width: "100%", fontSize: 16 }}
                         onChange={(e) => {
                             dispatch({
@@ -183,21 +181,21 @@ export function AudioEditModal(props: { attr: ToolAttr }) {
                     />
                 </div>
                 <div className={classes.iptLine}>
-                    <span className={classes.label}>对齐：</span>
+                    <span className={classes.label}>{lang.base.align}: </span>
                     <ChoiceGroup
                         selectedKey={state.data?.align}
                         options={[
                             {
                                 key: "center",
-                                text: "居中",
+                                text: lang.base.centerAlign,
                             },
                             {
                                 key: "left",
-                                text: "左对齐",
+                                text: lang.base.leftAlign,
                             },
                             {
                                 key: "right",
-                                text: "右对齐",
+                                text: lang.base.rightAlign,
                             },
                         ]}
                         onChange={(item) => {
@@ -283,7 +281,7 @@ export function AudioEditModal(props: { attr: ToolAttr }) {
                         }
                     }}
                 >
-                    确定
+                    {lang.base.confirm}
                 </FabricButton>
                 <FabricButton
                     style={{ marginLeft: 20 }}
@@ -294,7 +292,7 @@ export function AudioEditModal(props: { attr: ToolAttr }) {
                         attr.event.emit(attr.editEvent.focus);
                     }}
                 >
-                    取消
+                    {lang.base.cancel}
                 </FabricButton>
             </div>
         </Modal>

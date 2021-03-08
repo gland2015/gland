@@ -11,6 +11,8 @@ export interface EditorConfig {
     subBlocks: { [key: string]: any };
     entitys: { [key: string]: any };
     classNames: { [key: string]: string };
+    toolCfg: any;
+    defaultLang: any;
 }
 
 export interface EditorProps {
@@ -20,7 +22,7 @@ export interface EditorProps {
 
     value?: string | any;
     readOnly?: boolean;
-
+    lang?: any;
     data?: any;
     Toolbar?: any;
     RemoteDataProvider: any;
@@ -37,6 +39,7 @@ export interface IEditorContext {
     event: EventEmitter;
     data: any;
 
+    lang: any;
     target: EditTarget;
     noFollowBlocks: Array<string>;
     nonTexts: { [key: string]: any };

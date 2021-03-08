@@ -11,10 +11,11 @@ import { TextInput } from "@gland/react/input";
 export function Link(props: { attr: ToolAttr }) {
     const [show, setShow] = React.useState(false);
     const btnAttr = React.useRef({} as { root }).current;
+    const lang = props.attr.lang;
 
     return (
         <React.Fragment>
-            <BtnTip tip={"链接"} disable={show}>
+            <BtnTip tip={lang.tip.link} disable={show}>
                 <div
                     className={toolNormalBtn}
                     ref={(r) => (btnAttr.root = r)}
@@ -47,6 +48,7 @@ export function Link(props: { attr: ToolAttr }) {
                 }}
             >
                 <LinkInput
+                    lang={lang}
                     onConfirm={(href) => {
                         const attr = props.attr;
                         setTimeout(() => {
@@ -86,7 +88,7 @@ function LinkInput(props) {
                     props.onConfirm && props.onConfirm(text);
                 }}
             >
-                确定
+                {props.lang.base.confirm}
             </FabricButton>
         </div>
     );

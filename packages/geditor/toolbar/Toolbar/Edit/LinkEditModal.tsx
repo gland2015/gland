@@ -39,6 +39,7 @@ export function LinkEditModal(props: { attr: ToolAttr }) {
     const [state, dispatch] = React.useReducer(reducer, props, initer);
 
     const attr = props.attr;
+    const lang = attr.lang;
 
     React.useEffect(() => {
         const attr = props.attr;
@@ -59,7 +60,7 @@ export function LinkEditModal(props: { attr: ToolAttr }) {
 
     return (
         <Modal
-            title="编辑链接"
+            title={lang.other.linkEdit}
             isOpen={state.open}
             style={{ minWidth: 500 }}
             onDismiss={(event, from) => {
@@ -69,7 +70,7 @@ export function LinkEditModal(props: { attr: ToolAttr }) {
         >
             <div style={{ minHeight: 50 }}>
                 <TextInput
-                    label="链接地址"
+                    label={lang.other.linkAddress}
                     autoFocus
                     value={state.data?.url || ""}
                     onChange={(e) => {
@@ -97,7 +98,7 @@ export function LinkEditModal(props: { attr: ToolAttr }) {
                         }
                     }}
                 >
-                    确定
+                    {lang.base.confirm}
                 </FabricButton>
                 <FabricButton
                     style={{ marginLeft: 20 }}
@@ -106,7 +107,7 @@ export function LinkEditModal(props: { attr: ToolAttr }) {
                         attr.event.emit(attr.editEvent.focus);
                     }}
                 >
-                    取消
+                    {lang.base.cancel}
                 </FabricButton>
             </div>
         </Modal>

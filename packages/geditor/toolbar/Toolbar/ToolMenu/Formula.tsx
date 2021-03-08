@@ -7,10 +7,11 @@ import { BtnTip } from "./widget";
 
 export function Formula(props: { attr: ToolAttr }) {
     const [state, setState] = React.useState(null);
+    const lang = props.attr.lang;
 
     return (
         <React.Fragment>
-            <BtnTip tip={"公式"} disable={state}>
+            <BtnTip tip={lang.tip.formula} disable={state}>
                 <div
                     className={toolNormalBtn}
                     onClick={() => {

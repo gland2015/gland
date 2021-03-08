@@ -18,6 +18,8 @@ import {
     Iframe,
 } from "./RichComp";
 import { richClasses as classes } from "./style";
+import { menus } from "./Toolbar/ToolMenu/menus";
+import { lang_zh } from "./lang/zh";
 
 export const config = {
     classNames: {
@@ -45,5 +47,47 @@ export const config = {
     subBlocks: {
         ExpandableList,
         Table,
+    },
+    defaultLang: lang_zh,
+    toolCfg: {
+        menus,
+        defaultBgColor: "#ffffff",
+        defaultTextColor: "#222",
+        textColors: [
+            "#2E2E2E",
+            "#888",
+            "#222",
+            "#404145",
+            "#f0e68c",
+            "#87ceeb",
+            "#FAFAFA",
+            "#cd5c5c",
+            "#0078d4",
+            "#00bcf2",
+            "#107c10",
+            "#bad80a",
+            "#5c005c",
+            "#ff8c00",
+            "#e3008c",
+            "#d13438",
+        ],
+        bgColors: [
+            "#deecf9",
+            "#f3f2f1",
+            "#e1dfdd",
+            "#a19f9d",
+            "#404145",
+            "#0078d4",
+            "#e3008c",
+            "#b4a0ff",
+            "#00bcf2",
+            "#107c10",
+            "#bad80a",
+            "#00B294",
+            "#407afc",
+            "#fff100",
+            "#ea4300",
+            "#d83b01",
+        ],
     },
 };

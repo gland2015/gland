@@ -70,6 +70,7 @@ export function VideoEditModal(props: { attr: ToolAttr }) {
     const [state, dispatch] = React.useReducer(reducer, props, initer);
 
     const attr = props.attr;
+    const lang = attr.lang;
 
     React.useEffect(() => {
         const attr = props.attr;
@@ -92,7 +93,7 @@ export function VideoEditModal(props: { attr: ToolAttr }) {
 
     return (
         <Modal
-            title="编辑视频"
+            title={lang.other.videoEdit}
             isOpen={state.open}
             style={{ minWidth: 500 }}
             onDismiss={(event, from) => {
@@ -103,11 +104,11 @@ export function VideoEditModal(props: { attr: ToolAttr }) {
         >
             <div>
                 <div className={classes.iptLine}>
-                    <span className={classes.label}>视频来源：</span>
+                    <span className={classes.label}>{lang.other.videoFrom}: </span>
                     <ChoiceGroup
                         options={[
-                            { key: "0", text: "链接" },
-                            { key: "1", text: "上传" },
+                            { key: "0", text: lang.base.link },
+                            { key: "1", text: lang.base.upload },
                             { key: "2", text: "iframe" },
                         ]}
                         selectedKey={state.data.catalog}
@@ -130,7 +131,7 @@ export function VideoEditModal(props: { attr: ToolAttr }) {
                 <div className={classes.iptLine}>
                     {state.data.catalog === "0" ? (
                         <TextInput
-                            label="视频地址"
+                            label={lang.other.videoAddr}
                             value={state.href}
                             underlined
                             style={{ width: "100%", fontSize: 16 }}
@@ -145,7 +146,7 @@ export function VideoEditModal(props: { attr: ToolAttr }) {
                         />
                     ) : state.data.catalog === "2" ? (
                         <TextInput
-                            label="iframe地址"
+                            label={lang.other.iframeAddr}
                             value={state.iframe}
                             underlined
                             style={{ width: "100%", fontSize: 16 }}
@@ -161,7 +162,7 @@ export function VideoEditModal(props: { attr: ToolAttr }) {
                     ) : (
                         <div className={classes.iptLine}>
                             <div className={classes.iptLine}>
-                                <span className={classes.label}>新视频：</span> {state.filename || "未选择"}
+                                <span className={classes.label}>{lang.other.videoNew}: </span> {state.filename || lang.base.unselected}
                             </div>
                             <FabricButton
                                 color={"primary"}
@@ -170,7 +171,7 @@ export function VideoEditModal(props: { attr: ToolAttr }) {
                                     modalAttr.input.click();
                                 }}
                             >
-                                选择文件
+                                {lang.base.selectFile}
                             </FabricButton>
                             <input
                                 ref={(r) => (modalAttr.input = r)}
@@ -187,10 +188,10 @@ export function VideoEditModal(props: { attr: ToolAttr }) {
                 </div>
                 <div className={classes.iptLine}>
                     <TextInput
-                        label="标题"
+                        label={lang.base.title}
                         value={state.data.title}
                         underlined
-                        placeholder="可选"
+                        placeholder={lang.base.optional}
                         style={{ width: "100%", fontSize: 16 }}
                         onChange={(e) => {
                             dispatch({
@@ -208,7 +209,7 @@ export function VideoEditModal(props: { attr: ToolAttr }) {
                 <div className={classes.twoCol}>
                     <div className={classes.twoColItem}>
                         <TextInput
-                            label="宽度"
+                            label={lang.base.width}
                             type="number"
                             value={state.data?.width || ""}
                             className={classes.twoColIpt}
@@ -224,7 +225,7 @@ export function VideoEditModal(props: { attr: ToolAttr }) {
                     </div>
                     <div className={classes.twoColItem}>
                         <TextInput
-                            label="高度"
+                            label={lang.base.height}
                             type="number"
                             value={state.data?.height || ""}
                             className={classes.twoColIpt}
@@ -240,21 +241,21 @@ export function VideoEditModal(props: { attr: ToolAttr }) {
                     </div>
                 </div>
                 <div className={classes.iptLine}>
-                    <span className={classes.label}>对齐：</span>
+                    <span className={classes.label}>{lang.base.align}: </span>
                     <ChoiceGroup
                         selectedKey={state.data?.align}
                         options={[
                             {
                                 key: "center",
-                                text: "居中",
+                                text: lang.base.centerAlign,
                             },
                             {
                                 key: "left",
-                                text: "左对齐",
+                                text: lang.base.leftAlign,
                             },
                             {
                                 key: "right",
-                                text: "右对齐",
+                                text: lang.base.rightAlign,
                             },
                         ]}
                         onChange={(item) => {
@@ -348,7 +349,7 @@ export function VideoEditModal(props: { attr: ToolAttr }) {
                         }
                     }}
                 >
-                    确定
+                    {lang.base.confirm}
                 </FabricButton>
                 <FabricButton
                     style={{ marginLeft: 20 }}
@@ -359,7 +360,7 @@ export function VideoEditModal(props: { attr: ToolAttr }) {
                         attr.event.emit(attr.editEvent.focus);
                     }}
                 >
-                    取消
+                    {lang.base.cancel}
                 </FabricButton>
             </div>
         </Modal>

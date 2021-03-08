@@ -31,8 +31,8 @@ function initer(props: EditorProps) {
 
 export const Editor = React.memo(
     React.forwardRef(function (props: EditorProps, ref) {
-        const { Toolbar, value, config, readOnly, onChange, style, data, RemoteDataProvider, editCls } = props;
-        const { decorators, handleKey, noFollowBlocks, nonTexts, wrappers, subBlocks, entitys, classNames } = config;
+        const { Toolbar, value, config, readOnly, onChange, style, data, RemoteDataProvider, editCls, lang } = props;
+        const { decorators, handleKey, noFollowBlocks, nonTexts, wrappers, subBlocks, entitys, classNames, defaultLang, toolCfg } = config;
 
         const [state, dispatch] = React.useReducer(reducer, props, initer);
         const editorState: EditorState = state.editorState;
@@ -85,6 +85,7 @@ export const Editor = React.memo(
         Object.assign(attr.context, {
             editorState: state.editorState,
             updateEditorState,
+            lang: lang || defaultLang,
             data,
             target,
             readOnly,
@@ -122,7 +123,7 @@ export const Editor = React.memo(
         return (
             <EditorContext.Provider value={attr.context}>
                 <TargetContext.Provider value={target}>
-                    {Toolbar && <Toolbar currentState={currentState} context={attr.context} className={editCls?.toolCls} />}
+                    {Toolbar && <Toolbar currentState={currentState} context={attr.context} className={editCls?.toolCls} config={toolCfg} />}
                     <div className={clsx(editCls?.wrapperCls)} style={style}>
                         {RemoteDataProvider && <RemoteDataProvider ref={(r) => (attr.remote = r)} context={attr.context} />}
                         <div
