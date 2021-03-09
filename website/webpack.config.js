@@ -2,11 +2,10 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const CompressionPlugin = require("compression-webpack-plugin");
 const WorkerPlugin = require("worker-plugin");
+const { GenerateSW, InjectManifest } = require("workbox-webpack-plugin");
 
 const isProd = process.env.NODE_ENV === "production";
-const mainFields = ["devModule", "browser", "module", "main"];
 
 let config;
 
@@ -15,7 +14,7 @@ if (!isProd) {
 } else {
     config = [
         getMyConfig({
-            publicPath: process.env.publicPath,
+            publicPath: process.env.publicPath + packageJson.version + "/",
             outputPath: path.resolve(process.cwd(), "./build/deploy"),
         }),
         getMyConfig({
@@ -31,7 +30,7 @@ module.exports = config;
 function getMyConfig({ publicPath, outputPath, enableMin }) {
     const isProd = process.env.NODE_ENV === "production";
     const devPort = process.env.PORT || 7070;
-    const devTarget = process.env.serverUrl || "localhost:17070";
+    const devTarget = process.env.serverUrl || "http://localhost:7010";
 
     outputPath = outputPath || path.resolve(process.cwd(), "./build");
     publicPath = publicPath || "/";
@@ -48,8 +47,8 @@ function getMyConfig({ publicPath, outputPath, enableMin }) {
                 "/": {
                     target: devTarget,
                     bypass: function (req, res, proxyOptions) {
-                        if (req.headers.accept.indexOf("html") !== -1) {
-                            return "/static/index.html";
+                        if ((req.headers?.accept || "").indexOf("html") !== -1) {
+                            return "/index.html";
                         }
                         if (req.originalUrl === "/favicon.ico") {
                             return "/favicon.ico";
@@ -58,22 +57,22 @@ function getMyConfig({ publicPath, outputPath, enableMin }) {
                 },
             },
         },
-        recordsPath: path.join(outputPath, "./records.json"),
+        // recordsPath: path.join(outputPath, "./records.json"),
         entry: path.resolve(process.cwd(), "./src"),
         output: {
             path: outputPath,
-            filename: "[name].[hash].bundle.js",
+            filename: "asset/js/[name].[fullhash].bundle.js",
             publicPath: publicPath,
         },
         module: {
             rules: [
-                isProd
-                    ? undefined
-                    : {
-                          test: /\.(j|t)sx?$/,
-                          enforce: "pre",
-                          use: ["source-map-loader"],
-                      },
+                // isProd
+                //     ? undefined
+                //     : {
+                //           test: /\.(j|t)sx?$/,
+                //           enforce: "pre",
+                //           use: ["source-map-loader"],
+                //       },
                 {
                     test: /\.(j|t)sx?$/,
                     exclude: [/node_modules/],
@@ -138,59 +137,56 @@ function getMyConfig({ publicPath, outputPath, enableMin }) {
                         {
                             loader: "url-loader",
                             options: {
-                                limit: 10 * 1024,
-                                name: "asset/img/[name].[hash:7].[ext]",
+                                limit: 1024,
+                                name: "asset/img/[name].[hash:10].[ext]",
                             },
                         },
                     ],
                 },
                 {
                     test: /\.(ttf|eot|woff|woff2)$/,
-                    use: ["file-loader"],
+                    use: [
+                        {
+                            loader: "file-loader",
+                            options: {
+                                name: "asset/font/[name].[hash:10].[ext]",
+                            },
+                        },
+                    ],
                 },
                 {
                     test: /\.svg$/i,
-                    oneOf: [
+                    use: [
                         {
-                            include: [/node_modules/],
-                            use: [
-                                {
-                                    loader: "url-loader",
-                                    options: {
-                                        limit: 1024, // byte
-                                    },
-                                },
-                            ],
-                        },
-                        {
-                            exclude: [/node_modules/],
-                            use: [
-                                {
-                                    loader: "babel-loader",
-                                    options: {
-                                        configFile: path.resolve(process.cwd(), "./babel.config.js"),
-                                    },
-                                },
-                                {
-                                    loader: "react-svg-loader",
-                                    options: {
-                                        svgo: {
-                                            plugins: [{ removeTitle: false }],
-                                            floatPrecision: 2,
-                                        },
-                                    },
-                                },
-                            ],
+                            loader: "url-loader",
+                            options: {
+                                limit: 1024, // byte
+                                name: "asset/img/[name].[hash:10].[ext]",
+                            },
                         },
                     ],
                 },
             ].filter(Boolean),
         },
         plugins: [
-            isProd ? new CompressionPlugin() : undefined,
-            isProd ? new CleanWebpackPlugin() : undefined,
+            isProd ? new CleanWebpackPlugin() : null,
+            // isProd
+            //     ? new GenerateSW({
+            //           maximumFileSizeToCacheInBytes: 1024 * 1024 * 1024,
+            //           clientsClaim: true,
+            //           skipWaiting: true,
+            //           navigateFallback: "/index.html",
+            //           navigateFallbackAllowlist: [/.*/],
+            //           additionalManifestEntries: [
+            //               {
+            //                   url: "/index.html",
+            //                   revision: Date.now() + Math.random() + "",
+            //               },
+            //           ],
+            //       })
+            //     : null,
             new webpack.EnvironmentPlugin({
-                NODE_ENV: JSON.stringify(isProd ? "production" : "development"), //默认值
+                NODE_ENV: JSON.stringify(isProd ? "production" : "development"),
             }),
             new WorkerPlugin({ sharedWorker: true }),
             new HtmlWebpackPlugin({
@@ -204,11 +200,12 @@ function getMyConfig({ publicPath, outputPath, enableMin }) {
         resolve: {
             symlinks: false,
             extensions: [".js", ".ts", ".jsx", ".tsx", ".css", ".scss", ".less"],
+            // mainFields: ["devModule", "browser", "module", "main"],
+            modules: [path.resolve(__dirname, "../node_modules")],
             alias: {
                 "@gland": path.resolve(__dirname, "../packages"),
                 "@": path.resolve(__dirname, "./src"),
             },
-            mainFields,
         },
     };
     return config;

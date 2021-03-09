@@ -1,6 +1,7 @@
 import React from "react";
 import { SyntaxHighlighter, syntaxStyles } from "@gland/react/common/SyntaxHighlighter";
 import { Divider } from "@gland/react/divider";
+import { FabricLink } from "@gland/react/link";
 import { Editor, Toolbar, config, lang_zh, lang_en, DefaultRemoteDataProvider } from "@gland/geditor";
 
 import { classes } from "./style";
@@ -37,6 +38,19 @@ export function RichEditorDoc(props) {
                         Github Address: https://github.com/gland2015/gland
                     </a>
                 </p>
+                <h2>Features</h2>
+                <ul className={classes.list}>
+                    <li>Text block: div, h1,h2,h3,h4,blockquote</li>
+                    <li>Non text block: Image, Video, Code, Fomula, File, Audio, Iframe, HorizontalRule</li>
+                    <li>Inline Image, Inline Fomula</li>
+                    <li>Link edit and remove</li>
+                    <li>ExpandableList, Table, ListOl, ListUl</li>
+                    <li>Emoticon, Comment</li>
+                    <li>Float Image, Table, Video, Audio</li>
+                    <li>Multi-language support</li>
+                    <li>The above can be used without configuration</li>
+                    <li>... More features under development</li>
+                </ul>
                 <h2 style={{ marginTop: 50 }}>Quick Start</h2>
                 <div>
                     <span>Editor Language:</span>
@@ -69,23 +83,54 @@ export function RichEditorDoc(props) {
                 </div>
                 <h3>First</h3>
                 <SyntaxHighlighter
-                    style={syntaxStyles["materialDark"]}
-                    language="javascript"
+                    style={syntaxStyles.materialDark}
+                    language="bash"
                     children={`npm install @gland/react @gland/function @gland/draft-ts @gland/geditor`}
                 />
                 <h3>next</h3>
-                <SyntaxHighlighter style={syntaxStyles["materialDark"]} language="javascript" children={startCode} />
+                <SyntaxHighlighter style={syntaxStyles.materialDark} language="jsx" children={startCode} />
                 <Divider />
                 <h4>Normal,we need save file at remote server,so you should achieve own RemoteDataProvider, it's like this</h4>
-                <SyntaxHighlighter style={syntaxStyles["materialDark"]} language="javascript" children={remoteCode} />
+                <SyntaxHighlighter style={syntaxStyles.materialDark} language="jsx" children={remoteCode} />
                 <h4>Custom Config</h4>
-                <SyntaxHighlighter style={syntaxStyles["materialDark"]} language="javascript" children={configCode} />
+                <SyntaxHighlighter style={syntaxStyles.materialDark} language="jsx" children={configCode} />
                 <h4>
                     More See{" "}
                     <a target="__blank" href="https://github.com/gland2015/gland">
                         Github
                     </a>
                 </h4>
+                <div>
+                    If you has any problem,please issue at{" "}
+                    <a target="__blank" href="https://github.com/gland2015/gland/issues">
+                        https://github.com/gland2015/gland/issues
+                    </a>
+                </div>
+                <div>
+                    If you have more ideas, please contact <FabricLink className={classes.nullLink}>1147940842@qq.com</FabricLink>
+                </div>
+                <div>
+                    If you think the project is OK,Please don't be stingy{" "}
+                    <a target="__blank" href="https://github.com/gland2015/gland">
+                        star
+                    </a>
+                    , <b>your star is my motivation</b>
+                </div>
+                <h1>Buy me a beer</h1>
+                <Divider />
+                <div>
+                    If you want to thank this editor for saving time for your project, or simply like this editor, you can scan the code and
+                    appreciate a few dollars to invite me for a beer!
+                </div>
+                <div className={classes.buybeer}>
+                    <p>
+                        BTC:<FabricLink className={classes.nullLink}>3BQqKXaR9sMqgP4Qb1MQ894574h89iAv9z</FabricLink>
+                    </p>
+                    <div>
+                        <img src="https://mydevjs.oss-cn-beijing.aliyuncs.com/images/alipay.jpg" />
+                        <img src="https://mydevjs.oss-cn-beijing.aliyuncs.com/images/wechat.png" />
+                    </div>
+                </div>
             </div>
         </div>
     );
