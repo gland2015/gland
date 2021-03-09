@@ -50,8 +50,8 @@ export function EffectFont(props: { attr: ToolAttr }) {
                         let v = (clsList && clsList[0] && clsList[0].slice(1)) || null;
                         return v;
                     }}
-                    onChange={(item) => {
-                        props.attr.event.emit(props.attr.editEvent.fontEffect, "." + item.value);
+                    onChange={(value) => {
+                        props.attr.event.emit(props.attr.editEvent.fontEffect, value ? "." + value : null);
                         setShow(false);
                     }}
                 />

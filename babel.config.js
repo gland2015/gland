@@ -17,10 +17,9 @@ module.exports = {
         ],
     ],
     plugins: [
-        "@babel/plugin-syntax-dynamic-import",
         ["@babel/plugin-transform-typescript", { allowDeclareFields: true, isTSX: true, allExtensions: true }],
         ["@babel/plugin-proposal-decorators", { legacy: true }],
-        ["@babel/plugin-proposal-class-properties", { loose: true }],
+        ["@babel/plugin-proposal-class-properties", { loose: false }],
         [
             "import",
             {

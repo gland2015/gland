@@ -2,7 +2,7 @@
 	"name": "@gland/draft-ts",
 	"description": "turning draft-js file into ts file, and improved some functions",
 	"license": "MIT",
-	"version": "1.0.5",
+	"version": "1.0.7",
 	"private": false,
 	"author": "gland2015",
 	"publishConfig": {

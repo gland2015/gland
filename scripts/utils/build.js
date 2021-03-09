@@ -11,6 +11,12 @@ module.exports = function build(target) {
     const tarDir = path.resolve(basePath, "packages", target);
     const outDir = path.resolve(basePath, "build", target);
 
+    let buildDir = path.resolve(basePath, "build");
+    let isExist = fs.existsSync(buildDir);
+    if (!isExist) {
+        fs.mkdirSync(buildDir);
+    }
+
     rimraf.sync(outDir, {});
 
     // sync package.json dependencies, devDependencies
@@ -47,7 +53,13 @@ module.exports = function build(target) {
         },
     });
 
-    child_process.exec("babel ./ --out-dir ./ --config-file ../../babel.config.js  --extensions .ts,.tsx --source-maps", {
-        cwd: outDir,
-    });
+    child_process.exec(
+        "node ../../node_modules/@babel/cli/bin/babel.js . --out-dir ./ --config-file ../../babel.config.js  --extensions .ts,.tsx --source-maps",
+        {
+            cwd: outDir,
+        },
+        function (error, stdout, stderr) {
+            console.log(target, { error, stdout, stderr });
+        }
+    );
 };

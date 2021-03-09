@@ -2,7 +2,7 @@
 	"name": "@gland/geditor",
 	"description": "a rich text editor that builded by draft-ts",
 	"license": "MIT",
-	"version": "1.0.5",
+	"version": "1.0.8",
 	"private": false,
 	"author": "gland2015",
 	"publishConfig": {
