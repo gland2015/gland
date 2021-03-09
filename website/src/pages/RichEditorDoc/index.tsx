@@ -127,8 +127,8 @@ export function RichEditorDoc(props) {
                         BTC:<FabricLink className={classes.nullLink}>3BQqKXaR9sMqgP4Qb1MQ894574h89iAv9z</FabricLink>
                     </p>
                     <div>
-                        <img src="https://mydevjs.oss-cn-beijing.aliyuncs.com/images/alipay.jpg" />
-                        <img src="https://mydevjs.oss-cn-beijing.aliyuncs.com/images/wechat.png" />
+                        <img src="https://mydevjs.oss-accelerate.aliyuncs.com/images/alipay.jpg" />
+                        <img src="https://mydevjs.oss-accelerate.aliyuncs.com/images/wechat.png" />
                     </div>
                 </div>
             </div>

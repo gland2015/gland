@@ -6,7 +6,7 @@
 
 #### [Use Document](http://mydevjs.com/) [Online Demo](http://mydevjs.com/)
 
-<img src="https://mydevjs.oss-cn-beijing.aliyuncs.com/images/editor-demo" />
+<img src="https://mydevjs.oss-accelerate.aliyuncs.com/images/editor-demo.png" />
 
 ## Please understand before using
 
@@ -118,4 +118,4 @@ class RemoteDataProvider extends React.Component<any, any> {
 If you want to thank this editor for saving time for your project, or simply like this editor, you can scan the code and appreciate a few dollars to invite me for a beer!
 BTC:&emsp; 3BQqKXaR9sMqgP4Qb1MQ894574h89iAv9z
 
-<img src="https://mydevjs.oss-cn-beijing.aliyuncs.com/images/alipay.jpg" width="200" />&emsp;&emsp;<img src="https://mydevjs.oss-cn-beijing.aliyuncs.com/images/wechat.png" width="200" />
+<img src="https://mydevjs.oss-accelerate.aliyuncs.com/images/alipay.jpg" width="200" />&emsp;&emsp;<img src="https://mydevjs.oss-accelerate.aliyuncs.com/images/wechat.png" width="200" />
