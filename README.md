@@ -6,6 +6,8 @@
 
 #### [Use Document](http://mydevjs.com/) [Online Demo](http://mydevjs.com/)
 
+<img src="https://mydevjs.oss-cn-beijing.aliyuncs.com/images/editor-demo" />
+
 ## Please understand before using
 
 GEditor is an editor based on draft-js. Draft-js does not directly use HTML as the component state. It implements an EditorState type, which is essentially a JS object. In the traditional rich text editor, The piece of HTML content corresponding to EditorState is a block; this can be verified by looking at editorState.toRAW ().

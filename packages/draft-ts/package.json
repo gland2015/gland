@@ -1,35 +1,35 @@
 {
-    "name": "@gland/draft-ts",
-    "description": "turning draft-js file into ts file, and improved some functions",
-    "license": "MIT",
-    "version": "1.0.5",
-    "private": false,
-    "author": "gland2015",
-    "publishConfig": {
-        "access": "public"
-    },
-    "keywords": [
-        "draft-ts",
-        "draftjs",
-        "editor",
-        "react",
-        "richtext"
-    ],
-    "main": "index.js",
-    "module": "index.js",
-    "devModule": "index.ts",
-    "sideEffects": false,
-    "scripts": {},
-    "dependencies": {
-        "fbjs": "^3.0.0",
-        "immutable": "^3.7.4",
-        "object-assign": "^4.1.1",
-        "tslib": "^2.0.3"
-    },
-    "devDependencies": {},
-    "homepage": "https://github.com/gland2015/gland",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/gland2015/gland.git"
-    }
+	"name": "@gland/draft-ts",
+	"description": "turning draft-js file into ts file, and improved some functions",
+	"license": "MIT",
+	"version": "1.0.5",
+	"private": false,
+	"author": "gland2015",
+	"publishConfig": {
+		"access": "public"
+	},
+	"keywords": [
+		"draft-ts",
+		"draftjs",
+		"editor",
+		"react",
+		"richtext"
+	],
+	"main": "index.js",
+	"module": "index.js",
+	"devModule": "index.ts",
+	"sideEffects": false,
+	"scripts": {},
+	"dependencies": {
+		"fbjs": "^3.0.0",
+		"immutable": "^3.7.4",
+		"object-assign": "^4.1.1",
+		"tslib": "^2.0.3"
+	},
+	"devDependencies": {},
+	"homepage": "https://github.com/gland2015/gland",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/gland2015/gland.git"
+	}
 }

@@ -52,6 +52,9 @@ export function defaultKeyHandler(editorState: EditorState, keyState, ctx: IEdit
         if (keyCode === 9) {
             return reduceBlockWrapperDepth(editorState);
         }
+        if (key.length === 1) {
+            return insertText(editorState, key);
+        }
         return;
     }
     if (keyState.ctrlKey) {

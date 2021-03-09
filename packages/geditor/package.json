@@ -1,27 +1,27 @@
 {
-    "name": "@gland/geditor",
-    "description": "a rich text editor that builded by draft-ts",
-    "license": "MIT",
-    "version": "1.0.1",
-    "private": false,
-    "author": "gland2015",
-    "publishConfig": {
-        "access": "public"
-    },
-    "keywords": [
-        "draft-ts",
-        "draftjs",
-        "editor",
-        "react",
-        "richtext"
-    ],
-    "dependencies": {
-        "react-katex": "^2.0.2"
-    },
-    "devDependencies": {},
-    "homepage": "https://github.com/gland2015/gland",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/gland2015/gland.git"
-    }
+	"name": "@gland/geditor",
+	"description": "a rich text editor that builded by draft-ts",
+	"license": "MIT",
+	"version": "1.0.5",
+	"private": false,
+	"author": "gland2015",
+	"publishConfig": {
+		"access": "public"
+	},
+	"keywords": [
+		"draft-ts",
+		"draftjs",
+		"editor",
+		"react",
+		"richtext"
+	],
+	"dependencies": {
+		"react-katex": "^2.0.2"
+	},
+	"devDependencies": {},
+	"homepage": "https://github.com/gland2015/gland",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/gland2015/gland.git"
+	}
 }
