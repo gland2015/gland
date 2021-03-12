@@ -3,29 +3,11 @@ import { Modal } from "@gland/react/modal";
 import { Dropdown } from "@gland/react/dropdown";
 import { FabricButton } from "@gland/react/button";
 import { CodeMirror } from "@gland/react/common/CodeMirror";
-import { syntaxStyles } from "@gland/react/common/SyntaxHighlighter";
+import { syntaxStyles, syntaxModes } from "@gland/react/common/SyntaxHighlighter";
 import { ToolAttr } from "../utils";
 import { toolClasses as classes } from "../style";
 
-const modes = [
-    "clike",
-    "css",
-    "go",
-    "javascript",
-    "typescript",
-    "jsx",
-    "markdown",
-    "nginx",
-    "php",
-    "powershell",
-    "python",
-    "ruby",
-    "rust",
-    "sass",
-    "sql",
-    "textile",
-    "xmlDoc",
-].map((name) => ({ key: name, label: name }));
+const modes = syntaxModes.map((name) => ({ key: name, label: name }));
 
 const modeMap = {
     clike: "clike",
@@ -47,6 +29,13 @@ const modeMap = {
     xmlDoc: "xml",
 };
 
+function getMirrorMode(name) {
+    if (modeMap[name]) {
+        return modeMap[name];
+    }
+    return name;
+}
+
 const themes = Object.keys(syntaxStyles).map(function (key) {
     return {
         key,
@@ -66,7 +55,7 @@ function reducer(state, action) {
             data: payload.data,
 
             codeOptions: Object.assign({}, state.codeOptions, {
-                mode: modeMap[payload.data.mode],
+                mode: getMirrorMode(payload.data.mode),
             }),
         });
     } else if (type === "StateChange") {
@@ -77,7 +66,7 @@ function reducer(state, action) {
                 mode: payload,
             }),
             codeOptions: Object.assign({}, state.codeOptions, {
-                mode: modeMap[payload],
+                mode: getMirrorMode(payload),
             }),
         });
     } else if (type == "CloseModal") {
@@ -99,7 +88,7 @@ function initer(props) {
             value: "",
         },
         codeOptions: {
-            mode: modeMap["javascript"],
+            mode: getMirrorMode("javascript"),
             theme: "material",
             lineNumbers: true,
         },

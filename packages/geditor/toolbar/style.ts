@@ -3,6 +3,7 @@ import { jss } from "@gland/react/common/jss";
 const richJssSheet = jss.createStyleSheet({
     // basic
     root: {
+        fontSize: 16,
         "& $h1,$h2,$h3,$h4": {
             margin: "0.3em 0",
         },
@@ -17,18 +18,22 @@ const richJssSheet = jss.createStyleSheet({
     h1: {
         color: "#2E2E2E",
         wordBreak: "break-word",
+        fontSize: "1.75em",
     },
     h2: {
         color: "#2E2E2E",
         wordBreak: "break-word",
+        fontSize: "1.5em",
     },
     h3: {
         color: "#2E2E2E",
         wordBreak: "break-word",
+        fontSize: "1.17em",
     },
     h4: {
         color: "#2E2E2E",
         wordBreak: "break-word",
+        fontSize: "1em",
     },
     blockquote: {
         display: "block",
@@ -46,6 +51,7 @@ const richJssSheet = jss.createStyleSheet({
         padding: 0,
     },
     listol_item: {
+        margin: "4px 0",
         "&[data-subwrapper=true]": {
             listStyle: "none",
         },
@@ -55,6 +61,7 @@ const richJssSheet = jss.createStyleSheet({
         padding: 0,
     },
     listul_item: {
+        margin: "4px 0",
         "&[data-subwrapper=true]": {
             listStyle: "none",
         },
@@ -150,10 +157,11 @@ const richJssSheet = jss.createStyleSheet({
         margin: 0,
         padding: 0,
     },
-
+    code: {
+        maxHeight: "unset",
+    },
     codeContent: {
         position: "relative",
-        maxHeight: 400,
         overflow: "auto",
         width: "100%",
         "&>pre": {

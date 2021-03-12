@@ -4,7 +4,7 @@
     "description": "doc",
     "scripts": {
         "start": "cross-env NODE_ENV=development node --inspect  ../node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./webpack.config.js",
-        "build": "cross-env NODE_ENV=production publicPath=http://mydevjs.com/ webpack --config ./webpack.config.js"
+        "build": "cross-env NODE_ENV=production publicPath=http://mydevjs.oss-accelerate.aliyuncs.com webpack --config ./webpack.config.js"
     },
     "dependencies": {},
     "devDependencies": {}

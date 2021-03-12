@@ -14,7 +14,7 @@ if (!isProd) {
 } else {
     config = [
         getMyConfig({
-            publicPath: process.env.publicPath + packageJson.version + "/",
+            publicPath: process.env.publicPath + "/",
             outputPath: path.resolve(process.cwd(), "./build/deploy"),
         }),
         getMyConfig({

@@ -91,8 +91,8 @@ const TableRender = React.memo(function (props: any) {
                                                 : (event) => {
                                                       event.preventDefault();
                                                       attr.right.show({
-                                                          top: event.clientY,
-                                                          left: event.clientX,
+                                                          top: event.pageY,
+                                                          left: event.pageX,
                                                           point: [i, j],
                                                       });
                                                   }

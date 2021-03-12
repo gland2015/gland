@@ -14,6 +14,7 @@ export function Code(props) {
             contentEditable="false"
             suppressContentEditableWarning
             className={clsx(
+                classes.code,
                 classes.nonTextBlock,
                 context.readOnly ? null : classes.inEditor,
                 context.readOnly ? null : classes.blockEditContainer,
