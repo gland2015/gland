@@ -9,7 +9,14 @@ import { Editor as DraftEditor, EditorState, convertToRaw, genKey } from "@gland
 import { EditorProps, IEditorContext } from "./interface";
 import { customStyleFn, blockRenderMap } from "./model";
 import { EditorContext, TargetContext } from "./public/context";
-import { getEditorState, insertText, makeCollapsed, haveSpecEntity, defaultKeyHandler, getCurrentState } from "./editAPI";
+import {
+    getEditorState,
+    insertText,
+    makeCollapsed,
+    haveSpecEntity,
+    defaultKeyHandler,
+    getCurrentState,
+} from "./editAPI";
 
 function reducer(state, action) {
     let newState = state;
@@ -32,7 +39,18 @@ function initer(props: EditorProps) {
 export const Editor = React.memo(
     React.forwardRef(function (props: EditorProps, ref) {
         const { Toolbar, value, config, readOnly, onChange, style, data, RemoteDataProvider, editCls, lang } = props;
-        const { decorators, handleKey, noFollowBlocks, nonTexts, wrappers, subBlocks, entitys, classNames, defaultLang, toolCfg } = config;
+        const {
+            decorators,
+            handleKey,
+            noFollowBlocks,
+            nonTexts,
+            wrappers,
+            subBlocks,
+            entitys,
+            classNames,
+            defaultLang,
+            toolCfg,
+        } = config;
 
         const [state, dispatch] = React.useReducer(reducer, props, initer);
         const editorState: EditorState = state.editorState;
@@ -123,9 +141,18 @@ export const Editor = React.memo(
         return (
             <EditorContext.Provider value={attr.context}>
                 <TargetContext.Provider value={target}>
-                    {Toolbar && <Toolbar currentState={currentState} context={attr.context} className={editCls?.toolCls} config={toolCfg} />}
+                    {Toolbar && (
+                        <Toolbar
+                            currentState={currentState}
+                            context={attr.context}
+                            className={editCls?.toolCls}
+                            config={toolCfg}
+                        />
+                    )}
                     <div className={clsx(editCls?.wrapperCls)} style={style}>
-                        {RemoteDataProvider && <RemoteDataProvider ref={(r) => (attr.remote = r)} context={attr.context} />}
+                        {RemoteDataProvider && (
+                            <RemoteDataProvider ref={(r) => (attr.remote = r)} context={attr.context} />
+                        )}
                         <div
                             className={clsx(classNames.root, editCls?.rootCls)}
                             onDragStartCapture={readOnly ? null : disableEvent}
@@ -250,13 +277,14 @@ export const Editor = React.memo(
             }
         }
 
-        function keyBindingFn(event) {
+        function keyBindingFn(event: KeyboardEvent) {
             const keyCode = event.keyCode;
             if (keyCode === 229) return "disabled";
             const key = event.key;
             const shiftKey = event.shiftKey;
             const ctrlKey = event.ctrlKey;
             const altKey = event.altKey;
+            const metaKey = event.metaKey;
             let editorState = state.editorState;
 
             const keyState = {
@@ -265,6 +293,7 @@ export const Editor = React.memo(
                 shiftKey,
                 ctrlKey,
                 altKey,
+                metaKey,
             };
 
             let result = config.handleKey && config.handleKey(editorState, keyState, attr.context);

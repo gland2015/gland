@@ -107,6 +107,16 @@ class RemoteDataProvider extends React.Component<any, any> {
 }
 ```
 
+### Start Dev
+```bash
+git clone git@github.com:gland2015/gland.git
+cd ./gland
+npm install
+cd ./website
+npm start
+```
+
+
 #### For more introduction, please see [Detailed Document](http://mydevjs.com/)
 
 -   If you think the project is OK,Please star, your star is my motivation

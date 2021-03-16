@@ -57,7 +57,7 @@ export function defaultKeyHandler(editorState: EditorState, keyState, ctx: IEdit
         }
         return;
     }
-    if (keyState.ctrlKey) {
+    if (keyState.ctrlKey || keyState.metaKey) {
         if (keyCode === 13) {
             return insertNewLine(editorState, ctx.noFollowBlocks);
         }

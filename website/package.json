@@ -1,6 +1,6 @@
 {
     "name": "gland-website",
-    "version": "3.0.0",
+    "version": "1.0.9",
     "description": "doc",
     "scripts": {
         "start": "cross-env NODE_ENV=development node --inspect  ../node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./webpack.config.js",

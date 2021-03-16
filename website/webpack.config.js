@@ -4,6 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const WorkerPlugin = require("worker-plugin");
 const { GenerateSW, InjectManifest } = require("workbox-webpack-plugin");
+const packageJson = require("./package.json");
 
 const isProd = process.env.NODE_ENV === "production";
 
@@ -14,7 +15,7 @@ if (!isProd) {
 } else {
     config = [
         getMyConfig({
-            publicPath: process.env.publicPath + "/",
+            publicPath: process.env.publicPath + "/" + packageJson.version + '/',
             outputPath: path.resolve(process.cwd(), "./build/deploy"),
         }),
         getMyConfig({
@@ -170,21 +171,21 @@ function getMyConfig({ publicPath, outputPath, enableMin }) {
         },
         plugins: [
             isProd ? new CleanWebpackPlugin() : null,
-            // isProd
-            //     ? new GenerateSW({
-            //           maximumFileSizeToCacheInBytes: 1024 * 1024 * 1024,
-            //           clientsClaim: true,
-            //           skipWaiting: true,
-            //           navigateFallback: "/index.html",
-            //           navigateFallbackAllowlist: [/.*/],
-            //           additionalManifestEntries: [
-            //               {
-            //                   url: "/index.html",
-            //                   revision: Date.now() + Math.random() + "",
-            //               },
-            //           ],
-            //       })
-            //     : null,
+            isProd
+                ? new GenerateSW({
+                    maximumFileSizeToCacheInBytes: 1024 * 1024 * 1024,
+                    clientsClaim: true,
+                    skipWaiting: true,
+                    navigateFallback: "/index.html",
+                    navigateFallbackAllowlist: [/.*/],
+                    additionalManifestEntries: [
+                        {
+                            url: "/index.html",
+                            revision: Date.now() + Math.random() + "",
+                        },
+                    ],
+                })
+                : null,
             new webpack.EnvironmentPlugin({
                 NODE_ENV: JSON.stringify(isProd ? "production" : "development"),
             }),
